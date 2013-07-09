@@ -24,6 +24,8 @@ import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final OMMetaFactory metaFactory;
     private final Map<Method,OperationHandler> operationHandlers;
+    // TODO: this will eventually depend on the class loader
+    private final ValueHandler faultReasonHandler = new ObjectValueHandler(Throwable.class);
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers) {
         metaFactory = OMAbstractFactory.getMetaFactory();
@@ -32,6 +34,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        OperationHandler handler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();
         SOAPHeader header = factory.createSOAPHeader(request);
@@ -42,33 +45,27 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         // TODO: need this to prevent Axiom from skipping serialization of the header
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
-        operationHandlers.get(method).createOMElement(body, args);
+        handler.createOMElement(body, args);
         HttpURLConnection conn = (HttpURLConnection)new URL("http://localhost:8879").openConnection();
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
         conn.connect();
-        OutputStream out = conn.getOutputStream();
-        OMOutputFormat format = new OMOutputFormat();
-        format.setCharSetEncoding("UTF-8");
-        request.serialize(out);
-        out.close();
-        InputStream in = conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream();
-//        byte[] buffer = new byte[4096];
-//        int c;
-//        while ((c = in.read(buffer)) != -1) {
-//            System.out.write(buffer, 0, c);
-//        }
-        SOAPEnvelope response = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
-        if (response.hasFault()) {
-            // TODO: suboptimal because it caches the data
-            XMLStreamReader reader = response.getBody().getFault().getReason().getXMLStreamReader(false);
-            reader.next();
-            DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
-            ((Throwable)new ObjectInputStream(dh.getInputStream()).readObject()).printStackTrace();
-        } else {
-            response.serialize(System.out);
+        try {
+            OutputStream out = conn.getOutputStream();
+            OMOutputFormat format = new OMOutputFormat();
+            format.setCharSetEncoding("UTF-8");
+            request.serialize(out);
+            out.close();
+            InputStream in = conn.getResponseCode() == 200 ? conn.getInputStream() : conn.getErrorStream();
+            SOAPEnvelope response = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
+            if (response.hasFault()) {
+                throw (Throwable)faultReasonHandler.extractValue(response.getBody().getFault().getReason());
+            } else {
+                response.serialize(System.out);
+                return handler.processResponse(response.getBody().getFirstElement());
+            }
+        } finally {
+            conn.disconnect();
         }
-        conn.disconnect();
-        return null;
     }
 }

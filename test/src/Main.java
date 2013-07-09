@@ -25,18 +25,21 @@ public class Main {
                     }
                 }
                 String name = paramAnnotation.name();
-                ParamHandler handler;
-                if (type == String.class) {
-                    handler = new StringParamHandler(name);
-                } else {
-                    handler = new ObjectParamHandler(name, type);
-                }
-                paramHandlers[i] = handler;
+                paramHandlers[i] = new ParamHandler(name, getValueHandler(type));
             }
-            operationHandlers.put(method, new OperationHandler(method.getName(), paramHandlers));
+            String methodName = method.getName();
+            operationHandlers.put(method, new OperationHandler(methodName, methodName + "Response", paramHandlers, getValueHandler(method.getReturnType())));
         }
         AdminService adminService = (AdminService)Proxy.newProxyInstance(Main.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers));
-        adminService.getServerMBean();
-//        adminService.invoke(new ObjectName("WebSphere:type=Server"), "restart", new Object[] { "blam" }, new String[] { "java.lang.String" });
+        ObjectName serverMBean = adminService.getServerMBean();
+        System.out.println(adminService.invoke(serverMBean, "getPid", new Object[] { }, new String[] { }));
+    }
+    
+    private static ValueHandler getValueHandler(Class<?> javaType) {
+        if (javaType == String.class) {
+            return StringValueHandler.INSTANCE;
+        } else {
+            return new ObjectValueHandler(javaType);
+        }
     }
 }
