@@ -10,15 +10,13 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMText;
 import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 
-public final class ObjectValueHandler implements ValueHandler {
+public final class ObjectHandler implements TypeHandler {
     private static final CommandMap commandMap;
     
     static {
-        InputStream in = ObjectValueHandler.class.getResourceAsStream("connector.mailcap");
+        InputStream in = ObjectHandler.class.getResourceAsStream("connector.mailcap");
         try {
             commandMap = new MailcapCommandMap(in);
         } finally {
@@ -31,20 +29,16 @@ public final class ObjectValueHandler implements ValueHandler {
     
     private final Class<?> type;
     
-    public ObjectValueHandler(Class<?> type) {
+    public ObjectHandler(Class<?> type) {
         this.type = type;
     }
 
     @Override
-    public QName getXSIType() {
-        return new QName("urn:AdminService", type.getName());
-    }
-
-    @Override
-    public OMText createValueNode(OMFactory factory, Object value) {
+    public QName setValue(OMElement element, Object value) {
         DataHandler dh = new DataHandler(value, "application/x-java-object");
         dh.setCommandMap(commandMap);
-        return factory.createOMText(dh, false);
+        element.addChild(element.getOMFactory().createOMText(dh, false));
+        return new QName("urn:AdminService", type.getName());
     }
 
     @Override

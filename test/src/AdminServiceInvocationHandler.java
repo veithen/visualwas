@@ -1,14 +1,10 @@
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
-
-import javax.activation.DataHandler;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
@@ -19,13 +15,12 @@ import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
-import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final OMMetaFactory metaFactory;
     private final Map<Method,OperationHandler> operationHandlers;
     // TODO: this will eventually depend on the class loader
-    private final ValueHandler faultReasonHandler = new ObjectValueHandler(Throwable.class);
+    private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers) {
         metaFactory = OMAbstractFactory.getMetaFactory();
@@ -61,7 +56,6 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
             if (response.hasFault()) {
                 throw (Throwable)faultReasonHandler.extractValue(response.getBody().getFault().getReason());
             } else {
-                response.serialize(System.out);
                 return handler.processResponse(response.getBody().getFirstElement());
             }
         } finally {

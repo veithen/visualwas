@@ -25,21 +25,26 @@ public class Main {
                     }
                 }
                 String name = paramAnnotation.name();
-                paramHandlers[i] = new ParamHandler(name, getValueHandler(type));
+                paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
             String methodName = method.getName();
-            operationHandlers.put(method, new OperationHandler(methodName, methodName + "Response", paramHandlers, getValueHandler(method.getReturnType())));
+            operationHandlers.put(method, new OperationHandler(methodName, methodName + "Response", paramHandlers, getTypeHandler(method.getReturnType())));
         }
         AdminService adminService = (AdminService)Proxy.newProxyInstance(Main.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers));
         ObjectName serverMBean = adminService.getServerMBean();
         System.out.println(adminService.invoke(serverMBean, "getPid", new Object[] { }, new String[] { }));
     }
     
-    private static ValueHandler getValueHandler(Class<?> javaType) {
-        if (javaType == String.class) {
-            return StringValueHandler.INSTANCE;
+    private static TypeHandler getTypeHandler(Class<?> javaType) {
+        if (javaType == Object.class) {
+            return new AnyTypeHandler();
         } else {
-            return new ObjectValueHandler(javaType);
+            SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getByJavaType(javaType);
+            if (simpleTypeHandler != null) {
+                return simpleTypeHandler;
+            } else {
+                return new ObjectHandler(javaType);
+            }
         }
     }
 }

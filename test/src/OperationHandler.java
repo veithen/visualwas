@@ -7,9 +7,9 @@ public class OperationHandler {
     private final String requestElementName;
     private final String responseElementName;
     private final ParamHandler[] paramHandlers;
-    private final ValueHandler returnValueHandler;
+    private final TypeHandler returnValueHandler;
     
-    public OperationHandler(String requestElementName, String responseElementName, ParamHandler[] paramHandlers, ValueHandler returnValueHandler) {
+    public OperationHandler(String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler) {
         this.requestElementName = requestElementName;
         this.responseElementName = responseElementName;
         this.paramHandlers = paramHandlers;
