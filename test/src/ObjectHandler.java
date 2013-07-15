@@ -1,10 +1,6 @@
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 
-import javax.activation.CommandMap;
 import javax.activation.DataHandler;
-import javax.activation.MailcapCommandMap;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
@@ -13,20 +9,6 @@ import org.apache.axiom.om.OMException;
 import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 
 public final class ObjectHandler implements TypeHandler {
-    private static final CommandMap commandMap;
-    
-    static {
-        InputStream in = ObjectHandler.class.getResourceAsStream("connector.mailcap");
-        try {
-            commandMap = new MailcapCommandMap(in);
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ex) {
-            }
-        }
-    }
-    
     private final Class<?> type;
     
     public ObjectHandler(Class<?> type) {
@@ -35,9 +17,7 @@ public final class ObjectHandler implements TypeHandler {
 
     @Override
     public QName setValue(OMElement element, Object value) {
-        DataHandler dh = new DataHandler(value, "application/x-java-object");
-        dh.setCommandMap(commandMap);
-        element.addChild(element.getOMFactory().createOMText(dh, false));
+        element.addChild(element.getOMFactory().createOMText(new ObjectDataHandler(value), false));
         return new QName("urn:AdminService", type.getName());
     }
 
