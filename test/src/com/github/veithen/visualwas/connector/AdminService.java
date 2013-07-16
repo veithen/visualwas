@@ -1,3 +1,5 @@
+package com.github.veithen.visualwas.connector;
+
 import javax.management.JMException;
 import javax.management.ObjectName;
 

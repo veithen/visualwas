@@ -1,3 +1,5 @@
+package com.github.veithen.visualwas.connector;
+
 import java.io.ObjectInputStream;
 
 import javax.activation.DataHandler;

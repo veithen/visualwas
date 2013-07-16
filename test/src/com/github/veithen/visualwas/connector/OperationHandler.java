@@ -1,3 +1,5 @@
+package com.github.veithen.visualwas.connector;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;

@@ -1,3 +1,5 @@
+package com.github.veithen.visualwas.connector;
+
 import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;

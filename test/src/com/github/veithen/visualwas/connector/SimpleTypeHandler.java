@@ -1,3 +1,5 @@
+package com.github.veithen.visualwas.connector;
+
 import java.util.HashMap;
 import java.util.Map;
 

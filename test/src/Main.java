@@ -6,6 +6,16 @@ import java.util.Map;
 
 import javax.management.ObjectName;
 
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.AdminServiceInvocationHandler;
+import com.github.veithen.visualwas.connector.AnyTypeHandler;
+import com.github.veithen.visualwas.connector.ObjectHandler;
+import com.github.veithen.visualwas.connector.OperationHandler;
+import com.github.veithen.visualwas.connector.Param;
+import com.github.veithen.visualwas.connector.ParamHandler;
+import com.github.veithen.visualwas.connector.SimpleTypeHandler;
+import com.github.veithen.visualwas.connector.TypeHandler;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         Map<Method,OperationHandler> operationHandlers = new HashMap<>();
