@@ -6,13 +6,25 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.veithen.visualwas.connector.transport.Transport;
+
 public final class AdminServiceFactory {
     private static AdminServiceFactory instance;
     
-    private final Map<Method,OperationHandler> operationHandlers = new HashMap<>();
+    private final Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>();
     
     private AdminServiceFactory() {
         for (Method method : AdminService.class.getMethods()) {
+            boolean hasConnectorException = false;
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                if (exceptionType == ConnectorException.class) {
+                    hasConnectorException = true;
+                    break;
+                }
+            }
+            if (!hasConnectorException) {
+                throw new Error("Method " + method.getName() + " doesn't declare ConnectorException");
+            }
             Class<?>[] parameterTypes = method.getParameterTypes();
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             int paramCount = parameterTypes.length;
@@ -26,6 +38,9 @@ public final class AdminServiceFactory {
                         paramAnnotation = (Param)annotation;
                         break;
                     }
+                }
+                if (paramAnnotation == null) {
+                    throw new Error("Missing @Param annotation in method " + method.getName());
                 }
                 String name = paramAnnotation.name();
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
@@ -55,7 +70,7 @@ public final class AdminServiceFactory {
         return instance;
     }
     
-    public AdminService createAdminService() {
-        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers));
+    public AdminService createAdminService(Transport transport) {
+        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers, transport));
     }
 }
