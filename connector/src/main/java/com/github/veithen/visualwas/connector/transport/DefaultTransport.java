@@ -26,15 +26,15 @@ public class DefaultTransport implements Transport {
             conn.setDoOutput(true);
             conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
             conn.connect();
+            OutputStream out = conn.getOutputStream();
+            OMOutputFormat format = new OMOutputFormat();
+            format.setCharSetEncoding("UTF-8");
+            // TODO: this should actually throw IOException
+            request.serialize(out);
+            out.close();
+            boolean isOK = conn.getResponseCode() == 200;
+            InputStream in = isOK ? conn.getInputStream() : conn.getErrorStream();
             try {
-                OutputStream out = conn.getOutputStream();
-                OMOutputFormat format = new OMOutputFormat();
-                format.setCharSetEncoding("UTF-8");
-                // TODO: this should actually throw IOException
-                request.serialize(out);
-                out.close();
-                boolean isOK = conn.getResponseCode() == 200;
-                InputStream in = isOK ? conn.getInputStream() : conn.getErrorStream();
                 SOAPEnvelope response = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
                 if (isOK) {
                     callback.onResponse(response);
@@ -42,7 +42,7 @@ public class DefaultTransport implements Transport {
                     callback.onFault(response);
                 }
             } finally {
-                conn.disconnect();
+                in.close();
             }
         } catch (IOException ex) {
             throw new TransportException(ex);
