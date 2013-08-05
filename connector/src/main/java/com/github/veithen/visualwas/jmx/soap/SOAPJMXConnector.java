@@ -19,6 +19,7 @@ import javax.security.auth.Subject;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
 import com.github.veithen.visualwas.connector.Interceptor;
+import com.github.veithen.visualwas.connector.security.BasicAuthInterceptor;
 import com.github.veithen.visualwas.connector.transport.DefaultTransport;
 
 public class SOAPJMXConnector implements JMXConnector {
@@ -40,11 +41,15 @@ public class SOAPJMXConnector implements JMXConnector {
     }
 
     @Override
-    public synchronized void connect(Map<String, ?> env) throws IOException {
+    public synchronized void connect(Map<String,?> env) throws IOException {
         connectionId = UUID.randomUUID().toString();
         // TODO: use HTTPS if security is enabled
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(new ConnectionIdInterceptor(connectionId));
+        String[] credentials = (String[])env.get(JMXConnector.CREDENTIALS);
+        if (credentials != null) {
+            interceptors.add(new BasicAuthInterceptor(credentials[0], credentials[1]));
+        }
         adminService = AdminServiceFactory.getInstance().createAdminService(
                 interceptors.toArray(new Interceptor[interceptors.size()]),
                 new DefaultTransport(new URL("http", host, port, "/")));
