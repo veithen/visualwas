@@ -70,7 +70,7 @@ public final class AdminServiceFactory {
         return instance;
     }
     
-    public AdminService createAdminService(Transport transport) {
-        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers, transport));
+    public AdminService createAdminService(Interceptor[] interceptors, Transport transport) {
+        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers, interceptors, transport));
     }
 }

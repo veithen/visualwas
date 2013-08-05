@@ -2,8 +2,10 @@ package com.github.veithen.visualwas.jmx.soap;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 import javax.management.ListenerNotFoundException;
 import javax.management.MBeanServerConnection;
@@ -16,11 +18,10 @@ import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
+import com.github.veithen.visualwas.connector.Interceptor;
 import com.github.veithen.visualwas.connector.transport.DefaultTransport;
 
 public class SOAPJMXConnector implements JMXConnector {
-    private static final AtomicInteger nextConnectionId = new AtomicInteger();
-    
     private final String host;
     private final int port;
     private final NotificationBroadcasterSupport connectionBroadcaster = new NotificationBroadcasterSupport();
@@ -40,9 +41,13 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized void connect(Map<String, ?> env) throws IOException {
-        connectionId = String.valueOf(nextConnectionId.getAndIncrement());
+        connectionId = UUID.randomUUID().toString();
         // TODO: use HTTPS if security is enabled
-        adminService = AdminServiceFactory.getInstance().createAdminService(new DefaultTransport(new URL("http", host, port, "/")));
+        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        interceptors.add(new ConnectionIdInterceptor(connectionId));
+        adminService = AdminServiceFactory.getInstance().createAdminService(
+                interceptors.toArray(new Interceptor[interceptors.size()]),
+                new DefaultTransport(new URL("http", host, port, "/")));
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();

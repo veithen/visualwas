@@ -19,11 +19,13 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,OperationHandler> operationHandlers;
     // TODO: this will eventually depend on the class loader
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
+    private final Interceptor[] interceptors;
     private final Transport transport;
 
-    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Transport transport) {
+    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors, Transport transport) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
+        this.interceptors = interceptors;
         this.transport = transport;
     }
 
@@ -41,6 +43,9 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createOMElement(body, args);
+        for (Interceptor interceptor : interceptors) {
+            interceptor.processRequest(request);
+        }
         TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler);
         transport.send(request, callback);
         Throwable throwable = callback.getThrowable();
