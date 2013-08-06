@@ -4,6 +4,13 @@
  */
 package com.github.veithen.visualwas;
 
+import static java.awt.GridBagConstraints.BOTH;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
+import static java.awt.GridBagConstraints.NORTHWEST;
+import static java.awt.GridBagConstraints.REMAINDER;
+import static java.awt.GridBagConstraints.WEST;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,23 +50,23 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
         {
             JLabel hostLabel = new JLabel();
             Mnemonics.setLocalizedText(hostLabel, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Host"));
-            add(hostLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
+            add(hostLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
 
             hostField = new JTextField();
             hostLabel.setLabelFor(hostField);
             hostField.getDocument().addDocumentListener(this);
-            add(hostField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 5, 2, 0), 0, 0));
+            add(hostField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 5, 2, 0), 0, 0));
         }
 
         {
             JLabel portLabel = new JLabel();
             Mnemonics.setLocalizedText(portLabel, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Port"));
-            add(portLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
+            add(portLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
 
             portField = new JTextField(6);
             portLabel.setLabelFor(portField);
             portField.getDocument().addDocumentListener(this);
-            add(portField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 2, 0), 0, 0));
+            add(portField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
         {
@@ -70,29 +77,29 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
                     update();
                 };
             });
-            add(securityCheckbox, new GridBagConstraints(0, 2, GridBagConstraints.REMAINDER, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(8, 0, 2, 0), 0, 0));
+            add(securityCheckbox, new GridBagConstraints(0, 2, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(8, 0, 2, 0), 0, 0));
         }
 
         {
             JLabel usernameLabel = new JLabel();
             Mnemonics.setLocalizedText(usernameLabel, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Username"));
-            add(usernameLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 15, 2, 0), 0, 0));
+            add(usernameLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
     
             usernameField = new JTextField(12);
             usernameLabel.setLabelFor(usernameField);
             usernameField.getDocument().addDocumentListener(this);
-            add(usernameField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 2, 0), 0, 0));
+            add(usernameField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
         {
             JLabel passwordLabel = new JLabel();
             Mnemonics.setLocalizedText(passwordLabel, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Password"));
-            add(passwordLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 15, 2, 0), 0, 0));
+            add(passwordLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
     
             passwordField = new JPasswordField(12);
             passwordLabel.setLabelFor(passwordField);
             passwordField.getDocument().addDocumentListener(this);
-            add(passwordField, new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 5, 2, 0), 0, 0));
+            add(passwordField, new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
         {
@@ -103,13 +110,13 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
                     update();
                 };
             });
-            add(saveCheckbox, new GridBagConstraints(0, 5, GridBagConstraints.REMAINDER, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 15, 2, 0), 0, 0));
+            add(saveCheckbox, new GridBagConstraints(0, 5, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
         }
 /*
         // UI tweaks
         displaynameCheckbox.setBorder(connectionLabel.getBorder());
 */
-        add(Spacer.create(), new GridBagConstraints(0, 6, 2, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        add(Spacer.create(), new GridBagConstraints(0, 6, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
         
         update();
     }
