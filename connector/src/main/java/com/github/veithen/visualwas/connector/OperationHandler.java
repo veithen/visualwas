@@ -1,11 +1,15 @@
 package com.github.veithen.visualwas.connector;
 
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPBody;
 
 public class OperationHandler {
+    private static final QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
+    
     private final String operationName;
     private final String requestElementName;
     private final String responseElementName;
@@ -34,13 +38,18 @@ public class OperationHandler {
         }
     }
     
-    public Object processResponse(OMElement responseElement) throws OperationHandlerException {
+    public Object processResponse(OMElement response) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
-        try {
-            return returnValueHandler.extractValue(responseElement.getFirstElement());
-        } catch (TypeHandlerException ex) {
-            throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+        OMElement returnElement = response.getFirstElement();
+        if ("true".equals(returnElement.getAttributeValue(XSI_NIL))) {
+            return null;
+        } else {
+            try {
+                return returnValueHandler.extractValue(returnElement);
+            } catch (TypeHandlerException ex) {
+                throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+            }
         }
     }
 }
