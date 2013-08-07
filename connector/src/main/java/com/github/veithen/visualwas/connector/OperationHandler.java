@@ -20,7 +20,7 @@ public class OperationHandler {
         this.returnValueHandler = returnValueHandler;
     }
 
-    public void createOMElement(SOAPBody body, Object[] args) {
+    public void createRequest(SOAPBody body, Object[] args) {
         OMFactory factory = body.getOMFactory();
         OMNamespace ns = factory.createOMNamespace("urn:AdminService", "ns");
         OMElement element = factory.createOMElement(requestElementName, ns, body);

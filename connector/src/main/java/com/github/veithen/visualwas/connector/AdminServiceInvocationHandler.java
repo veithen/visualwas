@@ -42,7 +42,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         // TODO: need this to prevent Axiom from skipping serialization of the header
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
-        operationHandler.createOMElement(body, args);
+        operationHandler.createRequest(body, args);
         for (Interceptor interceptor : interceptors) {
             interceptor.processRequest(request);
         }
