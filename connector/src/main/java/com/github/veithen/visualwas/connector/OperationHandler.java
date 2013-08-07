@@ -6,12 +6,14 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPBody;
 
 public class OperationHandler {
+    private final String operationName;
     private final String requestElementName;
     private final String responseElementName;
     private final ParamHandler[] paramHandlers;
     private final TypeHandler returnValueHandler;
     
-    public OperationHandler(String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler) {
+    public OperationHandler(String operationName, String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler) {
+        this.operationName = operationName;
         this.requestElementName = requestElementName;
         this.responseElementName = responseElementName;
         this.paramHandlers = paramHandlers;
@@ -32,9 +34,13 @@ public class OperationHandler {
         }
     }
     
-    public Object processResponse(OMElement responseElement) {
+    public Object processResponse(OMElement responseElement) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
-        return returnValueHandler.extractValue(responseElement.getFirstElement());
+        try {
+            return returnValueHandler.extractValue(responseElement.getFirstElement());
+        } catch (TypeHandlerException ex) {
+            throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+        }
     }
 }

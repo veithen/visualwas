@@ -1,5 +1,6 @@
 package com.github.veithen.visualwas.connector;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -17,7 +18,7 @@ public final class AdminServiceFactory {
         for (Method method : AdminService.class.getMethods()) {
             boolean hasConnectorException = false;
             for (Class<?> exceptionType : method.getExceptionTypes()) {
-                if (exceptionType == ConnectorException.class) {
+                if (exceptionType == IOException.class) {
                     hasConnectorException = true;
                     break;
                 }
@@ -46,7 +47,7 @@ public final class AdminServiceFactory {
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
             String methodName = method.getName();
-            operationHandlers.put(method, new OperationHandler(methodName, methodName + "Response", paramHandlers, getTypeHandler(method.getReturnType())));
+            operationHandlers.put(method, new OperationHandler(methodName, methodName, methodName + "Response", paramHandlers, getTypeHandler(method.getReturnType())));
         }
     }
     

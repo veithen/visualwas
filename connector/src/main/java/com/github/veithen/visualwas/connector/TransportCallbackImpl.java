@@ -17,12 +17,20 @@ final class TransportCallbackImpl implements TransportCallback {
 
     @Override
     public void onResponse(SOAPEnvelope envelope) {
-        result = operationHandler.processResponse(envelope.getBody().getFirstElement());
+        try {
+            result = operationHandler.processResponse(envelope.getBody().getFirstElement());
+        } catch (OperationHandlerException ex) {
+            throwable = new ConnectorException("Invocation failed", ex);
+        }
     }
 
     @Override
     public void onFault(SOAPEnvelope envelope) {
-        throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason());
+        try {
+            throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason());
+        } catch (TypeHandlerException ex) {
+            throwable = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
+        }
     }
 
     public Throwable getThrowable() {

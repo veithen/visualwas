@@ -11,22 +11,34 @@ import static java.awt.GridBagConstraints.NORTHWEST;
 import static java.awt.GridBagConstraints.REMAINDER;
 import static java.awt.GridBagConstraints.WEST;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
+import javax.net.ssl.SSLHandshakeException;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.SwingUtilities;
 
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
+import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
 
@@ -34,7 +46,7 @@ import com.sun.tools.visualvm.core.ui.components.Spacer;
  *
  * @author veithen
  */
-public class WebSpherePropertiesPanel extends PropertiesPanel implements DocumentListener {
+public class WebSpherePropertiesPanel extends PropertiesPanel {
     private static final long serialVersionUID = -5821630337324177997L;
     
     private final JTextField hostField;
@@ -43,6 +55,8 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JCheckBox saveCheckbox;
+    private final JButton testConnectionButton;
+    private final JTextField testConnectionResultField;
     
     public WebSpherePropertiesPanel() {
         setLayout(new GridBagLayout());
@@ -54,7 +68,13 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
 
             hostField = new JTextField();
             hostLabel.setLabelFor(hostField);
-            hostField.getDocument().addDocumentListener(this);
+            hostField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+                @Override
+                protected void updated() {
+                    update();
+                    resetConnectionTestResults();
+                }
+            });
             add(hostField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 5, 2, 0), 0, 0));
         }
 
@@ -65,7 +85,13 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
 
             portField = new JTextField(6);
             portLabel.setLabelFor(portField);
-            portField.getDocument().addDocumentListener(this);
+            portField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+                @Override
+                protected void updated() {
+                    update();
+                    resetConnectionTestResults();
+                }
+            });
             add(portField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
@@ -87,7 +113,13 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
     
             usernameField = new JTextField(12);
             usernameLabel.setLabelFor(usernameField);
-            usernameField.getDocument().addDocumentListener(this);
+            usernameField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+                @Override
+                protected void updated() {
+                    update();
+                    resetConnectionTestResults();
+                }
+            });
             add(usernameField, new GridBagConstraints(1, 3, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
@@ -98,7 +130,13 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
     
             passwordField = new JPasswordField(12);
             passwordLabel.setLabelFor(passwordField);
-            passwordField.getDocument().addDocumentListener(this);
+            passwordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+                @Override
+                protected void updated() {
+                    update();
+                    resetConnectionTestResults();
+                }
+            });
             add(passwordField, new GridBagConstraints(1, 4, 1, 1, 1.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
         }
 
@@ -108,15 +146,31 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
             saveCheckbox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     update();
+                    resetConnectionTestResults();
                 };
             });
             add(saveCheckbox, new GridBagConstraints(0, 5, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
         }
-/*
-        // UI tweaks
-        displaynameCheckbox.setBorder(connectionLabel.getBorder());
-*/
-        add(Spacer.create(), new GridBagConstraints(0, 6, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        
+        {
+            testConnectionButton = new JButton(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    testConnection();
+                }
+            });
+            Mnemonics.setLocalizedText(testConnectionButton, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Test_connection"));
+            add(testConnectionButton, new GridBagConstraints(0, 6, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(5, 0, 2, 0), 0, 0));
+        }
+        
+        {
+            testConnectionResultField = new JTextField();
+            testConnectionResultField.setEditable(false);
+            testConnectionResultField.setBorder(BorderFactory.createEmptyBorder());
+            add(testConnectionResultField, new GridBagConstraints(0, 7, REMAINDER, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
+        }
+        
+        add(Spacer.create(), new GridBagConstraints(0, 8, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
         
         update();
     }
@@ -133,40 +187,76 @@ public class WebSpherePropertiesPanel extends PropertiesPanel implements Documen
         }
     }
     
+    public boolean isSecurityEnabled() {
+        return securityCheckbox.isSelected();
+    }
+    
     public String getUsername() {
-        return securityCheckbox.isSelected() ? usernameField.getText() : null;
+        return isSecurityEnabled() ? usernameField.getText() : null;
     }
 
     public String getPassword() {
-        return securityCheckbox.isSelected() ? new String(passwordField.getPassword()) : null;
+        return isSecurityEnabled() ? new String(passwordField.getPassword()) : null;
     }
     
     public boolean isSaveCredentials() {
-        return securityCheckbox.isSelected() && saveCheckbox.isSelected();
-    }
-    
-    @Override
-    public void insertUpdate(DocumentEvent event) {
-        update();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent event) {
-        update();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent event) {
-        update();
+        return isSecurityEnabled() && saveCheckbox.isSelected();
     }
     
     private void update() {
         int port = getPort();
-        setSettingsValid(getHost().length() > 0 && port > 0 && port < 1<<16);
+        testConnectionButton.setEnabled(getHost().length() > 0 && port > 0 && port < 1<<16);
         
         boolean securityEnabled = securityCheckbox.isSelected();
         usernameField.setEnabled(securityEnabled);
         passwordField.setEnabled(securityEnabled);
         saveCheckbox.setEnabled(securityEnabled);
+    }
+
+    private void testConnection() {
+        while (true) {
+            // TODO: for this to be displayed, we need to execute the code asynchronously
+            testConnectionResultField.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connecting"));
+            testConnectionResultField.setForeground(Color.BLACK);
+            JMXServiceURL serviceURL;
+            try {
+                serviceURL = new JMXServiceURL("soap", getHost(), getPort());
+            } catch (MalformedURLException ex) {
+                // We should never get here
+                throw new Error(ex);
+            }
+            Map<String,Object> env = new HashMap<String,Object>();
+            JMXUtil.initEnvironment(env);
+            if (isSecurityEnabled()) {
+                JMXUtil.setCredentials(env, getUsername(), getPassword());
+            }
+            try {
+                JMXConnectorFactory.connect(serviceURL, env);
+                testConnectionResultField.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connection_successful"));
+                testConnectionResultField.setForeground(Color.GREEN);
+                setSettingsValid(true);
+                return;
+            } catch (IOException ex) {
+                if (ex instanceof SSLHandshakeException && ex.getCause() instanceof NotTrustedException) {
+                    X509Certificate[] chain = ((NotTrustedException)ex.getCause()).getChain();
+                    SignerExchangeDialog dialog = new SignerExchangeDialog(SwingUtilities.getWindowAncestor(this), chain);
+                    if (!dialog.showDialog()) {
+                        resetConnectionTestResults();
+                        return;
+                    } // else loop
+                } else {
+                    ex.printStackTrace();
+                    testConnectionResultField.setText(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+                    testConnectionResultField.setForeground(Color.RED);
+                    setSettingsValid(false);
+                    return;
+                }
+            }
+        }
+    }
+    
+    private void resetConnectionTestResults() {
+        testConnectionResultField.setText(null);
+        setSettingsValid(false);
     }
 }

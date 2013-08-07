@@ -92,8 +92,7 @@ public class AdminServiceMBeanServerConnection implements MBeanServerConnection 
 
     @Override
     public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return adminService.getAttribute(name, attribute);
     }
 
     @Override

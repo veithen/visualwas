@@ -7,7 +7,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMException;
 import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 
 public final class ObjectHandler implements TypeHandler {
@@ -24,7 +23,7 @@ public final class ObjectHandler implements TypeHandler {
     }
 
     @Override
-    public Object extractValue(OMElement element) {
+    public Object extractValue(OMElement element) throws TypeHandlerException {
         // TODO: suboptimal because it caches the data
         XMLStreamReader reader = element.getXMLStreamReader(false);
         try {
@@ -32,8 +31,7 @@ public final class ObjectHandler implements TypeHandler {
             DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
             return new ObjectInputStream(dh.getInputStream()).readObject();
         } catch (Exception ex) {
-            // TODO
-            throw new OMException(ex);
+            throw new TypeHandlerException("Failed to deserialize object (expected type: " + type.getName() + ")", ex);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.veithen.visualwas.jmx.soap;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.remote.JMXConnectionNotification;
 import javax.management.remote.JMXConnector;
+import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
@@ -23,6 +25,9 @@ import com.github.veithen.visualwas.connector.security.BasicAuthInterceptor;
 import com.github.veithen.visualwas.connector.transport.DefaultTransport;
 
 public class SOAPJMXConnector implements JMXConnector {
+    public static final String TRUST_MANAGER = SOAPJMXConnector.class.getName() + ".trustManager";
+    public static final String PROXY = SOAPJMXConnector.class.getName() + ".proxy";
+    
     private final String host;
     private final int port;
     private final NotificationBroadcasterSupport connectionBroadcaster = new NotificationBroadcasterSupport();
@@ -47,12 +52,16 @@ public class SOAPJMXConnector implements JMXConnector {
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(new ConnectionIdInterceptor(connectionId));
         String[] credentials = (String[])env.get(JMXConnector.CREDENTIALS);
-        if (credentials != null) {
+        String protocol;
+        if (credentials == null) {
+            protocol = "http";
+        } else {
+            protocol = "https";
             interceptors.add(new BasicAuthInterceptor(credentials[0], credentials[1]));
         }
         adminService = AdminServiceFactory.getInstance().createAdminService(
                 interceptors.toArray(new Interceptor[interceptors.size()]),
-                new DefaultTransport(new URL("http", host, port, "/")));
+                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), (TrustManager)env.get(TRUST_MANAGER)));
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();

@@ -39,10 +39,9 @@ public class WebSphereEnvironmentProvider extends EnvironmentProvider {
     @Override
     public Map<String,?> getEnvironment(Application application, Storage storage) {
         Map<String,Object> env = new HashMap<String,Object>();
-        env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, WebSphereEnvironmentProvider.class.getClassLoader());
-        env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
+        JMXUtil.initEnvironment(env);
         if (username != null) {
-            env.put(JMXConnector.CREDENTIALS, new String[] { username, password });
+            JMXUtil.setCredentials(env, username, password);
         }
         return env;
     }
