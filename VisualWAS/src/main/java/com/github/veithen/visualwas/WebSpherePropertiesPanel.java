@@ -180,6 +180,10 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         return hostField.getText();
     }
     
+    public void setHost(String host) {
+        hostField.setText(host);
+    }
+    
     public int getPort() {
         try {
             return Integer.parseInt(portField.getText());
