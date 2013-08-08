@@ -102,6 +102,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             securityCheckbox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     update();
+                    resetConnectionTestResults();
                 };
             });
             add(securityCheckbox, new GridBagConstraints(0, 2, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(8, 0, 2, 0), 0, 0));
@@ -147,7 +148,6 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             saveCheckbox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     update();
-                    resetConnectionTestResults();
                 };
             });
             add(saveCheckbox, new GridBagConstraints(0, 5, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
