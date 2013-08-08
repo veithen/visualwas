@@ -4,9 +4,11 @@
  */
 package com.github.veithen.visualwas;
 
+import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
 import com.sun.tools.visualvm.application.Application;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.jmx.JmxConnectionCustomizer;
+
 import org.openide.util.NbBundle;
 
 /**
@@ -30,6 +32,6 @@ public class WebSphereJmxConnectionCustomizer extends JmxConnectionCustomizer {
         WebSpherePropertiesPanel wasPanel = (WebSpherePropertiesPanel)panel;
         String hostPort = wasPanel.getHost() + ":" + wasPanel.getPort();
         return new Setup("service:jmx:soap://" + hostPort, hostPort,
-                new WebSphereEnvironmentProvider(wasPanel.getUsername(), wasPanel.getPassword(), wasPanel.isSaveCredentials()), true);
+                new CustomWebSphereEnvironmentProvider(wasPanel.getUsername(), wasPanel.getPassword(), wasPanel.isSaveCredentials()), true);
     }
 }

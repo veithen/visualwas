@@ -20,9 +20,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.net.ssl.SSLHandshakeException;
@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
+import com.github.veithen.visualwas.env.EnvUtil;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
@@ -195,8 +196,8 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         return isSecurityEnabled() ? usernameField.getText() : null;
     }
 
-    public String getPassword() {
-        return isSecurityEnabled() ? new String(passwordField.getPassword()) : null;
+    public char[] getPassword() {
+        return isSecurityEnabled() ? passwordField.getPassword() : null;
     }
     
     public boolean isSaveCredentials() {
@@ -225,10 +226,10 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                 // We should never get here
                 throw new Error(ex);
             }
-            Map<String,Object> env = new HashMap<String,Object>();
-            JMXUtil.initEnvironment(env);
-            if (isSecurityEnabled()) {
-                JMXUtil.setCredentials(env, getUsername(), getPassword());
+            boolean securityEnabled = isSecurityEnabled();
+            Map<String,Object> env = EnvUtil.createEnvironment(securityEnabled);
+            if (securityEnabled) {
+                env.put(JMXConnector.CREDENTIALS, new String[] { getUsername(), new String(getPassword()) });
             }
             try {
                 JMXConnectorFactory.connect(serviceURL, env);
