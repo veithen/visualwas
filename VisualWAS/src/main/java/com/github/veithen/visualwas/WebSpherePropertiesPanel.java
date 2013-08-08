@@ -12,6 +12,7 @@ import static java.awt.GridBagConstraints.REMAINDER;
 import static java.awt.GridBagConstraints.WEST;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -28,6 +29,7 @@ import javax.management.remote.JMXServiceURL;
 import javax.net.ssl.SSLHandshakeException;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -50,6 +52,10 @@ import com.sun.tools.visualvm.core.ui.components.Spacer;
 public class WebSpherePropertiesPanel extends PropertiesPanel {
     private static final long serialVersionUID = -5821630337324177997L;
     
+    private static ImageIcon connectingIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("connecting.gif"));
+    private static ImageIcon errorIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("error.png"));
+    private static ImageIcon okIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("ok.png"));
+    
     private final JTextField hostField;
     private final JTextField portField;
     private final JCheckBox securityCheckbox;
@@ -57,7 +63,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
     private final JPasswordField passwordField;
     private final JCheckBox saveCheckbox;
     private final JButton testConnectionButton;
-    private final JTextField testConnectionResultField;
+    private final JLabel testConnectionResult;
     
     public WebSpherePropertiesPanel() {
         setLayout(new GridBagLayout());
@@ -165,10 +171,12 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         }
         
         {
-            testConnectionResultField = new JTextField();
-            testConnectionResultField.setEditable(false);
-            testConnectionResultField.setBorder(BorderFactory.createEmptyBorder());
-            add(testConnectionResultField, new GridBagConstraints(0, 7, REMAINDER, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
+            testConnectionResult = new JLabel();
+            testConnectionResult.setBorder(BorderFactory.createEtchedBorder());
+            testConnectionResult.setBackground(Color.WHITE);
+            testConnectionResult.setOpaque(true);
+            testConnectionResult.setPreferredSize(new Dimension(50, 50));
+            add(testConnectionResult, new GridBagConstraints(0, 7, REMAINDER, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
         }
         
         add(Spacer.create(), new GridBagConstraints(0, 8, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -219,49 +227,62 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
     }
 
     private void testConnection() {
-        while (true) {
-            // TODO: for this to be displayed, we need to execute the code asynchronously
-            testConnectionResultField.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connecting"));
-            testConnectionResultField.setForeground(Color.BLACK);
-            JMXServiceURL serviceURL;
-            try {
-                serviceURL = new JMXServiceURL("soap", getHost(), getPort());
-            } catch (MalformedURLException ex) {
-                // We should never get here
-                throw new Error(ex);
-            }
-            boolean securityEnabled = isSecurityEnabled();
-            Map<String,Object> env = EnvUtil.createEnvironment(securityEnabled);
-            if (securityEnabled) {
-                env.put(JMXConnector.CREDENTIALS, new String[] { getUsername(), new String(getPassword()) });
-            }
-            try {
-                JMXConnectorFactory.connect(serviceURL, env);
-                testConnectionResultField.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connection_successful"));
-                testConnectionResultField.setForeground(Color.GREEN);
-                setSettingsValid(true);
-                return;
-            } catch (IOException ex) {
-                if (ex instanceof SSLHandshakeException && ex.getCause() instanceof NotTrustedException) {
-                    X509Certificate[] chain = ((NotTrustedException)ex.getCause()).getChain();
-                    SignerExchangeDialog dialog = new SignerExchangeDialog(SwingUtilities.getWindowAncestor(this), chain);
-                    if (!dialog.showDialog()) {
-                        resetConnectionTestResults();
-                        return;
-                    } // else loop
-                } else {
-                    ex.printStackTrace();
-                    testConnectionResultField.setText(ex.getClass().getSimpleName() + ": " + ex.getMessage());
-                    testConnectionResultField.setForeground(Color.RED);
-                    setSettingsValid(false);
-                    return;
-                }
-            }
+        testConnectionButton.setEnabled(false);
+        testConnectionResult.setIcon(connectingIcon);
+        testConnectionResult.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connecting"));
+        final JMXServiceURL serviceURL;
+        try {
+            serviceURL = new JMXServiceURL("soap", getHost(), getPort());
+        } catch (MalformedURLException ex) {
+            // We should never get here
+            throw new Error(ex);
         }
+        boolean securityEnabled = isSecurityEnabled();
+        final Map<String,Object> env = EnvUtil.createEnvironment(securityEnabled);
+        if (securityEnabled) {
+            env.put(JMXConnector.CREDENTIALS, new String[] { getUsername(), new String(getPassword()) });
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                IOException tmpException = null;
+                try {
+                    JMXConnectorFactory.connect(serviceURL, env);
+                } catch (IOException ex) {
+                    tmpException = ex;
+                }
+                final IOException exception = tmpException;
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        testConnectionButton.setEnabled(true);
+                        if (exception == null) {
+                            testConnectionResult.setIcon(okIcon);
+                            testConnectionResult.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connection_successful"));
+                            setSettingsValid(true);
+                        } else if (exception instanceof SSLHandshakeException && exception.getCause() instanceof NotTrustedException) {
+                            X509Certificate[] chain = ((NotTrustedException)exception.getCause()).getChain();
+                            SignerExchangeDialog dialog = new SignerExchangeDialog(SwingUtilities.getWindowAncestor(WebSpherePropertiesPanel.this), chain);
+                            if (!dialog.showDialog()) {
+                                resetConnectionTestResults();
+                            } else {
+                                testConnection();
+                            }
+                        } else {
+                            exception.printStackTrace();
+                            testConnectionResult.setIcon(errorIcon);
+                            testConnectionResult.setText(exception.getClass().getSimpleName() + ": " + exception.getMessage());
+                            setSettingsValid(false);
+                        }
+                    }
+                });
+            }
+        }.start();
     }
     
     private void resetConnectionTestResults() {
-        testConnectionResultField.setText(null);
+        testConnectionResult.setIcon(null);
+        testConnectionResult.setText(null);
         setSettingsValid(false);
     }
 }
