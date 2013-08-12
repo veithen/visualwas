@@ -28,6 +28,7 @@ public final class EnvUtil {
                 ex.printStackTrace();
             }
         }
+        env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, WebSphereClassLoaderProvider.getInstance());
         return env;
     }
 }

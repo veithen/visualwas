@@ -12,6 +12,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
@@ -21,12 +22,15 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
     private final Interceptor[] interceptors;
     private final Transport transport;
+    private final ClassLoaderProvider classLoaderProvider;
 
-    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors, Transport transport) {
+    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
+            Transport transport, ClassLoaderProvider classLoaderProvider) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
         this.transport = transport;
+        this.classLoaderProvider = classLoaderProvider;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         for (Interceptor interceptor : interceptors) {
             interceptor.processRequest(request);
         }
-        TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler);
+        TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler, classLoaderProvider.getClassLoader());
         transport.send(request, callback);
         Throwable throwable = callback.getThrowable();
         if (throwable != null) {

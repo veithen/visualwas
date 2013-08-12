@@ -1,7 +1,5 @@
 package com.github.veithen.visualwas.connector;
 
-import java.io.ObjectInputStream;
-
 import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -23,13 +21,13 @@ public final class ObjectHandler implements TypeHandler {
     }
 
     @Override
-    public Object extractValue(OMElement element) throws TypeHandlerException {
+    public Object extractValue(OMElement element, ClassLoader classLoader) throws TypeHandlerException {
         // TODO: suboptimal because it caches the data
         XMLStreamReader reader = element.getXMLStreamReader(false);
         try {
             reader.next();
             DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
-            return new ObjectInputStream(dh.getInputStream()).readObject();
+            return new ConfigurableObjectInputStream(dh.getInputStream(), classLoader).readObject();
         } catch (Exception ex) {
             throw new TypeHandlerException("Failed to deserialize object (expected type: " + type.getName() + ")", ex);
         }

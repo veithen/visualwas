@@ -55,7 +55,7 @@ public abstract class SimpleTypeHandler implements TypeHandler {
     }
 
     @Override
-    public final Object extractValue(OMElement element) {
+    public final Object extractValue(OMElement element, ClassLoader classLoader) {
         return fromString(element.getText());
     }
     

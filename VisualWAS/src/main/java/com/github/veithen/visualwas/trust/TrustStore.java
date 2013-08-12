@@ -2,6 +2,8 @@ package com.github.veithen.visualwas.trust;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -76,5 +78,15 @@ public final class TrustStore {
             // We should never get here
         }
         prefs.putByteArray(PROP_KEY, baos.toByteArray());
+    }
+    
+    public void export(File file, char[] password) throws GeneralSecurityException, IOException {
+        KeyStore trustStore = getTrustStore();
+        FileOutputStream out = new FileOutputStream(file);
+        try {
+            trustStore.store(out, password);
+        } finally {
+            out.close();
+        }
     }
 }

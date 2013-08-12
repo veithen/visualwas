@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,29 +16,46 @@ import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.remote.JMXConnectionNotification;
 import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
 import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
 import com.github.veithen.visualwas.connector.Interceptor;
+import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
+import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;
 import com.github.veithen.visualwas.connector.security.BasicAuthInterceptor;
 import com.github.veithen.visualwas.connector.transport.DefaultTransport;
 
 public class SOAPJMXConnector implements JMXConnector {
-    public static final String TRUST_MANAGER = SOAPJMXConnector.class.getName() + ".trustManager";
-    public static final String PROXY = SOAPJMXConnector.class.getName() + ".proxy";
+    private static final String ENV_PROP_PREFIX = "com.github.veithen.visualwas.jmx.soap.";
+    
+    public static final String TRUST_MANAGER = ENV_PROP_PREFIX + "trustManager";
+    public static final String PROXY = ENV_PROP_PREFIX + "proxy";
+    
+    /**
+     * Name of the attribute that specifies the class loader provider. The class loader provider
+     * determines the class loader to use when deserializing values returned by WebSphere. The
+     * attribute must be an instance of {@link ClassLoaderProvider}. If it is specified, then
+     * {@link JMXConnectorFactory#DEFAULT_CLASS_LOADER} will be ignored. If neither
+     * {@link #CLASS_LOADER_PROVIDER} nor {@link JMXConnectorFactory#DEFAULT_CLASS_LOADER} is
+     * specified, then the connector will use the thread context class loader.
+     */
+    public static final String CLASS_LOADER_PROVIDER = ENV_PROP_PREFIX + "classLoaderProvider";
     
     private final String host;
     private final int port;
+    private final Map<String,?> env;
     private final NotificationBroadcasterSupport connectionBroadcaster = new NotificationBroadcasterSupport();
     private long connectionNotificationSequence;
     private String connectionId;
     private AdminService adminService;
 
-    public SOAPJMXConnector(String host, int port) {
+    public SOAPJMXConnector(String host, int port, Map<String,?> env) {
         this.host = host;
         this.port = port;
+        this.env = env;
     }
 
     @Override
@@ -45,8 +63,17 @@ public class SOAPJMXConnector implements JMXConnector {
         connect(null);
     }
 
-    @Override
-    public synchronized void connect(Map<String,?> env) throws IOException {
+    public void connect(Map<String,?> env) throws IOException {
+        if (env == null) {
+            internalConnect(this.env);
+        } else {
+            Map<String,Object> actualEnv = new HashMap<String,Object>(this.env);
+            actualEnv.putAll(env);
+            internalConnect(actualEnv);
+        }
+    }
+    
+    private synchronized void internalConnect(Map<String,?> env) throws IOException {
         connectionId = UUID.randomUUID().toString();
         // TODO: use HTTPS if security is enabled
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
@@ -59,9 +86,15 @@ public class SOAPJMXConnector implements JMXConnector {
             protocol = "https";
             interceptors.add(new BasicAuthInterceptor(credentials[0], credentials[1]));
         }
+        ClassLoaderProvider classLoaderProvider = (ClassLoaderProvider)env.get(CLASS_LOADER_PROVIDER);
+        if (classLoaderProvider == null) {
+            ClassLoader cl = (ClassLoader)env.get(JMXConnectorFactory.DEFAULT_CLASS_LOADER);
+            classLoaderProvider = cl == null ? ClassLoaderProvider.TCCL : new SimpleClassLoaderProvider(cl);
+        }
         adminService = AdminServiceFactory.getInstance().createAdminService(
                 interceptors.toArray(new Interceptor[interceptors.size()]),
-                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), (TrustManager)env.get(TRUST_MANAGER)));
+                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), (TrustManager)env.get(TRUST_MANAGER)),
+                classLoaderProvider);
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();

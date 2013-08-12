@@ -7,6 +7,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
 public final class AdminServiceFactory {
@@ -71,7 +72,8 @@ public final class AdminServiceFactory {
         return instance;
     }
     
-    public AdminService createAdminService(Interceptor[] interceptors, Transport transport) {
-        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class }, new AdminServiceInvocationHandler(operationHandlers, interceptors, transport));
+    public AdminService createAdminService(Interceptor[] interceptors, Transport transport, ClassLoaderProvider classLoaderProvider) {
+        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class },
+                new AdminServiceInvocationHandler(operationHandlers, interceptors, transport, classLoaderProvider));
     }
 }

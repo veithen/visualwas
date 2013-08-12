@@ -38,7 +38,7 @@ public class OperationHandler {
         }
     }
     
-    public Object processResponse(OMElement response) throws OperationHandlerException {
+    public Object processResponse(OMElement response, ClassLoader classLoader) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
         OMElement returnElement = response.getFirstElement();
@@ -46,7 +46,7 @@ public class OperationHandler {
             return null;
         } else {
             try {
-                return returnValueHandler.extractValue(returnElement);
+                return returnValueHandler.extractValue(returnElement, classLoader);
             } catch (TypeHandlerException ex) {
                 throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
             }
