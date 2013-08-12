@@ -16,7 +16,7 @@ public class WebSphereRuntimeClassLoader extends ClassLoader {
         try {
             return super.loadClass(name, resolve);
         } catch (ClassNotFoundException ex) {
-            return realm.findClass(name, resolve);
+            return realm.loadClass(name, resolve);
         }
     }
 }

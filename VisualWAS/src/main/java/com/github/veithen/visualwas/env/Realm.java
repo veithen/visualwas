@@ -54,12 +54,25 @@ public class Realm {
         return parentClassLoader;
     }
     
-    public Class<?> findClass(String name, boolean resolve) throws ClassNotFoundException {
+    /**
+     * Load a class from this realm. This method does not delegate to the parent class loader; if
+     * the class is not exported by any of the bundles in this realm, a
+     * {@link ClassNotFoundException} will be thrown.
+     * 
+     * @param name
+     *            the class name
+     * @param resolve
+     *            indicates if the class should be resolved
+     * @return the class object; never <code>null</code>
+     * @throws ClassNotFoundException
+     *             if the class could not be found
+     */
+    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Bundle bundle = packageMap.get(name.substring(0, name.lastIndexOf('.')));
         if (bundle == null) {
             throw new ClassNotFoundException(name);
         } else {
-            return bundle.getClassLoader().findClass(name, resolve);
+            return bundle.getClassLoader().loadClassLocally(name, resolve);
         }
     }
 }
