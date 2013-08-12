@@ -69,6 +69,11 @@
             <artifactId>axiom-impl</artifactId>
             <version>${axiom.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>loader</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -11,6 +11,7 @@ import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
+import com.github.veithen.visualwas.loader.WebSphereRuntimeClassLoader;
 import com.github.veithen.visualwas.options.Constants;
 
 public final class WebSphereClassLoaderProvider implements ClassLoaderProvider, PreferenceChangeListener {
