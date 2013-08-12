@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.env;
+package com.github.veithen.visualwas.loader;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;

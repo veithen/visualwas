@@ -54,6 +54,7 @@
     </dependencyManagement>
     <modules>
     	<module>connector</module>
+        <module>loader</module>
         <module>VisualWAS</module>
     </modules>
 </project>
