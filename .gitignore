@@ -1,3 +1,4 @@
-/VisualWAS/nbproject/private/
-/VisualWAS/build/
-**/target
+*/.classpath
+*/.project
+*/.settings
+*/target
