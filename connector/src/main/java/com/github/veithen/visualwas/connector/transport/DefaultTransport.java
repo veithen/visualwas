@@ -21,6 +21,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 public class DefaultTransport implements Transport {
     private final URL endpointUrl;
     private final Proxy proxy;
+    private final int connectTimeout;
     private final TrustManager trustManager;
     
     /**
@@ -31,13 +32,16 @@ public class DefaultTransport implements Transport {
      * @param proxy
      *            the proxy, or <code>null</code> to use the default proxy settings; use
      *            {@link Proxy#NO_PROXY} to force a direct connection
+     * @param connectTimeout
+     *            the connect timeout in milliseconds
      * @param trustManager
      *            the trust manager to use, or <code>null</code> to use the default trust manager;
      *            only used when connecting to an HTTPS endpoint
      */
-    public DefaultTransport(URL endpointUrl, Proxy proxy, TrustManager trustManager) {
+    public DefaultTransport(URL endpointUrl, Proxy proxy, int connectTimeout, TrustManager trustManager) {
         this.endpointUrl = endpointUrl;
         this.proxy = proxy;
+        this.connectTimeout = connectTimeout;
         this.trustManager = trustManager;
     }
 
@@ -45,6 +49,7 @@ public class DefaultTransport implements Transport {
     public void send(SOAPEnvelope request, TransportCallback callback) throws IOException {
         try {
             HttpURLConnection conn = (HttpURLConnection)(proxy == null ? endpointUrl.openConnection() : endpointUrl.openConnection(proxy));
+            conn.setConnectTimeout(connectTimeout);
             if (trustManager != null && conn instanceof HttpsURLConnection) {
                 try {
                     SSLContext sslContext = SSLContext.getInstance("SSL");

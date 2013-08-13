@@ -41,6 +41,7 @@ import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.env.EnvUtil;
+import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
@@ -242,6 +243,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         if (securityEnabled) {
             env.put(JMXConnector.CREDENTIALS, new String[] { getUsername(), new String(getPassword()) });
         }
+        env.put(SOAPJMXConnector.CONNECT_TIMEOUT, 8000);
         new Thread() {
             @Override
             public void run() {

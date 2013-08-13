@@ -35,6 +35,12 @@ public class SOAPJMXConnector implements JMXConnector {
     public static final String PROXY = ENV_PROP_PREFIX + "proxy";
     
     /**
+     * Name of the attribute that specifies the connect timeout. The value must be an
+     * {@link Integer} representing the timeout in milliseconds.
+     */
+    public static final String CONNECT_TIMEOUT = ENV_PROP_PREFIX + "connectTimeout";
+    
+    /**
      * Name of the attribute that specifies the class loader provider. The class loader provider
      * determines the class loader to use when deserializing values returned by WebSphere. The
      * attribute must be an instance of {@link ClassLoaderProvider}. If it is specified, then
@@ -86,6 +92,7 @@ public class SOAPJMXConnector implements JMXConnector {
             protocol = "https";
             interceptors.add(new BasicAuthInterceptor(credentials[0], credentials[1]));
         }
+        Integer connectTimeout = (Integer)env.get(CONNECT_TIMEOUT);
         ClassLoaderProvider classLoaderProvider = (ClassLoaderProvider)env.get(CLASS_LOADER_PROVIDER);
         if (classLoaderProvider == null) {
             ClassLoader cl = (ClassLoader)env.get(JMXConnectorFactory.DEFAULT_CLASS_LOADER);
@@ -93,7 +100,7 @@ public class SOAPJMXConnector implements JMXConnector {
         }
         adminService = AdminServiceFactory.getInstance().createAdminService(
                 interceptors.toArray(new Interceptor[interceptors.size()]),
-                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), (TrustManager)env.get(TRUST_MANAGER)),
+                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), connectTimeout == null ? 0 : connectTimeout, (TrustManager)env.get(TRUST_MANAGER)),
                 classLoaderProvider);
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
