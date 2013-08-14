@@ -13,7 +13,6 @@ public final class RepositoryClientFeature implements Feature {
         configurator.addAlternateClasses(
                 DocumentContentSource.class,
                 DocumentNotFoundException.class,
-                RemoteSource.class,
-                SOAPException.class);
+                RemoteSource.class);
     }
 }

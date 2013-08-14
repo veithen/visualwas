@@ -47,6 +47,7 @@ public final class ConnectorConfiguration {
         public ConnectorConfiguration build() {
             ClassMapper classMapper = new ClassMapper();
             ConnectorConfiguratorImpl configurator = new ConnectorConfiguratorImpl(classMapper);
+            BaseFeature.INSTANCE.configureConnector(configurator);
             for (Feature feature : features) {
                 feature.configureConnector(configurator);
             }
