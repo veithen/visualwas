@@ -16,13 +16,16 @@ import javax.activation.DataHandler;
  * because we know that Axiom only uses that method (and never {@link DataHandler#getDataSource()}.
  */
 public class ObjectDataHandler extends DataHandler {
-    public ObjectDataHandler(Object object) {
+    private final InvocationContext context;
+    
+    public ObjectDataHandler(Object object, InvocationContext context) {
         super(object, "application/x-java-object");
+        this.context = context;
     }
     
     @Override
     public void writeTo(OutputStream out) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(out);
+        ObjectOutputStream oos = new ConfigurableObjectOutputStream(out, context);
         oos.writeObject(getContent());
         oos.flush();
     }

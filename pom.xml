@@ -55,6 +55,7 @@
     <modules>
     	<module>connector</module>
         <module>loader</module>
+        <module>repoclient</module>
         <module>VisualWAS</module>
     </modules>
     <build>

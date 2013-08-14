@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
-import com.github.veithen.visualwas.connector.transport.Transport;
+import com.github.veithen.visualwas.connector.security.Credentials;
+import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public final class AdminServiceFactory {
     private static AdminServiceFactory instance;
@@ -72,8 +74,16 @@ public final class AdminServiceFactory {
         return instance;
     }
     
-    public AdminService createAdminService(Interceptor[] interceptors, Transport transport, ClassLoaderProvider classLoaderProvider) {
+    public AdminService createAdminService(Interceptor[] interceptors, Endpoint endpoint, Credentials credentials, ConnectorConfiguration config) {
+        List<Interceptor> allInterceptors = new ArrayList<Interceptor>();
+        for (Interceptor interceptor : interceptors) {
+            allInterceptors.add(interceptor);
+        }
+        if (credentials != null) {
+            allInterceptors.add(credentials.createInterceptor());
+        }
         return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class },
-                new AdminServiceInvocationHandler(operationHandlers, interceptors, transport, classLoaderProvider));
+                new AdminServiceInvocationHandler(operationHandlers, allInterceptors.toArray(new Interceptor[allInterceptors.size()]),
+                        config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, credentials));
     }
 }

@@ -15,10 +15,10 @@ public final class ParamHandler {
         this.valueHandler = valueHandler;
     }
     
-    public void createOMElement(OMElement operationElement, OMNamespace xsiNS, Object value) {
+    public void createOMElement(OMElement operationElement, OMNamespace xsiNS, Object value, InvocationContext context) {
         OMFactory factory = operationElement.getOMFactory();
         OMElement element = factory.createOMElement(name, null, operationElement);
-        QName type = valueHandler.setValue(element, value);
+        QName type = valueHandler.setValue(element, value, context);
         OMNamespace ns = element.findNamespace(type.getNamespaceURI(), null);
         if (ns == null) {
             ns = element.declareNamespace(type.getNamespaceURI(), type.getPrefix());

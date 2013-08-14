@@ -7,11 +7,11 @@ import org.apache.axiom.soap.SOAPHeader;
 
 import com.github.veithen.visualwas.connector.Interceptor;
 
-public class BasicAuthInterceptor implements Interceptor {
+final class BasicAuthInterceptor implements Interceptor {
     private final String username;
     private final String password;
     
-    public BasicAuthInterceptor(String username, String password) {
+    BasicAuthInterceptor(String username, String password) {
         this.username = username;
         this.password = password;
     }

@@ -15,19 +15,19 @@ public final class ObjectHandler implements TypeHandler {
     }
 
     @Override
-    public QName setValue(OMElement element, Object value) {
-        element.addChild(element.getOMFactory().createOMText(new ObjectDataHandler(value), false));
+    public QName setValue(OMElement element, Object value, InvocationContext context) {
+        element.addChild(element.getOMFactory().createOMText(new ObjectDataHandler(value, context), false));
         return new QName("urn:AdminService", type.getName());
     }
 
     @Override
-    public Object extractValue(OMElement element, ClassLoader classLoader) throws TypeHandlerException {
+    public Object extractValue(OMElement element, InvocationContext context) throws TypeHandlerException {
         // TODO: suboptimal because it caches the data
         XMLStreamReader reader = element.getXMLStreamReader(false);
         try {
             reader.next();
             DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
-            return new ConfigurableObjectInputStream(dh.getInputStream(), classLoader).readObject();
+            return new ConfigurableObjectInputStream(dh.getInputStream(), context).readObject();
         } catch (Exception ex) {
             throw new TypeHandlerException("Failed to deserialize object (expected type: " + type.getName() + ")", ex);
         }

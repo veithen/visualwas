@@ -7,20 +7,20 @@ import com.github.veithen.visualwas.connector.transport.TransportCallback;
 final class TransportCallbackImpl implements TransportCallback {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
-    private final ClassLoader classLoader;
+    private final InvocationContext context;
     private Throwable throwable;
     private Object result;
     
-    TransportCallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, ClassLoader classLoader) {
+    TransportCallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContext context) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
-        this.classLoader = classLoader;
+        this.context = context;
     }
 
     @Override
     public void onResponse(SOAPEnvelope envelope) {
         try {
-            result = operationHandler.processResponse(envelope.getBody().getFirstElement(), classLoader);
+            result = operationHandler.processResponse(envelope.getBody().getFirstElement(), context);
         } catch (OperationHandlerException ex) {
             throwable = new ConnectorException("Invocation failed", ex);
         }
@@ -29,7 +29,7 @@ final class TransportCallbackImpl implements TransportCallback {
     @Override
     public void onFault(SOAPEnvelope envelope) {
         try {
-            throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), classLoader);
+            throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), context);
         } catch (TypeHandlerException ex) {
             throwable = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
         }

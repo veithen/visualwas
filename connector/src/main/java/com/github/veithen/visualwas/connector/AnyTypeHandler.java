@@ -14,19 +14,19 @@ public class AnyTypeHandler implements TypeHandler {
     }
     
     @Override
-    public QName setValue(OMElement element, Object value) {
+    public QName setValue(OMElement element, Object value, InvocationContext context) {
         SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getByJavaType(value.getClass());
         if (simpleTypeHandler != null) {
-            return simpleTypeHandler.setValue(element, value);
+            return simpleTypeHandler.setValue(element, value, context);
         } else {
-            return objectHandler.setValue(element, value);
+            return objectHandler.setValue(element, value, context);
         }
     }
 
     @Override
-    public Object extractValue(OMElement element, ClassLoader classLoader) throws TypeHandlerException {
+    public Object extractValue(OMElement element, InvocationContext context) throws TypeHandlerException {
         QName type = element.resolveQName(element.getAttributeValue(XSI_TYPE));
         SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getBySchemaType(type);
-        return (simpleTypeHandler != null ? simpleTypeHandler : objectHandler).extractValue(element, classLoader);
+        return (simpleTypeHandler != null ? simpleTypeHandler : objectHandler).extractValue(element, context);
     }
 }

@@ -7,6 +7,8 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPBody;
 
+import com.github.veithen.visualwas.connector.loader.ClassMapper;
+
 public class OperationHandler {
     private static final QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
     
@@ -24,7 +26,7 @@ public class OperationHandler {
         this.returnValueHandler = returnValueHandler;
     }
 
-    public void createRequest(SOAPBody body, Object[] args) {
+    public void createRequest(SOAPBody body, Object[] args, InvocationContext context) {
         OMFactory factory = body.getOMFactory();
         OMNamespace ns = factory.createOMNamespace("urn:AdminService", "ns");
         OMElement element = factory.createOMElement(requestElementName, ns, body);
@@ -33,12 +35,12 @@ public class OperationHandler {
         if (paramCount > 0) {
             OMNamespace xsiNS = element.declareNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
             for (int i=0; i<paramCount; i++) {
-                paramHandlers[i].createOMElement(element, xsiNS, args[i]);
+                paramHandlers[i].createOMElement(element, xsiNS, args[i], context);
             }
         }
     }
     
-    public Object processResponse(OMElement response, ClassLoader classLoader) throws OperationHandlerException {
+    public Object processResponse(OMElement response, InvocationContext context) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
         OMElement returnElement = response.getFirstElement();
@@ -46,7 +48,7 @@ public class OperationHandler {
             return null;
         } else {
             try {
-                return returnValueHandler.extractValue(returnElement, classLoader);
+                return returnValueHandler.extractValue(returnElement, context);
             } catch (TypeHandlerException ex) {
                 throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
             }

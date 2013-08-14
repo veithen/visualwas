@@ -2,10 +2,7 @@ package com.github.veithen.visualwas.jmx.soap;
 
 import java.io.IOException;
 import java.net.Proxy;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,15 +19,20 @@ import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
+import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.Interceptor;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
+import com.github.veithen.visualwas.connector.loader.ClassMapper;
 import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;
-import com.github.veithen.visualwas.connector.security.BasicAuthInterceptor;
-import com.github.veithen.visualwas.connector.transport.DefaultTransport;
+import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
+import com.github.veithen.visualwas.connector.security.Credentials;
+import com.github.veithen.visualwas.connector.transport.Endpoint;
+import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
 public class SOAPJMXConnector implements JMXConnector {
     private static final String ENV_PROP_PREFIX = "com.github.veithen.visualwas.jmx.soap.";
     
+    // TODO: should we have a single TRANSPORT_OPTIONS attribute?
     public static final String TRUST_MANAGER = ENV_PROP_PREFIX + "trustManager";
     public static final String PROXY = ENV_PROP_PREFIX + "proxy";
     
@@ -39,6 +41,8 @@ public class SOAPJMXConnector implements JMXConnector {
      * {@link Integer} representing the timeout in milliseconds.
      */
     public static final String CONNECT_TIMEOUT = ENV_PROP_PREFIX + "connectTimeout";
+    
+    public static final String CLASS_MAPPER = ENV_PROP_PREFIX + "classMapper";
     
     /**
      * Name of the attribute that specifies the class loader provider. The class loader provider
@@ -81,27 +85,25 @@ public class SOAPJMXConnector implements JMXConnector {
     
     private synchronized void internalConnect(Map<String,?> env) throws IOException {
         connectionId = UUID.randomUUID().toString();
-        // TODO: use HTTPS if security is enabled
-        List<Interceptor> interceptors = new ArrayList<Interceptor>();
-        interceptors.add(new ConnectionIdInterceptor(connectionId));
-        String[] credentials = (String[])env.get(JMXConnector.CREDENTIALS);
-        String protocol;
-        if (credentials == null) {
-            protocol = "http";
-        } else {
-            protocol = "https";
-            interceptors.add(new BasicAuthInterceptor(credentials[0], credentials[1]));
-        }
+        String[] jmxCredentials = (String[])env.get(JMXConnector.CREDENTIALS);
+        Credentials credentials = jmxCredentials == null ? null : new BasicAuthCredentials(jmxCredentials[0], jmxCredentials[1]);
+        TransportConfiguration.Builder transportConfigBuilder = TransportConfiguration.custom();
+        transportConfigBuilder.setProxy((Proxy)env.get(PROXY));
         Integer connectTimeout = (Integer)env.get(CONNECT_TIMEOUT);
+        if (connectTimeout != null) {
+            transportConfigBuilder.setConnectTimeout(connectTimeout);
+        }
+        transportConfigBuilder.setTrustManager((TrustManager)env.get(TRUST_MANAGER));
         ClassLoaderProvider classLoaderProvider = (ClassLoaderProvider)env.get(CLASS_LOADER_PROVIDER);
         if (classLoaderProvider == null) {
             ClassLoader cl = (ClassLoader)env.get(JMXConnectorFactory.DEFAULT_CLASS_LOADER);
             classLoaderProvider = cl == null ? ClassLoaderProvider.TCCL : new SimpleClassLoaderProvider(cl);
         }
         adminService = AdminServiceFactory.getInstance().createAdminService(
-                interceptors.toArray(new Interceptor[interceptors.size()]),
-                new DefaultTransport(new URL(protocol, host, port, "/"), (Proxy)env.get(PROXY), connectTimeout == null ? 0 : connectTimeout, (TrustManager)env.get(TRUST_MANAGER)),
-                classLoaderProvider);
+                new Interceptor[] { new ConnectionIdInterceptor(connectionId) },
+                new Endpoint(host, port, credentials != null),
+                credentials,
+                ConnectorConfiguration.custom().setClassMapper((ClassMapper)env.get(CLASS_MAPPER)).setClassLoaderProvider(classLoaderProvider).setTransportConfiguration(transportConfigBuilder.build()).build());
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();

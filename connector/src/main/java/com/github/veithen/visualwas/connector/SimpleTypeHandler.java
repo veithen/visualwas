@@ -49,13 +49,13 @@ public abstract class SimpleTypeHandler implements TypeHandler {
     }
 
     @Override
-    public final QName setValue(OMElement element, Object value) {
+    public final QName setValue(OMElement element, Object value, InvocationContext context) {
         element.setText(toString(value));
         return type;
     }
 
     @Override
-    public final Object extractValue(OMElement element, ClassLoader classLoader) {
+    public final Object extractValue(OMElement element, InvocationContext context) {
         return fromString(element.getText());
     }
     

@@ -12,7 +12,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
+import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
@@ -22,19 +22,22 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
     private final Interceptor[] interceptors;
     private final Transport transport;
-    private final ClassLoaderProvider classLoaderProvider;
+    private final ConnectorConfiguration config;
+    private final Credentials credentials;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
-            Transport transport, ClassLoaderProvider classLoaderProvider) {
+            Transport transport, ConnectorConfiguration config, Credentials credentials) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
         this.transport = transport;
-        this.classLoaderProvider = classLoaderProvider;
+        this.config = config;
+        this.credentials = credentials;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        InvocationContext context = new InvocationContext(config, credentials);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();
@@ -46,11 +49,11 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         // TODO: need this to prevent Axiom from skipping serialization of the header
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
-        operationHandler.createRequest(body, args);
+        operationHandler.createRequest(body, args, context);
         for (Interceptor interceptor : interceptors) {
             interceptor.processRequest(request);
         }
-        TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler, classLoaderProvider.getClassLoader());
+        TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler, context);
         transport.send(request, callback);
         Throwable throwable = callback.getThrowable();
         if (throwable != null) {
