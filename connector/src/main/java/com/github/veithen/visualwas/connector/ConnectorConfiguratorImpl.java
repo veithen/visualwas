@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.github.veithen.visualwas.connector.feature.AlternateClass;
 import com.github.veithen.visualwas.connector.feature.ConnectorConfigurator;
-import com.github.veithen.visualwas.connector.loader.AlternateClass;
 
 final class ConnectorConfiguratorImpl implements ConnectorConfigurator {
     private final Set<Class<?>> processedClasses = new HashSet<>();

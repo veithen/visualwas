@@ -2,7 +2,7 @@ package com.github.veithen.visualwas.repoclient;
 
 import java.io.Serializable;
 
-import com.github.veithen.visualwas.connector.loader.AlternateClass;
+import com.github.veithen.visualwas.connector.feature.AlternateClass;
 
 @AlternateClass("com.ibm.websphere.management.repository.Document")
 public final class Document implements Serializable {

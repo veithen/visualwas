@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputStream.GetField;
 
-import com.github.veithen.visualwas.connector.loader.AlternateClass;
+import com.github.veithen.visualwas.connector.feature.AlternateClass;
 
 // TODO: move this to the connector
 @AlternateClass("org.apache.soap.SOAPException")

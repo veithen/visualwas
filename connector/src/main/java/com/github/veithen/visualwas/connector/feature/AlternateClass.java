@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector.loader;
+package com.github.veithen.visualwas.connector.feature;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

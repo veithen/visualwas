@@ -10,7 +10,7 @@ import java.util.zip.GZIPInputStream;
 
 import com.github.veithen.visualwas.connector.InvocationContext;
 import com.github.veithen.visualwas.connector.InvocationContextHolder;
-import com.github.veithen.visualwas.connector.loader.AlternateClass;
+import com.github.veithen.visualwas.connector.feature.AlternateClass;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 

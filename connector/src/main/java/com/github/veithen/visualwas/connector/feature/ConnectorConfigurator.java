@@ -1,7 +1,6 @@
 package com.github.veithen.visualwas.connector.feature;
 
 import com.github.veithen.visualwas.connector.Interceptor;
-import com.github.veithen.visualwas.connector.loader.AlternateClass;
 
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of
