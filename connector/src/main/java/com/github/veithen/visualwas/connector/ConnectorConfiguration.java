@@ -55,7 +55,8 @@ public final class ConnectorConfiguration {
                     transportFactory == null ? TransportFactory.DEFAULT : transportFactory,
                     transportConfiguration == null ? TransportConfiguration.DEFAULT : transportConfiguration,
                     classMapper,
-                    classLoaderProvider == null ? ClassLoaderProvider.TCCL : classLoaderProvider);
+                    classLoaderProvider == null ? ClassLoaderProvider.TCCL : classLoaderProvider,
+                    configurator.getInterceptors());
         }
     }
     
@@ -63,13 +64,15 @@ public final class ConnectorConfiguration {
     private final TransportConfiguration transportConfiguration;
     private final ClassMapper classMapper;
     private final ClassLoaderProvider classLoaderProvider;
+    private final Interceptor[] interceptors;
     
     ConnectorConfiguration(TransportFactory transportFactory, TransportConfiguration transportConfiguration,
-            ClassMapper classMapper, ClassLoaderProvider classLoaderProvider) {
+            ClassMapper classMapper, ClassLoaderProvider classLoaderProvider, Interceptor[] interceptors) {
         this.transportFactory = transportFactory;
         this.transportConfiguration = transportConfiguration;
         this.classMapper = classMapper;
         this.classLoaderProvider = classLoaderProvider;
+        this.interceptors = interceptors;
     }
 
     public static Builder custom() {
@@ -90,5 +93,9 @@ public final class ConnectorConfiguration {
 
     public ClassLoaderProvider getClassLoaderProvider() {
         return classLoaderProvider;
+    }
+
+    Interceptor[] getInterceptors() {
+        return interceptors;
     }
 }

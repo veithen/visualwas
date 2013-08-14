@@ -1,7 +1,9 @@
 package com.github.veithen.visualwas.connector;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.github.veithen.visualwas.connector.feature.ConnectorConfigurator;
@@ -9,10 +11,16 @@ import com.github.veithen.visualwas.connector.loader.AlternateClass;
 
 final class ConnectorConfiguratorImpl implements ConnectorConfigurator {
     private final Set<Class<?>> processedClasses = new HashSet<>();
+    private final List<Interceptor> interceptors = new ArrayList<>();
     private ClassMapper classMapper;
 
     ConnectorConfiguratorImpl(ClassMapper classMapper) {
         this.classMapper = classMapper;
+    }
+
+    @Override
+    public void addInterceptor(Interceptor interceptor) {
+        interceptors.add(interceptor);
     }
 
     @Override
@@ -39,6 +47,10 @@ final class ConnectorConfiguratorImpl implements ConnectorConfigurator {
         for (Field field : clazz.getDeclaredFields()) {
             scan(field.getType(), false);
         }
+    }
+    
+    Interceptor[] getInterceptors() {
+        return interceptors.toArray(new Interceptor[interceptors.size()]);
     }
     
     void release() {

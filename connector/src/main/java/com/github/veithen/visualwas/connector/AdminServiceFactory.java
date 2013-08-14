@@ -74,9 +74,9 @@ public final class AdminServiceFactory {
         return instance;
     }
     
-    public AdminService createAdminService(Interceptor[] interceptors, Endpoint endpoint, Credentials credentials, ConnectorConfiguration config) {
+    public AdminService createAdminService(Endpoint endpoint, Credentials credentials, ConnectorConfiguration config) {
         List<Interceptor> allInterceptors = new ArrayList<Interceptor>();
-        for (Interceptor interceptor : interceptors) {
+        for (Interceptor interceptor : config.getInterceptors()) {
             allInterceptors.add(interceptor);
         }
         if (credentials != null) {

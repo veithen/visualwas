@@ -20,7 +20,6 @@ import javax.security.auth.Subject;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
 import com.github.veithen.visualwas.connector.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;
@@ -102,12 +101,12 @@ public class SOAPJMXConnector implements JMXConnector {
         ConnectorConfiguration.Builder connectorConfigBuilder = ConnectorConfiguration.custom();
         connectorConfigBuilder.setClassLoaderProvider(classLoaderProvider);
         connectorConfigBuilder.setTransportConfiguration(transportConfigBuilder.build());
+        connectorConfigBuilder.addFeatures(new ConnectionIdFeature(connectionId));
         Feature[] features = (Feature[])env.get(FEATURES);
         if (features != null) {
             connectorConfigBuilder.addFeatures(features);
         }
         adminService = AdminServiceFactory.getInstance().createAdminService(
-                new Interceptor[] { new ConnectionIdInterceptor(connectionId) },
                 new Endpoint(host, port, credentials != null),
                 credentials,
                 connectorConfigBuilder.build());
