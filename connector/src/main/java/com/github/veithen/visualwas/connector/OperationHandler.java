@@ -7,8 +7,6 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPBody;
 
-import com.github.veithen.visualwas.connector.loader.ClassMapper;
-
 public class OperationHandler {
     private static final QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
     

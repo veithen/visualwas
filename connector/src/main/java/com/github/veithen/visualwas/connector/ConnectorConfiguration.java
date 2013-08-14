@@ -1,7 +1,11 @@
 package com.github.veithen.visualwas.connector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
-import com.github.veithen.visualwas.connector.loader.ClassMapper;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.connector.transport.TransportFactory;
 
@@ -9,8 +13,8 @@ public final class ConnectorConfiguration {
     public static final class Builder {
         private TransportFactory transportFactory;
         private TransportConfiguration transportConfiguration;
-        private ClassMapper classMapper;
         private ClassLoaderProvider classLoaderProvider;
+        private List<Feature> features = new ArrayList<>();
         
         public Builder setTransportFactory(TransportFactory transportFactory) {
             this.transportFactory = transportFactory;
@@ -19,11 +23,6 @@ public final class ConnectorConfiguration {
         
         public Builder setTransportConfiguration(TransportConfiguration transportConfiguration) {
             this.transportConfiguration = transportConfiguration;
-            return this;
-        }
-        
-        public Builder setClassMapper(ClassMapper classMapper) {
-            this.classMapper = classMapper;
             return this;
         }
         
@@ -40,11 +39,22 @@ public final class ConnectorConfiguration {
             return this;
         }
         
+        public Builder addFeatures(Feature... features) {
+            this.features.addAll(Arrays.asList(features));
+            return this;
+        }
+        
         public ConnectorConfiguration build() {
+            ClassMapper classMapper = new ClassMapper();
+            ConnectorConfiguratorImpl configurator = new ConnectorConfiguratorImpl(classMapper);
+            for (Feature feature : features) {
+                feature.configureConnector(configurator);
+            }
+            configurator.release();
             return new ConnectorConfiguration(
                     transportFactory == null ? TransportFactory.DEFAULT : transportFactory,
                     transportConfiguration == null ? TransportConfiguration.DEFAULT : transportConfiguration,
-                    classMapper == null ? ClassMapper.NULL : classMapper,
+                    classMapper,
                     classLoaderProvider == null ? ClassLoaderProvider.TCCL : classLoaderProvider);
         }
     }
@@ -74,7 +84,7 @@ public final class ConnectorConfiguration {
         return transportConfiguration;
     }
 
-    public ClassMapper getClassMapper() {
+    ClassMapper getClassMapper() {
         return classMapper;
     }
 

@@ -1,6 +1,5 @@
 package com.github.veithen.visualwas.connector;
 
-import com.github.veithen.visualwas.connector.loader.ClassMapper;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 

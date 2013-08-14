@@ -21,8 +21,8 @@ import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.AdminServiceFactory;
 import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.Interceptor;
+import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
-import com.github.veithen.visualwas.connector.loader.ClassMapper;
 import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;
 import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
 import com.github.veithen.visualwas.connector.security.Credentials;
@@ -42,8 +42,6 @@ public class SOAPJMXConnector implements JMXConnector {
      */
     public static final String CONNECT_TIMEOUT = ENV_PROP_PREFIX + "connectTimeout";
     
-    public static final String CLASS_MAPPER = ENV_PROP_PREFIX + "classMapper";
-    
     /**
      * Name of the attribute that specifies the class loader provider. The class loader provider
      * determines the class loader to use when deserializing values returned by WebSphere. The
@@ -53,6 +51,8 @@ public class SOAPJMXConnector implements JMXConnector {
      * specified, then the connector will use the thread context class loader.
      */
     public static final String CLASS_LOADER_PROVIDER = ENV_PROP_PREFIX + "classLoaderProvider";
+    
+    public static final String FEATURES = ENV_PROP_PREFIX + "features";
     
     private final String host;
     private final int port;
@@ -99,11 +99,18 @@ public class SOAPJMXConnector implements JMXConnector {
             ClassLoader cl = (ClassLoader)env.get(JMXConnectorFactory.DEFAULT_CLASS_LOADER);
             classLoaderProvider = cl == null ? ClassLoaderProvider.TCCL : new SimpleClassLoaderProvider(cl);
         }
+        ConnectorConfiguration.Builder connectorConfigBuilder = ConnectorConfiguration.custom();
+        connectorConfigBuilder.setClassLoaderProvider(classLoaderProvider);
+        connectorConfigBuilder.setTransportConfiguration(transportConfigBuilder.build());
+        Feature[] features = (Feature[])env.get(FEATURES);
+        if (features != null) {
+            connectorConfigBuilder.addFeatures(features);
+        }
         adminService = AdminServiceFactory.getInstance().createAdminService(
                 new Interceptor[] { new ConnectionIdInterceptor(connectionId) },
                 new Endpoint(host, port, credentials != null),
                 credentials,
-                ConnectorConfiguration.custom().setClassMapper((ClassMapper)env.get(CLASS_MAPPER)).setClassLoaderProvider(classLoaderProvider).setTransportConfiguration(transportConfigBuilder.build()).build());
+                connectorConfigBuilder.build());
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();
