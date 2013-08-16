@@ -10,8 +10,8 @@ import com.github.veithen.visualwas.connector.feature.AlternateClass;
 import com.github.veithen.visualwas.connector.feature.ConnectorConfigurator;
 
 final class ConnectorConfiguratorImpl implements ConnectorConfigurator {
-    private final Set<Class<?>> processedClasses = new HashSet<>();
-    private final List<Interceptor> interceptors = new ArrayList<>();
+    private final Set<Class<?>> processedClasses = new HashSet<Class<?>>();
+    private final List<Interceptor> interceptors = new ArrayList<Interceptor>();
     private ClassMapper classMapper;
 
     ConnectorConfiguratorImpl(ClassMapper classMapper) {

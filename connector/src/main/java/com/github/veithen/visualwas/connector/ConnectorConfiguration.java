@@ -14,7 +14,7 @@ public final class ConnectorConfiguration {
         private TransportFactory transportFactory;
         private TransportConfiguration transportConfiguration;
         private ClassLoaderProvider classLoaderProvider;
-        private List<Feature> features = new ArrayList<>();
+        private List<Feature> features = new ArrayList<Feature>();
         
         public Builder setTransportFactory(TransportFactory transportFactory) {
             this.transportFactory = transportFactory;
