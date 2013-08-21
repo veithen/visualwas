@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
@@ -18,7 +19,7 @@ public final class AdminServiceFactory {
     private final Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>();
     
     private AdminServiceFactory() {
-        for (Method method : AdminService.class.getMethods()) {
+        for (Method method : AdminService.class.getDeclaredMethods()) {
             boolean hasConnectorException = false;
             for (Class<?> exceptionType : method.getExceptionTypes()) {
                 if (exceptionType == IOException.class) {
@@ -75,15 +76,22 @@ public final class AdminServiceFactory {
     }
     
     public AdminService createAdminService(Endpoint endpoint, Credentials credentials, ConnectorConfiguration config) {
-        List<Interceptor> allInterceptors = new ArrayList<Interceptor>();
-        for (Interceptor interceptor : config.getInterceptors()) {
-            allInterceptors.add(interceptor);
+        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        ClassMapper classMapper = new ClassMapper();
+        AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
+        ConfiguratorImpl configurator = new ConfiguratorImpl(interceptors, classMapper, adaptableDelegate);
+        BaseFeature.INSTANCE.configureConnector(configurator);
+        for (Feature feature : config.getFeatures()) {
+            feature.configureConnector(configurator);
         }
+        configurator.release();
         if (credentials != null) {
-            allInterceptors.add(credentials.createInterceptor());
+            interceptors.add(credentials.createInterceptor());
         }
-        return (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class },
-                new AdminServiceInvocationHandler(operationHandlers, allInterceptors.toArray(new Interceptor[allInterceptors.size()]),
-                        config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, credentials));
+        AdminService adminService = (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class },
+                new AdminServiceInvocationHandler(operationHandlers, interceptors.toArray(new Interceptor[interceptors.size()]),
+                        config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, credentials, adaptableDelegate, classMapper));
+        adaptableDelegate.setAdminService(adminService);
+        return adminService;
     }
 }

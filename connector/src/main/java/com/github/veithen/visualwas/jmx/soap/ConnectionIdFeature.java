@@ -1,6 +1,6 @@
 package com.github.veithen.visualwas.jmx.soap;
 
-import com.github.veithen.visualwas.connector.feature.ConnectorConfigurator;
+import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
 final class ConnectionIdFeature implements Feature {
@@ -11,7 +11,7 @@ final class ConnectionIdFeature implements Feature {
     }
 
     @Override
-    public void configureConnector(ConnectorConfigurator configurator) {
+    public void configureConnector(Configurator configurator) {
         configurator.addInterceptor(new ConnectionIdInterceptor(connectionId));
     }
 }

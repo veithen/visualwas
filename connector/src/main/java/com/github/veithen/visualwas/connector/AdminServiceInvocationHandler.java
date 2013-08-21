@@ -1,6 +1,7 @@
 package com.github.veithen.visualwas.connector;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -24,20 +25,36 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Transport transport;
     private final ConnectorConfiguration config;
     private final Credentials credentials;
+    private final Adaptable adaptableDelegate;
+    private final ClassMapper classMapper;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
-            Transport transport, ConnectorConfiguration config, Credentials credentials) {
+            Transport transport, ConnectorConfiguration config, Credentials credentials, Adaptable adaptableDelegate, ClassMapper classMapper) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
         this.transport = transport;
         this.config = config;
         this.credentials = credentials;
+        this.adaptableDelegate = adaptableDelegate;
+        this.classMapper = classMapper;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        InvocationContext context = new InvocationContext(config, credentials);
+        if (method.getDeclaringClass() == Adaptable.class) {
+            try {
+                return method.invoke(adaptableDelegate, args);
+            } catch (InvocationTargetException ex) {
+                throw ex.getCause();
+            }
+        } else {
+            return invokeAdminService(method, args);
+        }
+    }
+    
+    private Object invokeAdminService(Method method, Object[] args) throws Throwable {
+        InvocationContext context = new InvocationContext(config, classMapper, credentials);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();

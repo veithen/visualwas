@@ -45,35 +45,25 @@ public final class ConnectorConfiguration {
         }
         
         public ConnectorConfiguration build() {
-            ClassMapper classMapper = new ClassMapper();
-            ConnectorConfiguratorImpl configurator = new ConnectorConfiguratorImpl(classMapper);
-            BaseFeature.INSTANCE.configureConnector(configurator);
-            for (Feature feature : features) {
-                feature.configureConnector(configurator);
-            }
-            configurator.release();
             return new ConnectorConfiguration(
                     transportFactory == null ? TransportFactory.DEFAULT : transportFactory,
                     transportConfiguration == null ? TransportConfiguration.DEFAULT : transportConfiguration,
-                    classMapper,
                     classLoaderProvider == null ? ClassLoaderProvider.TCCL : classLoaderProvider,
-                    configurator.getInterceptors());
+                    features.toArray(new Feature[features.size()]));
         }
     }
     
     private final TransportFactory transportFactory;
     private final TransportConfiguration transportConfiguration;
-    private final ClassMapper classMapper;
     private final ClassLoaderProvider classLoaderProvider;
-    private final Interceptor[] interceptors;
+    private final Feature[] features;
     
     ConnectorConfiguration(TransportFactory transportFactory, TransportConfiguration transportConfiguration,
-            ClassMapper classMapper, ClassLoaderProvider classLoaderProvider, Interceptor[] interceptors) {
+            ClassLoaderProvider classLoaderProvider, Feature[] features) {
         this.transportFactory = transportFactory;
         this.transportConfiguration = transportConfiguration;
-        this.classMapper = classMapper;
         this.classLoaderProvider = classLoaderProvider;
-        this.interceptors = interceptors;
+        this.features = features;
     }
 
     public static Builder custom() {
@@ -88,15 +78,11 @@ public final class ConnectorConfiguration {
         return transportConfiguration;
     }
 
-    ClassMapper getClassMapper() {
-        return classMapper;
-    }
-
     public ClassLoaderProvider getClassLoaderProvider() {
         return classLoaderProvider;
     }
 
-    Interceptor[] getInterceptors() {
-        return interceptors;
+    Feature[] getFeatures() {
+        return features;
     }
 }

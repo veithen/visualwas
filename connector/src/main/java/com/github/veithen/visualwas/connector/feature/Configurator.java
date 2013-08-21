@@ -1,5 +1,6 @@
 package com.github.veithen.visualwas.connector.feature;
 
+import com.github.veithen.visualwas.connector.Adaptable;
 import com.github.veithen.visualwas.connector.Interceptor;
 
 /**
@@ -7,7 +8,7 @@ import com.github.veithen.visualwas.connector.Interceptor;
  * this instance are only valid during the invocation of
  * {@link Feature#configureConnector(ConnectorConfigurator)}.
  */
-public interface ConnectorConfigurator {
+public interface Configurator extends Adaptable {
     void addInterceptor(Interceptor interceptor);
     
     /**
@@ -19,4 +20,8 @@ public interface ConnectorConfigurator {
      *            the alternate classes to add (and to scan for dependencies)
      */
     void addAlternateClasses(Class<?>... classes);
+    
+    <T> void registerConfiguratorAdapter(Class<T> iface, T adapter);
+    
+    <T> void registerAdminServiceAdapter(Class<T> iface, AdapterFactory<T> adapterFactory);
 }
