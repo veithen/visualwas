@@ -1,10 +1,8 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.altclasses;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputStream.GetField;
-
-import com.github.veithen.visualwas.connector.feature.AlternateClass;
 
 @AlternateClass("org.apache.soap.SOAPException")
 public class SOAPException extends Exception {

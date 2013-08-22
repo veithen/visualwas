@@ -1,7 +1,6 @@
 package com.github.veithen.visualwas.connector;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import javax.activation.CommandMap;
@@ -25,8 +24,6 @@ public class ObjectDataHandler extends DataHandler {
     
     @Override
     public void writeTo(OutputStream out) throws IOException {
-        ObjectOutputStream oos = new ConfigurableObjectOutputStream(out, context);
-        oos.writeObject(getContent());
-        oos.flush();
+        context.getSerializer().writeObject(getContent(), out, context);
     }
 }

@@ -2,7 +2,7 @@ package com.github.veithen.visualwas.repoclient;
 
 import java.io.Serializable;
 
-import com.github.veithen.visualwas.connector.feature.AlternateClass;
+import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
 
 @AlternateClass("com.ibm.websphere.management.repository.RepositoryInputStream")
 public abstract class RepositorySource implements Source, Serializable {

@@ -13,6 +13,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
@@ -26,10 +27,10 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final ConnectorConfiguration config;
     private final Credentials credentials;
     private final Adaptable adaptableDelegate;
-    private final ClassMapper classMapper;
+    private final Serializer serializer;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
-            Transport transport, ConnectorConfiguration config, Credentials credentials, Adaptable adaptableDelegate, ClassMapper classMapper) {
+            Transport transport, ConnectorConfiguration config, Credentials credentials, Adaptable adaptableDelegate, Serializer serializer) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
@@ -37,7 +38,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         this.config = config;
         this.credentials = credentials;
         this.adaptableDelegate = adaptableDelegate;
-        this.classMapper = classMapper;
+        this.serializer = serializer;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     }
     
     private Object invokeAdminService(Method method, Object[] args) throws Throwable {
-        InvocationContext context = new InvocationContext(config, classMapper, credentials);
+        InvocationContext context = new InvocationContext(config, serializer, credentials);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();

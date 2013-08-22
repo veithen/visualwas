@@ -27,7 +27,7 @@ public final class ObjectHandler implements TypeHandler {
         try {
             reader.next();
             DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
-            return new ConfigurableObjectInputStream(dh.getInputStream(), context).readObject();
+            return context.getSerializer().readObject(dh.getInputStream(), context);
         } catch (Exception ex) {
             throw new TypeHandlerException("Failed to deserialize object (expected type: " + type.getName() + ")", ex);
         }

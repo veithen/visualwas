@@ -1,20 +1,27 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.altclasses;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 
-public class ConfigurableObjectOutputStream extends ObjectOutputStream implements InvocationContextHolder {
+import com.github.veithen.visualwas.connector.InvocationContext;
+
+/**
+ * The {@link ObjectOutputStream} implementation used when the {@link AlternateClassesFeature} is
+ * enabled. It gives the alternate classes access to the {@link InvocationContext}.
+ */
+public final class ConfigurableObjectOutputStream extends ObjectOutputStream {
+    private final ClassMapper classMapper;
     private final InvocationContext context;
     private boolean nextIsClassName;
 
-    public ConfigurableObjectOutputStream(OutputStream out, InvocationContext context) throws IOException {
+    ConfigurableObjectOutputStream(OutputStream out, ClassMapper classMapper, InvocationContext context) throws IOException {
         super(out);
+        this.classMapper = classMapper;
         this.context = context;
     }
 
-    @Override
     public InvocationContext getInvocationContext() {
         return context;
     }
@@ -29,7 +36,7 @@ public class ConfigurableObjectOutputStream extends ObjectOutputStream implement
     public void writeUTF(String str) throws IOException {
         if (nextIsClassName) {
             nextIsClassName = false;
-            String originalClass = context.getClassMapper().getOriginalClass(str);
+            String originalClass = classMapper.getOriginalClass(str);
             if (originalClass != null) {
                 str = originalClass;
             }

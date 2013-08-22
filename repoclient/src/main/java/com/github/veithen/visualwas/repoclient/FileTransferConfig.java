@@ -6,7 +6,7 @@ import java.io.ObjectInputStream.GetField;
 import java.io.Serializable;
 import java.util.Properties;
 
-import com.github.veithen.visualwas.connector.feature.AlternateClass;
+import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
 
 @AlternateClass("com.ibm.ws.management.filetransfer.FileTransferConfigImpl")
 public class FileTransferConfig implements Serializable {

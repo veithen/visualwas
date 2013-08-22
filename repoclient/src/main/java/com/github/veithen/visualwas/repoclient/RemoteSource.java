@@ -9,8 +9,8 @@ import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
 import com.github.veithen.visualwas.connector.InvocationContext;
-import com.github.veithen.visualwas.connector.InvocationContextHolder;
-import com.github.veithen.visualwas.connector.feature.AlternateClass;
+import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
+import com.github.veithen.visualwas.connector.altclasses.ConfigurableObjectInputStream;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
@@ -24,7 +24,7 @@ public class RemoteSource extends RepositorySource {
     private FileTransferOptions fileTransferOptions;
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        InvocationContext context = ((InvocationContextHolder)stream).getInvocationContext();
+        InvocationContext context = ((ConfigurableObjectInputStream)stream).getInvocationContext();
         transportConfiguration = context.getTransportConfiguration();
         credentials = context.getCredentials();
         GetField fields = stream.readFields();

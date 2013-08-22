@@ -77,10 +77,8 @@ public final class AdminServiceFactory {
     
     public AdminService createAdminService(Endpoint endpoint, Credentials credentials, ConnectorConfiguration config) {
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
-        ClassMapper classMapper = new ClassMapper();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        ConfiguratorImpl configurator = new ConfiguratorImpl(interceptors, classMapper, adaptableDelegate);
-        BaseFeature.INSTANCE.configureConnector(configurator);
+        ConfiguratorImpl configurator = new ConfiguratorImpl(interceptors, adaptableDelegate);
         for (Feature feature : config.getFeatures()) {
             feature.configureConnector(configurator);
         }
@@ -90,7 +88,7 @@ public final class AdminServiceFactory {
         }
         AdminService adminService = (AdminService)Proxy.newProxyInstance(AdminServiceFactory.class.getClassLoader(), new Class<?>[] { AdminService.class },
                 new AdminServiceInvocationHandler(operationHandlers, interceptors.toArray(new Interceptor[interceptors.size()]),
-                        config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, credentials, adaptableDelegate, classMapper));
+                        config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, credentials, adaptableDelegate, configurator.getSerializer()));
         adaptableDelegate.setAdminService(adminService);
         return adminService;
     }

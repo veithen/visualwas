@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.codec.binary.Hex;
 
-import com.github.veithen.visualwas.connector.feature.AlternateClass;
+import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
 
 // TODO: implement equals and hashCode
 @AlternateClass("com.ibm.ws.management.repository.DocumentDigestImpl")

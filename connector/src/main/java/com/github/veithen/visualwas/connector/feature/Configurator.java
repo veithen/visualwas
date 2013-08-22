@@ -9,17 +9,18 @@ import com.github.veithen.visualwas.connector.Interceptor;
  * {@link Feature#configureConnector(ConnectorConfigurator)}.
  */
 public interface Configurator extends Adaptable {
-    void addInterceptor(Interceptor interceptor);
-    
     /**
-     * Add the given alternate classes to the class mapper. These classes must be annotated with
-     * {@link AlternateClass}. This method automatically locates alternate classes that are
-     * dependencies of the specified classes. This is done recursively.
+     * Configure an alternate {@link Serializer}. Note that only a single {@link Feature} can
+     * override the default implementation.
      * 
-     * @param classes
-     *            the alternate classes to add (and to scan for dependencies)
+     * @param serializer
+     *            the serializer to use
+     * @throws IllegalStateException
+     *             if the serializer has already been set by another feature
      */
-    void addAlternateClasses(Class<?>... classes);
+    void setSerializer(Serializer serializer);
+    
+    void addInterceptor(Interceptor interceptor);
     
     <T> void registerConfiguratorAdapter(Class<T> iface, T adapter);
     
