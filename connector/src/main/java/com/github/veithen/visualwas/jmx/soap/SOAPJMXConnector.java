@@ -18,7 +18,7 @@ import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.AdminServiceFactory;
+import com.github.veithen.visualwas.connector.ConnectorFactory;
 import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
@@ -106,7 +106,7 @@ public class SOAPJMXConnector implements JMXConnector {
         if (features != null) {
             connectorConfigBuilder.addFeatures(features);
         }
-        adminService = AdminServiceFactory.getInstance().createAdminService(
+        adminService = ConnectorFactory.getInstance().createConnector(
                 new Endpoint(host, port, credentials != null),
                 credentials,
                 connectorConfigBuilder.build());

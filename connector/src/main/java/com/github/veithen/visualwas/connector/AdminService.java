@@ -13,7 +13,7 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
-public interface AdminService extends Adaptable {
+public interface AdminService {
     String getDefaultDomain() throws IOException;
     
     ObjectName getServerMBean() throws IOException;

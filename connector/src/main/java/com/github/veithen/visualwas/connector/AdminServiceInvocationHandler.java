@@ -1,7 +1,6 @@
 package com.github.veithen.visualwas.connector;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -26,35 +25,21 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Transport transport;
     private final ConnectorConfiguration config;
     private final Credentials credentials;
-    private final Adaptable adaptableDelegate;
     private final Serializer serializer;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
-            Transport transport, ConnectorConfiguration config, Credentials credentials, Adaptable adaptableDelegate, Serializer serializer) {
+            Transport transport, ConnectorConfiguration config, Credentials credentials, Serializer serializer) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
         this.transport = transport;
         this.config = config;
         this.credentials = credentials;
-        this.adaptableDelegate = adaptableDelegate;
         this.serializer = serializer;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getDeclaringClass() == Adaptable.class) {
-            try {
-                return method.invoke(adaptableDelegate, args);
-            } catch (InvocationTargetException ex) {
-                throw ex.getCause();
-            }
-        } else {
-            return invokeAdminService(method, args);
-        }
-    }
-    
-    private Object invokeAdminService(Method method, Object[] args) throws Throwable {
         InvocationContext context = new InvocationContext(config, serializer, credentials);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();

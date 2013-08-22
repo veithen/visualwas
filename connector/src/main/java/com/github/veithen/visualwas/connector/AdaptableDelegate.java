@@ -14,6 +14,9 @@ final class AdaptableDelegate implements Adaptable {
     }
     
     void setAdminService(AdminService adminService) {
+        if (this.adminService != null) {
+            throw new IllegalStateException();
+        }
         this.adminService = adminService;
     }
 
