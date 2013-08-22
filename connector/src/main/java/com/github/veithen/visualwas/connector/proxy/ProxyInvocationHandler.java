@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
@@ -42,6 +43,9 @@ final class ProxyInvocationHandler implements InvocationHandler {
                         mbean = null;
                     }
                 }
+            } catch (MBeanException ex) {
+                // MBean is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
+                throw ex.getCause();
             }
         }
     }
