@@ -9,12 +9,12 @@ import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
 import com.github.veithen.visualwas.connector.InvocationContext;
-import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
-import com.github.veithen.visualwas.connector.altclasses.ConfigurableObjectInputStream;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+import com.github.veithen.visualwas.connector.mapped.MappedObjectInputStream;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
-@AlternateClass("com.ibm.websphere.management.filetransfer.client.FileDownloadInputStream")
+@MappedClass("com.ibm.websphere.management.filetransfer.client.FileDownloadInputStream")
 public class RemoteSource extends RepositorySource {
     private static final long serialVersionUID = 6521346973672823614L;
 
@@ -24,7 +24,7 @@ public class RemoteSource extends RepositorySource {
     private FileTransferOptions fileTransferOptions;
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        InvocationContext context = ((ConfigurableObjectInputStream)stream).getInvocationContext();
+        InvocationContext context = ((MappedObjectInputStream)stream).getInvocationContext();
         transportConfiguration = context.getTransportConfiguration();
         credentials = context.getCredentials();
         GetField fields = stream.readFields();

@@ -2,9 +2,9 @@ package com.github.veithen.visualwas.repoclient;
 
 import java.io.Serializable;
 
-import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@AlternateClass("com.ibm.websphere.management.repository.Document")
+@MappedClass("com.ibm.websphere.management.repository.Document")
 public final class Document implements Serializable {
     private static final long serialVersionUID = -6951974517862374821L;
     

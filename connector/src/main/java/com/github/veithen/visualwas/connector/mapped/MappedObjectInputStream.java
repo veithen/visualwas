@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,15 +8,15 @@ import java.io.ObjectStreamClass;
 import com.github.veithen.visualwas.connector.InvocationContext;
 
 /**
- * The {@link ObjectInputStream} implementation used when the {@link AlternateClassesFeature} is
- * enabled. It gives the alternate classes access to the {@link InvocationContext}.
+ * The {@link ObjectInputStream} implementation used when the {@link ClassMappingFeature} is
+ * enabled. It gives the mapped classes access to the {@link InvocationContext}.
  */
-public final class ConfigurableObjectInputStream extends ObjectInputStream {
+public final class MappedObjectInputStream extends ObjectInputStream {
     private final ClassMapper classMapper;
     private final InvocationContext context;
     private boolean nextIsClassName;
     
-    ConfigurableObjectInputStream(InputStream in, ClassMapper classMapper, InvocationContext context) throws IOException {
+    MappedObjectInputStream(InputStream in, ClassMapper classMapper, InvocationContext context) throws IOException {
         super(in);
         this.classMapper = classMapper;
         this.context = context;

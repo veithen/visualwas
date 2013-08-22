@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.util.HashMap;
 import java.util.Map;

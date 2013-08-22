@@ -6,9 +6,9 @@ import java.io.ObjectInputStream.GetField;
 import java.io.Serializable;
 import java.util.Properties;
 
-import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@AlternateClass("com.ibm.ws.management.filetransfer.FileTransferConfigImpl")
+@MappedClass("com.ibm.ws.management.filetransfer.FileTransferConfigImpl")
 public class FileTransferConfig implements Serializable {
     private static final long serialVersionUID = -67969875264167885L;
 

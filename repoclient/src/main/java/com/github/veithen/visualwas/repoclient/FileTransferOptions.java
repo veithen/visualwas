@@ -2,9 +2,9 @@ package com.github.veithen.visualwas.repoclient;
 
 import java.io.Serializable;
 
-import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@AlternateClass("com.ibm.ws.management.filetransfer.client.FileTransferOptionsImpl")
+@MappedClass("com.ibm.ws.management.filetransfer.client.FileTransferOptionsImpl")
 public class FileTransferOptions implements Serializable {
     private static final long serialVersionUID = 2117824156845393319L;
 

@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface AlternateClass {
+public @interface MappedClass {
     String value();
 }

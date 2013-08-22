@@ -1,19 +1,19 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-final class AlternateClassesConfiguratorImpl implements AlternateClassesConfigurator {
+final class ClassMappingConfiguratorImpl implements ClassMappingConfigurator {
     private final ClassMapper classMapper;
     private final Set<Class<?>> processedClasses = new HashSet<Class<?>>();
 
-    AlternateClassesConfiguratorImpl(ClassMapper classMapper) {
+    ClassMappingConfiguratorImpl(ClassMapper classMapper) {
         this.classMapper = classMapper;
     }
     
     @Override
-    public void addAlternateClasses(Class<?>... classes) {
+    public void addMappedClasses(Class<?>... classes) {
         for (Class<?> clazz : classes) {
             scan(clazz, true);
         }
@@ -23,10 +23,10 @@ final class AlternateClassesConfiguratorImpl implements AlternateClassesConfigur
         if (!processedClasses.add(clazz)) {
             return;
         }
-        AlternateClass ann = clazz.getAnnotation(AlternateClass.class);
+        MappedClass ann = clazz.getAnnotation(MappedClass.class);
         if (ann == null) {
             if (requireAnnotation) {
-                throw new IllegalArgumentException(clazz.getName() + " doesn't have an annotation of type " + AlternateClass.class.getName());
+                throw new IllegalArgumentException(clazz.getName() + " doesn't have an annotation of type " + MappedClass.class.getName());
             } else {
                 return;
             }

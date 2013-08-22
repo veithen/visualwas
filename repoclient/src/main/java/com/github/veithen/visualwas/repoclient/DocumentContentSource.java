@@ -8,9 +8,9 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectOutputStream.PutField;
 import java.io.Serializable;
 
-import com.github.veithen.visualwas.connector.altclasses.AlternateClass;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@AlternateClass("com.ibm.websphere.management.repository.DocumentContentSource")
+@MappedClass("com.ibm.websphere.management.repository.DocumentContentSource")
 public class DocumentContentSource implements Serializable {
     private static final long serialVersionUID = -8662410128695608386L;
 

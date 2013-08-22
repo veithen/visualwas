@@ -1,10 +1,10 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputStream.GetField;
 
-@AlternateClass("org.apache.soap.SOAPException")
+@MappedClass("org.apache.soap.SOAPException")
 public class SOAPException extends Exception {
     private static final long serialVersionUID = 2184028360451885666L;
 

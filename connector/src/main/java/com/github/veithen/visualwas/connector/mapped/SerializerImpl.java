@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector.altclasses;
+package com.github.veithen.visualwas.connector.mapped;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,11 +16,11 @@ final class SerializerImpl implements Serializer {
 
     @Override
     public Object readObject(InputStream in, InvocationContext context) throws IOException, ClassNotFoundException {
-        return new ConfigurableObjectInputStream(in, classMapper, context).readObject();
+        return new MappedObjectInputStream(in, classMapper, context).readObject();
     }
 
     @Override
     public void writeObject(Object object, OutputStream out, InvocationContext context) throws IOException {
-        new ConfigurableObjectOutputStream(out, classMapper, context).writeObject(object);
+        new MappedObjectOutputStream(out, classMapper, context).writeObject(object);
     }
 }
