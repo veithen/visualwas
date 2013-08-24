@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,6 +12,8 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.Attributes;
+import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.Transport;

@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;

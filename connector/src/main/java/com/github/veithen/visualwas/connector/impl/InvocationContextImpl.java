@@ -1,5 +1,7 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
+import com.github.veithen.visualwas.connector.Attributes;
+import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;

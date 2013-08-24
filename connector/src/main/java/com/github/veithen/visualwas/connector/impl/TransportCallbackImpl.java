@@ -1,7 +1,8 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
+import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.transport.TransportCallback;
 
 final class TransportCallbackImpl implements TransportCallback {

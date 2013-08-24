@@ -1,5 +1,6 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
+import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 
 final class AdapterHolder<T> {

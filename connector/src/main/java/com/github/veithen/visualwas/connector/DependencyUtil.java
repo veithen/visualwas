@@ -7,10 +7,11 @@ import java.util.Iterator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
-final class DependencyUtil {
+// TODO: should not be public
+public final class DependencyUtil {
     private DependencyUtil() {}
 
-    static void process(Feature feature, Collection<Feature> unprocessedFeatures, Collection<Feature> processedFeatures) {
+    public static void process(Feature feature, Collection<Feature> unprocessedFeatures, Collection<Feature> processedFeatures) {
         Dependencies ann = feature.getClass().getAnnotation(Dependencies.class);
         if (ann != null) {
             resolveDependencies(ann, unprocessedFeatures, processedFeatures);
@@ -18,7 +19,7 @@ final class DependencyUtil {
         processedFeatures.add(feature);
     }
     
-    static void resolveDependencies(Dependencies ann, Collection<Feature> unprocessedFeatures, Collection<Feature> processedFeatures) {
+    public static void resolveDependencies(Dependencies ann, Collection<Feature> unprocessedFeatures, Collection<Feature> processedFeatures) {
         deploop: for (Class<? extends Feature> dependencyClass : ann.value()) {
             for (Feature processedFeature : processedFeatures) {
                 if (dependencyClass.isInstance(processedFeature)) {

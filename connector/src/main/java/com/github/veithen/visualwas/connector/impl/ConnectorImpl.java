@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
 import java.io.IOException;
 import java.util.Set;
@@ -12,6 +12,9 @@ import javax.management.MBeanInfo;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
+
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Connector;
 
 final class ConnectorImpl implements Connector {
     private final AdminService adminService;

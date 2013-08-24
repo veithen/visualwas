@@ -91,7 +91,8 @@ public final class ConnectorConfiguration {
         return classLoaderProvider;
     }
 
-    List<Feature> getFeatures() {
+    // TODO: should not be public
+    public List<Feature> getFeatures() {
         return features;
     }
 }

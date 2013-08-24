@@ -1,8 +1,10 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.veithen.visualwas.connector.Adaptable;
+import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 
 final class AdaptableDelegate implements Adaptable {
