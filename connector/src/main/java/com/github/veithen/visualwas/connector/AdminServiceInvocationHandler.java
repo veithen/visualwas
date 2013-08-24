@@ -12,6 +12,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
@@ -39,7 +40,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        InvocationContext context = new InvocationContext(config, serializer, attributes);
+        InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
-import com.github.veithen.visualwas.connector.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 /**
  * The {@link ObjectInputStream} implementation used when the {@link ClassMappingFeature} is

@@ -15,9 +15,9 @@ import javax.activation.DataHandler;
  * because we know that Axiom only uses that method (and never {@link DataHandler#getDataSource()}.
  */
 public class ObjectDataHandler extends DataHandler {
-    private final InvocationContext context;
+    private final InvocationContextImpl context;
     
-    public ObjectDataHandler(Object object, InvocationContext context) {
+    public ObjectDataHandler(Object object, InvocationContextImpl context) {
         super(object, "application/x-java-object");
         this.context = context;
     }

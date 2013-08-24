@@ -11,6 +11,7 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public final class ConnectorFactory {

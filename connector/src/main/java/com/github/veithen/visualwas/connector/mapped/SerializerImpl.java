@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.github.veithen.visualwas.connector.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class SerializerImpl implements Serializer {

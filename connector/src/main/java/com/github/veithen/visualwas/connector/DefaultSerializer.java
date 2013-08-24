@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class DefaultSerializer implements Serializer {

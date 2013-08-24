@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
-import com.github.veithen.visualwas.connector.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 import com.github.veithen.visualwas.connector.mapped.MappedObjectInputStream;
 import com.github.veithen.visualwas.connector.security.Credentials;

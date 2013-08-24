@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {

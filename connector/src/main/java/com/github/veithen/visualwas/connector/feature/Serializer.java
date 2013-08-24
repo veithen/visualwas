@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.github.veithen.visualwas.connector.InvocationContext;
-
 /**
  * Interface defining the serialization/deserialization API used by the connector. A {@link Feature}
  * may use the {@link Configurator#setSerializer(Serializer)} method to override the default

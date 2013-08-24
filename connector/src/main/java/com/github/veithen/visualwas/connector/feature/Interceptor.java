@@ -1,4 +1,4 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.feature;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 

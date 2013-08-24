@@ -24,7 +24,7 @@ public class OperationHandler {
         this.returnValueHandler = returnValueHandler;
     }
 
-    public void createRequest(SOAPBody body, Object[] args, InvocationContext context) {
+    public void createRequest(SOAPBody body, Object[] args, InvocationContextImpl context) {
         OMFactory factory = body.getOMFactory();
         OMNamespace ns = factory.createOMNamespace("urn:AdminService", "ns");
         OMElement element = factory.createOMElement(requestElementName, ns, body);
@@ -38,7 +38,7 @@ public class OperationHandler {
         }
     }
     
-    public Object processResponse(OMElement response, InvocationContext context) throws OperationHandlerException {
+    public Object processResponse(OMElement response, InvocationContextImpl context) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
         OMElement returnElement = response.getFirstElement();

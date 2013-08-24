@@ -5,8 +5,8 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.Interceptor;
-import com.github.veithen.visualwas.connector.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 final class SecurityInterceptor implements Interceptor {
     static final SecurityInterceptor INSTANCE = new SecurityInterceptor();

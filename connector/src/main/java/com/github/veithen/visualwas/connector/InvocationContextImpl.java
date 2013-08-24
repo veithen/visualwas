@@ -1,15 +1,16 @@
 package com.github.veithen.visualwas.connector;
 
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
-public final class InvocationContext {
+final class InvocationContextImpl implements InvocationContext {
     private final ConnectorConfiguration connectorConfiguration;
     private final ClassLoader classLoader;
     private final Serializer serializer;
     private final Attributes attributes;
     
-    InvocationContext(ConnectorConfiguration connectorConfiguration, Serializer serializer, Attributes initialAttributes) {
+    InvocationContextImpl(ConnectorConfiguration connectorConfiguration, Serializer serializer, Attributes initialAttributes) {
         this.connectorConfiguration = connectorConfiguration;
         // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
         classLoader = connectorConfiguration.getClassLoaderProvider().getClassLoader();
@@ -21,18 +22,22 @@ public final class InvocationContext {
         return serializer;
     }
     
+    @Override
     public ClassLoader getClassLoader() {
         return classLoader;
     }
     
+    @Override
     public TransportConfiguration getTransportConfiguration() {
         return connectorConfiguration.getTransportConfiguration();
     }
 
+    @Override
     public <T> T getAttribute(Class<T> key) {
         return attributes.get(key);
     }
 
+    @Override
     public <T> void setAttribute(Class<T> key, T value) {
         attributes.set(key, value);
     }

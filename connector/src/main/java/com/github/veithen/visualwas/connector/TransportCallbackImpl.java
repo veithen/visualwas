@@ -7,11 +7,11 @@ import com.github.veithen.visualwas.connector.transport.TransportCallback;
 final class TransportCallbackImpl implements TransportCallback {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
-    private final InvocationContext context;
+    private final InvocationContextImpl context;
     private Throwable throwable;
     private Object result;
     
-    TransportCallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContext context) {
+    TransportCallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
