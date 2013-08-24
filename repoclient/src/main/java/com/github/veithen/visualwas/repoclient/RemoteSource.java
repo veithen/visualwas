@@ -26,7 +26,7 @@ public class RemoteSource extends RepositorySource {
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         InvocationContext context = ((MappedObjectInputStream)stream).getInvocationContext();
         transportConfiguration = context.getTransportConfiguration();
-        credentials = context.getCredentials();
+        credentials = context.getAttribute(Credentials.class);
         GetField fields = stream.readFields();
         fileTransferConfig = (FileTransferConfig)fields.get("ftConfig", null);
         fileTransferOptions = (FileTransferOptions)fields.get("options", null);

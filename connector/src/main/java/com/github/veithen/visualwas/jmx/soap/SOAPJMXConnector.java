@@ -18,6 +18,7 @@ import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.ConnectorFactory;
 import com.github.veithen.visualwas.connector.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -84,8 +85,11 @@ public class SOAPJMXConnector implements JMXConnector {
     
     private synchronized void internalConnect(Map<String,?> env) throws IOException {
         connectionId = UUID.randomUUID().toString();
+        Attributes attributes = new Attributes();
         String[] jmxCredentials = (String[])env.get(JMXConnector.CREDENTIALS);
-        Credentials credentials = jmxCredentials == null ? null : new BasicAuthCredentials(jmxCredentials[0], jmxCredentials[1]);
+        if (jmxCredentials != null) {
+            attributes.set(Credentials.class, new BasicAuthCredentials(jmxCredentials[0], jmxCredentials[1]));
+        }
         TransportConfiguration.Builder transportConfigBuilder = TransportConfiguration.custom();
         transportConfigBuilder.setProxy((Proxy)env.get(PROXY));
         Integer connectTimeout = (Integer)env.get(CONNECT_TIMEOUT);
@@ -107,9 +111,9 @@ public class SOAPJMXConnector implements JMXConnector {
             connectorConfigBuilder.addFeatures(features);
         }
         adminService = ConnectorFactory.getInstance().createConnector(
-                new Endpoint(host, port, credentials != null),
-                credentials,
-                connectorConfigBuilder.build());
+                new Endpoint(host, port, jmxCredentials != null),
+                connectorConfigBuilder.build(),
+                attributes);
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             adminService.getServerMBean();

@@ -2,9 +2,9 @@ package com.github.veithen.visualwas.connector.security;
 
 import java.net.HttpURLConnection;
 
-import com.github.veithen.visualwas.connector.Interceptor;
+import com.github.veithen.visualwas.connector.feature.Dependencies;
 
+@Dependencies(SecurityFeature.class)
 public interface Credentials {
-    Interceptor createInterceptor();
     void configure(HttpURLConnection connection);
 }

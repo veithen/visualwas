@@ -5,9 +5,7 @@ import java.net.HttpURLConnection;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.github.veithen.visualwas.connector.Interceptor;
-
-public class BasicAuthCredentials implements Credentials {
+public final class BasicAuthCredentials implements Credentials {
     private final String username;
     private final String password;
     
@@ -16,9 +14,12 @@ public class BasicAuthCredentials implements Credentials {
         this.password = password;
     }
 
-    @Override
-    public Interceptor createInterceptor() {
-        return new BasicAuthInterceptor(username, password);
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
