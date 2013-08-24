@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.github.veithen.visualwas.connector.Attributes;
-import com.github.veithen.visualwas.connector.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.ConnectorFactory;
+import com.github.veithen.visualwas.connector.factory.Attributes;
+import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 /**

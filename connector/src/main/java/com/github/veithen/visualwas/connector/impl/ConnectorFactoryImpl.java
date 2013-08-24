@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.ConnectorFactory;
-import com.github.veithen.visualwas.connector.DependencyUtil;
 import com.github.veithen.visualwas.connector.Param;
+import com.github.veithen.visualwas.connector.factory.Attributes;
+import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
+import com.github.veithen.visualwas.connector.factory.DependencyUtil;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.feature.Interceptor;

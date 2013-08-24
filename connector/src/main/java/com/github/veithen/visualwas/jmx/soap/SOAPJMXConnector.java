@@ -18,9 +18,9 @@ import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Attributes;
-import com.github.veithen.visualwas.connector.ConnectorFactory;
-import com.github.veithen.visualwas.connector.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.factory.Attributes;
+import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;

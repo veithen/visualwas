@@ -12,8 +12,8 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.Attributes;
-import com.github.veithen.visualwas.connector.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.factory.Attributes;
+import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.Transport;

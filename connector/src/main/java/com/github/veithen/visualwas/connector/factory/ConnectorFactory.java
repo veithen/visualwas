@@ -1,5 +1,6 @@
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.factory;
 
+import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public abstract class ConnectorFactory {
