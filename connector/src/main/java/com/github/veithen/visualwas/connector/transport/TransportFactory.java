@@ -1,6 +1,5 @@
 package com.github.veithen.visualwas.connector.transport;
 
-
 public interface TransportFactory {
     TransportFactory DEFAULT = new TransportFactory() {
         @Override
