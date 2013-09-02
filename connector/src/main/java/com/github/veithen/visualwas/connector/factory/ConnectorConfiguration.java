@@ -62,6 +62,8 @@ public final class ConnectorConfiguration {
         }
     }
     
+    public static final ConnectorConfiguration DEFAULT = ConnectorConfiguration.custom().build();
+    
     private final TransportFactory transportFactory;
     private final TransportConfiguration transportConfiguration;
     private final ClassLoaderProvider classLoaderProvider;
