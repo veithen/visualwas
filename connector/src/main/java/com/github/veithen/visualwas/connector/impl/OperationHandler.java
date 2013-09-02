@@ -41,14 +41,19 @@ public class OperationHandler {
     public Object processResponse(OMElement response, InvocationContextImpl context) throws OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
-        OMElement returnElement = response.getFirstElement();
-        if ("true".equals(returnElement.getAttributeValue(XSI_NIL))) {
+        if (returnValueHandler == null) {
+            // TODO: check that the body is empty
             return null;
         } else {
-            try {
-                return returnValueHandler.extractValue(returnElement, context);
-            } catch (TypeHandlerException ex) {
-                throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+            OMElement returnElement = response.getFirstElement();
+            if ("true".equals(returnElement.getAttributeValue(XSI_NIL))) {
+                return null;
+            } else {
+                try {
+                    return returnValueHandler.extractValue(returnElement, context);
+                } catch (TypeHandlerException ex) {
+                    throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+                }
             }
         }
     }

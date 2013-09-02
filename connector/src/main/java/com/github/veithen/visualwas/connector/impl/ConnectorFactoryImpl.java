@@ -57,7 +57,9 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
             String methodName = method.getName();
-            operationHandlers.put(method, new OperationHandler(methodName, methodName, methodName + "Response", paramHandlers, getTypeHandler(method.getReturnType())));
+            Class<?> returnType = method.getReturnType();
+            operationHandlers.put(method, new OperationHandler(methodName, methodName, methodName + "Response", paramHandlers,
+                    returnType == Void.TYPE ? null : getTypeHandler(returnType)));
         }
     }
     

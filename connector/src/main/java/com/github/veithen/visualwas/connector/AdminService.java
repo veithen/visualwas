@@ -3,10 +3,12 @@ package com.github.veithen.visualwas.connector;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
+import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ObjectName;
@@ -38,4 +40,7 @@ public interface AdminService {
     
     AttributeList getAttributes(@Param(name="objectname") ObjectName objectName,
                                 @Param(name="attribute") String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException;
+
+    void setAttribute(@Param(name="objectname") ObjectName objectName,
+                      @Param(name="attribute") Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException;
 }

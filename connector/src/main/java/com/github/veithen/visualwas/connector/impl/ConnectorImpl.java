@@ -3,10 +3,12 @@ package com.github.veithen.visualwas.connector.impl;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
+import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ObjectName;
@@ -60,6 +62,10 @@ final class ConnectorImpl implements Connector {
 
     public AttributeList getAttributes(ObjectName objectName, String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException {
         return adminService.getAttributes(objectName, attributes);
+    }
+
+    public void setAttribute(ObjectName objectName, Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException {
+        adminService.setAttribute(objectName, attribute);
     }
 
     public <T> T getAdapter(Class<T> clazz) {
