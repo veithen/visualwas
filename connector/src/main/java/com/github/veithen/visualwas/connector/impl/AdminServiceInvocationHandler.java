@@ -42,6 +42,23 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (method.getDeclaringClass() == Object.class) {
+            String methodName = method.getName();
+            if (methodName.equals("toString")) {
+                return "<AdminService proxy>@" + Integer.toHexString(System.identityHashCode(proxy));
+            } else if (methodName.equals("equals")) {
+                return proxy == args[0];
+            } else if (methodName.equals("hashCode")) {
+                return System.identityHashCode(proxy);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        } else {
+            return internalInvoke(method, args);
+        }
+    }
+    
+    private Object internalInvoke(Method method, Object[] args) throws Throwable {
         InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
         OperationHandler operationHandler = operationHandlers.get(method);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
