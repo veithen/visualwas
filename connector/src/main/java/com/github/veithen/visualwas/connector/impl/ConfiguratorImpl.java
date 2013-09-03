@@ -1,9 +1,13 @@
 package com.github.veithen.visualwas.connector.impl;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
@@ -11,11 +15,15 @@ import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
+    private Set<Class<?>> adminServiceInterfaces;
+    private Map<Method,OperationHandler> operationHandlers;
     private List<Interceptor> interceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(List<Interceptor> interceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<Interceptor> interceptors, AdaptableDelegate adaptableDelegate) {
+        this.adminServiceInterfaces = adminServiceInterfaces;
+        this.operationHandlers = operationHandlers;
         this.interceptors = interceptors;
         this.adaptableDelegate = adaptableDelegate;
     }
@@ -26,6 +34,22 @@ final class ConfiguratorImpl implements Configurator {
             throw new IllegalStateException("Serializer already set");
         }
         this.serializer = serializer;
+    }
+
+    @Override
+    public void addAdminServiceDescription(AdminServiceDescription description) {
+        adminServiceInterfaces.add(description.getInterface());
+        operationHandlers.putAll(((AdminServiceDescriptionImpl)description).getOperationHandlers());
+        registerAdminServerAdapterForExtension(description.getInterface());
+    }
+    
+    private <T> void registerAdminServerAdapterForExtension(final Class<T> iface) {
+        adaptableDelegate.registerAdapter(iface, new AdapterFactory<T>() {
+            @Override
+            public T createAdapter(AdminService adminService) {
+                return iface.cast(adminService);
+            }
+        });
     }
 
     @Override
@@ -53,6 +77,8 @@ final class ConfiguratorImpl implements Configurator {
     }
 
     void release() {
+        adminServiceInterfaces = null;
+        operationHandlers = null;
         interceptors = null;
         adaptableDelegate = null;
     }

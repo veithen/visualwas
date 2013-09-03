@@ -15,7 +15,12 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
+import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+
 public interface AdminService {
+    AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(AdminService.class);
+    
     String getDefaultDomain() throws IOException;
     
     ObjectName getServerMBean() throws IOException;
