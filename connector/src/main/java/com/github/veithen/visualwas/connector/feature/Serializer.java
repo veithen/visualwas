@@ -10,6 +10,8 @@ import java.io.OutputStream;
  * implementation.
  */
 public interface Serializer {
+    String getRemoteClassName(Class<?> localClass);
+    
     /**
      * Read an object from the given stream (using standard Java serialization). The implementation
      * must use the class loader returned by {@link InvocationContext#getClassLoader()} resolve

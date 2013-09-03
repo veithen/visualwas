@@ -17,7 +17,7 @@ public final class ObjectHandler implements TypeHandler {
     @Override
     public QName setValue(OMElement element, Object value, InvocationContextImpl context) {
         element.addChild(element.getOMFactory().createOMText(new ObjectDataHandler(value, context), false));
-        return new QName("urn:AdminService", type.getName());
+        return new QName("urn:AdminService", context.getSerializer().getRemoteClassName(type));
     }
 
     @Override

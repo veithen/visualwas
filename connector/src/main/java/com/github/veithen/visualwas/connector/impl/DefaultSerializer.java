@@ -14,6 +14,11 @@ final class DefaultSerializer implements Serializer {
     private DefaultSerializer() {}
 
     @Override
+    public String getRemoteClassName(Class<?> localClass) {
+        return localClass.getName();
+    }
+
+    @Override
     public Object readObject(InputStream in, InvocationContext context) throws IOException, ClassNotFoundException {
         return new ConfigurableObjectInputStream(in, context.getClassLoader()).readObject();
     }

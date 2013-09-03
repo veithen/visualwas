@@ -15,6 +15,13 @@ final class SerializerImpl implements Serializer {
     }
 
     @Override
+    public String getRemoteClassName(Class<?> localClass) {
+        String localClassName = localClass.getName();
+        String remoteClassName = classMapper.getOriginalClass(localClassName);
+        return remoteClassName == null ? localClassName : remoteClassName;
+    }
+
+    @Override
     public Object readObject(InputStream in, InvocationContext context) throws IOException, ClassNotFoundException {
         return new MappedObjectInputStream(in, classMapper, context).readObject();
     }
