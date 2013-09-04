@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
@@ -46,9 +47,10 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
                 String name = paramAnnotation.name();
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
-            String methodName = method.getName();
+            Operation operationAnnotation = method.getAnnotation(Operation.class);
+            String operationName = operationAnnotation != null ? operationAnnotation.name() : method.getName();
             Class<?> returnType = method.getReturnType();
-            operationHandlers.put(method, new OperationHandler(methodName, methodName, methodName + "Response", paramHandlers,
+            operationHandlers.put(method, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
                     returnType == Void.TYPE ? null : getTypeHandler(returnType)));
         }
         return new AdminServiceDescriptionImpl(iface, operationHandlers);

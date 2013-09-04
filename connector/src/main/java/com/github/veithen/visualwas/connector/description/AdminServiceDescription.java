@@ -3,6 +3,7 @@ package com.github.veithen.visualwas.connector.description;
 import java.io.IOException;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
@@ -20,7 +21,8 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
  * to these SOAP operations. This Java interface will be added to the dynamic proxy when the client
  * side connector is created. Each method of the interface must satisfy the following requirements:
  * <ol>
- * <li>The method name matches the SOAP operation name.
+ * <li>The method is annotated with {@link Operation @Operation} or the method name matches the SOAP
+ * operation name.
  * <li>The method parameters are annotated with {@link Param @Param}.
  * <li>The method must declare {@link IOException}.
  * </ol>

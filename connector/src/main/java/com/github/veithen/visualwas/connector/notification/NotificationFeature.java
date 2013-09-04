@@ -14,11 +14,13 @@ public final class NotificationFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addAdminServiceDescription(NotificationListenerRegistry.DESCRIPTION);
+        configurator.addAdminServiceDescription(RemoteNotificationService.DESCRIPTION);
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
-                ConsolidatedFilter.class,
+                SubscriptionInfo.class,
+                NotificationSelector.class,
+                NotificationInfo.class,
                 PushNotificationListener.class,
-                ListenerIdentifier.class,
-                ReceiverNotFoundException.class);
+                SubscriptionHandle.class,
+                SubscriptionNotFoundException.class);
     }
 }
