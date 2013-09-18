@@ -7,10 +7,10 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingConfigurator;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
 
 @Dependencies(ClassMappingFeature.class)
-public final class NotificationFeature implements Feature {
-    public static final NotificationFeature INSTANCE = new NotificationFeature();
+public final class RemoteNotificationFeature implements Feature {
+    public static final RemoteNotificationFeature INSTANCE = new RemoteNotificationFeature();
     
-    private NotificationFeature() {}
+    private RemoteNotificationFeature() {}
 
     @Override
     public void configureConnector(Configurator configurator) {
