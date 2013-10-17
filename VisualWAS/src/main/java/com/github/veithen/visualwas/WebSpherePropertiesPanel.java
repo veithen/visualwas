@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.veithen.visualwas;
 
 import static java.awt.GridBagConstraints.BOTH;
@@ -46,10 +42,6 @@ import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
 
-/**
- *
- * @author veithen
- */
 public class WebSpherePropertiesPanel extends PropertiesPanel {
     private static final long serialVersionUID = -5821630337324177997L;
     

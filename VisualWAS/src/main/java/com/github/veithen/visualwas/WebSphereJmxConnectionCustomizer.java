@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.veithen.visualwas;
 
 import java.util.Set;
@@ -16,10 +12,6 @@ import com.sun.tools.visualvm.jmx.JmxConnectionCustomizer;
 
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author veithen
- */
 public class WebSphereJmxConnectionCustomizer extends JmxConnectionCustomizer {
     public WebSphereJmxConnectionCustomizer() {
         super(NbBundle.getMessage(WebSphereJmxConnectionCustomizer.class, "LBL_jmx_connection_name"),
