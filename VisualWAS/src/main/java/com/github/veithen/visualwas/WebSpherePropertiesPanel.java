@@ -84,6 +84,8 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             add(portLabel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
 
             portField = new JTextField(6);
+            // Prevent the field from "collapsing" when the available space is smaller than the preferred size
+            portField.setMinimumSize(portField.getPreferredSize());
             portLabel.setLabelFor(portField);
             portField.getDocument().addDocumentListener(new SimpleDocumentListener() {
                 @Override
@@ -113,6 +115,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             add(usernameLabel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
     
             usernameField = new JTextField(12);
+            usernameField.setMinimumSize(usernameField.getPreferredSize());
             usernameLabel.setLabelFor(usernameField);
             usernameField.getDocument().addDocumentListener(new SimpleDocumentListener() {
                 @Override
@@ -130,6 +133,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             add(passwordLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 15, 2, 0), 0, 0));
     
             passwordField = new JPasswordField(12);
+            passwordField.setMinimumSize(passwordField.getPreferredSize());
             passwordLabel.setLabelFor(passwordField);
             passwordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
                 @Override
