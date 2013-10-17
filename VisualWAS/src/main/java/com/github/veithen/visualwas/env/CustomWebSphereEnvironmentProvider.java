@@ -14,8 +14,27 @@ import com.sun.tools.visualvm.jmx.EnvironmentProvider;
  * Configuration information is passed to the constructor.
  */
 public class CustomWebSphereEnvironmentProvider extends CredentialsProvider.Custom {
+    private final String username;
+    private final char[] password;
+    private final boolean persistent;
+    
     public CustomWebSphereEnvironmentProvider(String username, char[] password, boolean persistent) {
         super(username, password, persistent);
+        this.username = username;
+        this.password = password;
+        this.persistent = persistent;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public char[] getPassword() {
+        return password;
+    }
+
+    public boolean isPersistent() {
+        return persistent;
     }
 
     @Override

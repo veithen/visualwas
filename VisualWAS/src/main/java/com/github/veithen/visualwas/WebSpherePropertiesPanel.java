@@ -193,20 +193,40 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         }
     }
     
+    public void setPort(int port) {
+        portField.setText(String.valueOf(port));
+    }
+    
     public boolean isSecurityEnabled() {
         return securityCheckbox.isSelected();
+    }
+    
+    public void setSecurityEnabled(boolean securityEnabled) {
+        securityCheckbox.setSelected(securityEnabled);
     }
     
     public String getUsername() {
         return isSecurityEnabled() ? usernameField.getText() : null;
     }
 
+    public void setUsername(String username) {
+        usernameField.setText(username);
+    }
+    
     public char[] getPassword() {
         return isSecurityEnabled() ? passwordField.getPassword() : null;
     }
     
+    public void setPassword(String password) {
+        passwordField.setText(password);
+    }
+    
     public boolean isSaveCredentials() {
         return isSecurityEnabled() && saveCheckbox.isSelected();
+    }
+    
+    public void setSaveCredentials(boolean saveCredentials) {
+        saveCheckbox.setSelected(saveCredentials);
     }
     
     private void update() {
