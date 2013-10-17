@@ -4,25 +4,25 @@ import static java.awt.GridBagConstraints.HORIZONTAL;
 import static java.awt.GridBagConstraints.NONE;
 import static java.awt.GridBagConstraints.WEST;
 
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.border.BevelBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
@@ -42,22 +42,18 @@ public class SignerExchangeDialog extends JDialog {
         JLabel label = new JLabel();
         Mnemonics.setLocalizedText(label, NbBundle.getMessage(SignerExchangeDialog.class, "LBL_untrusted_warning"));
         add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
-        final JComboBox<X509Certificate> certSelector = new JComboBox<X509Certificate>(chain);
+        final JList<X509Certificate> certSelector = new JList<X509Certificate>(new CertificateChainListModel(chain));
         label.setLabelFor(certSelector);
-        certSelector.setRenderer(new BasicComboBoxRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                return super.getListCellRendererComponent(list, ((X509Certificate)value).getSubjectDN().getName(), index, isSelected, cellHasFocus);
-            }
-        });
+        certSelector.setCellRenderer(new CertificateChainListCellRenderer());
+        certSelector.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         add(certSelector, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
         
         final X509CertificatePanel certPanel = new X509CertificatePanel();
         add(certPanel, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
-        certSelector.addActionListener(new ActionListener() {
+        certSelector.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                certPanel.setCertificate((X509Certificate)certSelector.getSelectedItem());
+            public void valueChanged(ListSelectionEvent e) {
+                certPanel.setCertificate(certSelector.getSelectedValue());
             }
         });
         
@@ -67,7 +63,7 @@ public class SignerExchangeDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    TrustStore.getInstance().addCertificate((X509Certificate)certSelector.getSelectedItem());
+                    TrustStore.getInstance().addCertificate(certSelector.getSelectedValue());
                 } catch (GeneralSecurityException ex) {
                     // TODO: should not happen
                     ex.printStackTrace();
@@ -88,8 +84,10 @@ public class SignerExchangeDialog extends JDialog {
         buttonPanel.add(cancelButton);
         add(buttonPanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
         
-        // Force an update of the X509CertificatePanel
-        certSelector.setSelectedIndex(0);
+        // Select the server certificate. If the user wants to add the root certificate or
+        // an intermediate certificate, he needs to select one.
+        // This also forces an update of the X509CertificatePanel.
+        certSelector.setSelectedIndex(chain.length-1);
         
         setResizable(false);
         pack();
