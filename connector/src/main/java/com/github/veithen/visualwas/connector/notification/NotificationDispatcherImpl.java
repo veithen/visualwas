@@ -12,7 +12,9 @@ import javax.management.ObjectName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-final class NotificationDispatcherImpl implements NotificationDispatcher, Runnable {
+import com.github.veithen.visualwas.connector.feature.CloseListener;
+
+final class NotificationDispatcherImpl implements NotificationDispatcher, Runnable, CloseListener {
     private static final Log log = LogFactory.getLog(NotificationDispatcherImpl.class);
     
     private static final int MIN_DELAY = 2000;
@@ -111,5 +113,18 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
                 doDelay = true;
             }
         }
+    }
+
+    public synchronized void closing() {
+        if (subscriptionHandle != null) {
+            try {
+                service.removeSubscription(subscriptionHandle);
+            } catch (Exception ex) {
+                log.error("Failed to remove subscription", ex);
+            }
+            subscriptionHandle = null;
+        }
+        subscriptionInfo = null;
+        registrations.clear();
     }
 }

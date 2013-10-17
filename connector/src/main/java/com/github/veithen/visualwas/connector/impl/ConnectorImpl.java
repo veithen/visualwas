@@ -71,4 +71,9 @@ final class ConnectorImpl implements Connector {
     public <T> T getAdapter(Class<T> clazz) {
         return adaptableDelegate.getAdapter(clazz);
     }
+
+    public void close() {
+        adaptableDelegate.closing();
+        // TODO: ensure that the connector throws an exception when an attempt is made to use it after close has been called!
+    }
 }

@@ -24,12 +24,15 @@ import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.notification.NotificationDispatcher;
 
-public class AdminServiceMBeanServerConnection implements MBeanServerConnection {
+final class MBeanServerConnectionImpl implements MBeanServerConnection {
     private final AdminService adminService;
+    private final NotificationDispatcher notificationDispatcher;
     
-    public AdminServiceMBeanServerConnection(AdminService adminService) {
+    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher) {
         this.adminService = adminService;
+        this.notificationDispatcher = notificationDispatcher;
     }
     
     @Override
@@ -129,7 +132,11 @@ public class AdminServiceMBeanServerConnection implements MBeanServerConnection 
 
     @Override
     public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, IOException {
-        // TODO Auto-generated method stub
+        if (isRegistered(name)) {
+            notificationDispatcher.addNotificationListener(name, listener, filter, handback);
+        } else {
+            throw new InstanceNotFoundException(name + " not found");
+        }
     }
 
     @Override

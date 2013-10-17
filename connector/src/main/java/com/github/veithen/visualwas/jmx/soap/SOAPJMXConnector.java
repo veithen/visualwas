@@ -17,13 +17,15 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
-import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.github.veithen.visualwas.connector.loader.SimpleClassLoaderProvider;
+import com.github.veithen.visualwas.connector.notification.NotificationDispatcher;
+import com.github.veithen.visualwas.connector.notification.NotificationDispatcherFeature;
 import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
@@ -60,7 +62,7 @@ public class SOAPJMXConnector implements JMXConnector {
     private final NotificationBroadcasterSupport connectionBroadcaster = new NotificationBroadcasterSupport();
     private long connectionNotificationSequence;
     private String connectionId;
-    private AdminService adminService;
+    private Connector connector;
 
     public SOAPJMXConnector(String host, int port, Map<String,?> env) {
         this.host = host;
@@ -105,18 +107,18 @@ public class SOAPJMXConnector implements JMXConnector {
         ConnectorConfiguration.Builder connectorConfigBuilder = ConnectorConfiguration.custom();
         connectorConfigBuilder.setClassLoaderProvider(classLoaderProvider);
         connectorConfigBuilder.setTransportConfiguration(transportConfigBuilder.build());
-        connectorConfigBuilder.addFeatures(new ConnectionIdFeature(connectionId));
+        connectorConfigBuilder.addFeatures(new ConnectionIdFeature(connectionId), new NotificationDispatcherFeature(true));
         Feature[] features = (Feature[])env.get(FEATURES);
         if (features != null) {
             connectorConfigBuilder.addFeatures(features);
         }
-        adminService = ConnectorFactory.getInstance().createConnector(
+        connector = ConnectorFactory.getInstance().createConnector(
                 new Endpoint(host, port, jmxCredentials != null),
                 connectorConfigBuilder.build(),
                 attributes);
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
-            adminService.getServerMBean();
+            connector.getServerMBean();
         } catch (IOException ex) {
             connectionBroadcaster.sendNotification(new JMXConnectionNotification(
                     JMXConnectionNotification.FAILED,
@@ -138,7 +140,7 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized MBeanServerConnection getMBeanServerConnection() throws IOException {
-        return new AdminServiceMBeanServerConnection(adminService);
+        return new MBeanServerConnectionImpl(connector, connector.getAdapter(NotificationDispatcher.class));
     }
 
     @Override
@@ -150,6 +152,7 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized void close() throws IOException {
+        connector.close();
         connectionBroadcaster.sendNotification(new JMXConnectionNotification(
                 JMXConnectionNotification.CLOSED,
                 this,

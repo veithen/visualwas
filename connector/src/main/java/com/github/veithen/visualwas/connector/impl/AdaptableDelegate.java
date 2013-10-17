@@ -22,6 +22,12 @@ final class AdaptableDelegate implements Adaptable {
         this.adminService = adminService;
     }
 
+    void closing() {
+        for (AdapterHolder<?> holder : adapters.values()) {
+            holder.closing();
+        }
+    }
+    
     @Override
     public <T> T getAdapter(Class<T> clazz) {
         AdapterHolder<?> holder = adapters.get(clazz);
