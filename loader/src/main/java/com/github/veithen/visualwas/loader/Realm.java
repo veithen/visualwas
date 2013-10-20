@@ -3,6 +3,7 @@ package com.github.veithen.visualwas.loader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,6 +28,9 @@ final class Realm {
                 return pathname.isFile() && pathname.getName().endsWith(".jar");
             }
         });
+        if (jars == null) {
+            throw new FileNotFoundException(pluginDir + " doesn't exist or is not readable");
+        }
         for (File jar : jars) {
             InputStream in = new FileInputStream(jar);
             try {
