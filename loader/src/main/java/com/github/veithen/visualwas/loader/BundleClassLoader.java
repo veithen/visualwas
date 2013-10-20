@@ -3,10 +3,13 @@ package com.github.veithen.visualwas.loader;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-public class BundleClassLoader extends URLClassLoader {
+/**
+ * Loads classes from a given bundle.
+ */
+final class BundleClassLoader extends URLClassLoader {
     private final Realm realm;
     
-    public BundleClassLoader(URL url, Realm realm) {
+    BundleClassLoader(URL url, Realm realm) {
         super(new URL[] { url }, realm.getParentClassLoader());
         this.realm = realm;
     }
@@ -33,7 +36,7 @@ public class BundleClassLoader extends URLClassLoader {
      * @throws ClassNotFoundException
      *             if the class could not be found
      */
-    public Class<?> loadClassLocally(String name, boolean resolve) throws ClassNotFoundException {
+    Class<?> loadClassLocally(String name, boolean resolve) throws ClassNotFoundException {
         Class<?> clazz = findLoadedClass(name);
         if (clazz == null) {
             clazz = findClass(name);

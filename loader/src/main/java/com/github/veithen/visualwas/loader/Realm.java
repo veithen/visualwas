@@ -11,11 +11,14 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Realm {
+/**
+ * Manages a set of OSGi bundles from which classes can be loaded.
+ */
+final class Realm {
     private final Map<String,Bundle> packageMap = new HashMap<String,Bundle>();
     private final ClassLoader parentClassLoader;
     
-    public Realm(File wasHome, ClassLoader parentClassLoader) throws IOException {
+    Realm(File wasHome, ClassLoader parentClassLoader) throws IOException {
         this.parentClassLoader = parentClassLoader;
         File pluginDir = new File(wasHome, "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
@@ -50,7 +53,7 @@ public class Realm {
         }
     }
 
-    public ClassLoader getParentClassLoader() {
+    ClassLoader getParentClassLoader() {
         return parentClassLoader;
     }
     
@@ -67,7 +70,7 @@ public class Realm {
      * @throws ClassNotFoundException
      *             if the class could not be found
      */
-    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Bundle bundle = packageMap.get(name.substring(0, name.lastIndexOf('.')));
         if (bundle == null) {
             throw new ClassNotFoundException(name);
