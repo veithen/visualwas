@@ -93,7 +93,13 @@ public class WebSphereOptionsPanel extends JPanel {
 
     public boolean valid() {
         String wasHome = wasHomeField.getText();
-        return wasHome.length() == 0 || new File(wasHome).isDirectory();
+        if (wasHome.length() != 0) {
+            File wasHomeDir = new File(wasHome);
+            if (!wasHomeDir.isDirectory() || !new File(wasHomeDir, "plugins").isDirectory() || !new File(wasHomeDir, "lib/bootstrap.jar").exists()) {
+                return false;
+            }
+        }
+        return true;
     }
     
     public String getWASHome() {
