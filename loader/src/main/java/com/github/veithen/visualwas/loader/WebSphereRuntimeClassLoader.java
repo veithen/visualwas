@@ -2,8 +2,6 @@ package com.github.veithen.visualwas.loader;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 /**
  * Class loader that loads classes from a WebSphere Application Server installation. The class
@@ -32,7 +30,7 @@ public class WebSphereRuntimeClassLoader extends ClassLoader {
         // need to set up a class loader with this library and use it as the parent class loader for
         // the realm. Note that the way this is set up implies that the classes in
         // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader.
-        this.realm = new Realm(wasHome, new URLClassLoader(new URL[] { new File(wasHome, "lib/bootstrap.jar").toURI().toURL() }, parent));
+        this.realm = new Realm(wasHome, new BootstrapClassLoader(wasHome, parent));
     }
     
     @Override
