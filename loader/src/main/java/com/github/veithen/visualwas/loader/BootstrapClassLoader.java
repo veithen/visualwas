@@ -1,7 +1,5 @@
 package com.github.veithen.visualwas.loader;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -10,8 +8,8 @@ import java.net.URLClassLoader;
  * for classes that we need to override.
  */
 final class BootstrapClassLoader extends URLClassLoader {
-    BootstrapClassLoader(File wasHome, ClassLoader parent) throws IOException {
-        super(new URL[] { new File(wasHome, "lib/bootstrap.jar").toURI().toURL() }, parent);
+    BootstrapClassLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
     }
     
     @Override

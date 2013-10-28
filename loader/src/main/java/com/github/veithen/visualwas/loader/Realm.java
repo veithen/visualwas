@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.Manifest;
@@ -15,12 +17,16 @@ import java.util.zip.ZipInputStream;
 /**
  * Manages a set of OSGi bundles from which classes can be loaded.
  */
+// TODO: merge this into WebSphereRuntimeClassLoader and clean up
 final class Realm {
     private final Map<String,Bundle> packageMap = new HashMap<String,Bundle>();
     private final ClassLoader parentClassLoader;
+    private final URL[] bootstrapURLs;
+    private WeakReference<BootstrapClassLoader> bootstrapClassLoader;
     
     Realm(File wasHome, ClassLoader parentClassLoader) throws IOException {
         this.parentClassLoader = parentClassLoader;
+        bootstrapURLs = new URL[] { new File(wasHome, "lib/bootstrap.jar").toURI().toURL() };
         File pluginDir = new File(wasHome, "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             @Override
@@ -57,8 +63,17 @@ final class Realm {
         }
     }
 
-    ClassLoader getParentClassLoader() {
-        return parentClassLoader;
+    synchronized ClassLoader getParentClassLoader() {
+        // Classes in the plugins may depend on bootstrap.jar (mainly for logging). Therefore we
+        // need to set up a class loader with this library and use it as the parent class loader for
+        // the realm. Note that the way this is set up implies that the classes in
+        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader.
+        BootstrapClassLoader cl = bootstrapClassLoader == null ? null : bootstrapClassLoader.get();
+        if (cl == null) {
+            cl = new BootstrapClassLoader(bootstrapURLs, parentClassLoader);
+            bootstrapClassLoader = new WeakReference<BootstrapClassLoader>(cl);
+        }
+        return cl;
     }
     
     /**

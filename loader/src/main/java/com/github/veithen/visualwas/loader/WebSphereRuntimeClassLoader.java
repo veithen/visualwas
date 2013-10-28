@@ -26,11 +26,7 @@ public class WebSphereRuntimeClassLoader extends ClassLoader {
      */
     public WebSphereRuntimeClassLoader(File wasHome, ClassLoader parent) throws IOException {
         super(parent);
-        // Classes in the plugins may depend on bootstrap.jar (mainly for logging). Therefore we
-        // need to set up a class loader with this library and use it as the parent class loader for
-        // the realm. Note that the way this is set up implies that the classes in
-        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader.
-        this.realm = new Realm(wasHome, new BootstrapClassLoader(wasHome, parent));
+        this.realm = new Realm(wasHome, parent);
     }
     
     @Override
