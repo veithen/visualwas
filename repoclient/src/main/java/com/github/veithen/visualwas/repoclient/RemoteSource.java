@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectInputStream.GetField;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.zip.GZIPInputStream;
 
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
@@ -37,7 +38,7 @@ public class RemoteSource extends RepositorySource {
         boolean securityEnabled = fileTransferConfig.isSecurityEnabled();
         HttpURLConnection conn = transportConfiguration.createURLConnection(new URL(securityEnabled ? "https" : "http",
                 fileTransferConfig.getHost(), fileTransferConfig.getPort(),
-                "/FileTransfer/transfer/" + getSrcPath() + "?compress=" + fileTransferOptions.isCompress() + "&deleteOnCompletion=" + fileTransferOptions.isDeleteOnCompletion()));
+                "/FileTransfer/transfer/" + URLEncoder.encode(getSrcPath(), "UTF-8") + "?compress=" + fileTransferOptions.isCompress() + "&deleteOnCompletion=" + fileTransferOptions.isDeleteOnCompletion()));
         if (securityEnabled && credentials != null) {
             credentials.configure(conn);
         }
