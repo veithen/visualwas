@@ -57,6 +57,7 @@
         <module>loader</module>
         <module>repoclient</module>
         <module>VisualWAS</module>
+        <module>samples/earscan</module>
     </modules>
     <build>
         <plugins>
