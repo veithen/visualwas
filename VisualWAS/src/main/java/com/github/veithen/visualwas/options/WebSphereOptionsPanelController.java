@@ -69,7 +69,12 @@ public class WebSphereOptionsPanelController extends OptionsPanelController {
     @Override
     public void applyChanges() {
         WebSphereOptionsPanel panel = getPanel();
-        prefs.put(Constants.PROP_KEY_WAS_HOME, panel.getWASHome());
+        String wasHome = panel.getWASHome();
+        if (wasHome != null) {
+            prefs.put(Constants.PROP_KEY_WAS_HOME, wasHome);
+        } else {
+            prefs.remove(Constants.PROP_KEY_WAS_HOME);
+        }
     }
 
     @Override
