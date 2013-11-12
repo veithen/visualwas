@@ -24,7 +24,7 @@ public class AnyTypeHandler implements TypeHandler {
     }
 
     @Override
-    public Object extractValue(OMElement element, InvocationContextImpl context) throws TypeHandlerException {
+    public Object extractValue(OMElement element, InvocationContextImpl context) throws ClassNotFoundException, TypeHandlerException {
         QName type = element.resolveQName(element.getAttributeValue(XSI_TYPE));
         SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getBySchemaType(type);
         return (simpleTypeHandler != null ? simpleTypeHandler : objectHandler).extractValue(element, context);

@@ -21,13 +21,16 @@ public final class ObjectHandler implements TypeHandler {
     }
 
     @Override
-    public Object extractValue(OMElement element, InvocationContextImpl context) throws TypeHandlerException {
+    public Object extractValue(OMElement element, InvocationContextImpl context) throws ClassNotFoundException, TypeHandlerException {
         // TODO: suboptimal because it caches the data
         XMLStreamReader reader = element.getXMLStreamReader(false);
         try {
             reader.next();
             DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
             return context.getSerializer().readObject(dh.getInputStream(), context);
+        } catch (ClassNotFoundException ex) {
+            // Propagate the exception
+            throw ex;
         } catch (Exception ex) {
             throw new TypeHandlerException("Failed to deserialize object (expected type: " + type.getName() + ")", ex);
         }

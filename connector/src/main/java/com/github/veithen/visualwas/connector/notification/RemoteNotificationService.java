@@ -40,6 +40,7 @@ public interface RemoteNotificationService {
      * @throws IOException
      */
     // TODO: this method assumes that there is no read timeout; if we make the read timeout configurable, then we should add an interceptor that overrides the read timeout for invocations of this method
+    // TODO: can we get a ClassNotFoundException here?
     Notification[] pullNotifications(@Param(name="id") SubscriptionHandle handle,
                                      @Param(name="batchSize") Integer batchSize) throws SubscriptionNotFoundException, IOException;
 }

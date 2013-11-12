@@ -38,7 +38,7 @@ public class OperationHandler {
         }
     }
     
-    public Object processResponse(OMElement response, InvocationContextImpl context) throws OperationHandlerException {
+    public Object processResponse(OMElement response, InvocationContextImpl context) throws ClassNotFoundException, OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
         if (returnValueHandler == null) {

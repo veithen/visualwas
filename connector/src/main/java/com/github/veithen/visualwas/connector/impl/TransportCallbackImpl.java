@@ -22,6 +22,8 @@ final class TransportCallbackImpl implements TransportCallback {
     public void onResponse(SOAPEnvelope envelope) {
         try {
             result = operationHandler.processResponse(envelope.getBody().getFirstElement(), context);
+        } catch (ClassNotFoundException ex) {
+            throwable = ex;
         } catch (OperationHandlerException ex) {
             throwable = new ConnectorException("Invocation failed", ex);
         }
@@ -31,6 +33,8 @@ final class TransportCallbackImpl implements TransportCallback {
     public void onFault(SOAPEnvelope envelope) {
         try {
             throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), context);
+        } catch (ClassNotFoundException ex) {
+            throwable = ex;
         } catch (TypeHandlerException ex) {
             throwable = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
         }

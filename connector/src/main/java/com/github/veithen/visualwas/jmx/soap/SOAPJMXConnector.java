@@ -56,6 +56,12 @@ public class SOAPJMXConnector implements JMXConnector {
     
     public static final String FEATURES = ENV_PROP_PREFIX + "features";
     
+    /**
+     * Name of the attribute that specifies the exception transformer. The value must be an instance
+     * of {@link ExceptionTransformer}.
+     */
+    public static final String EXCEPTION_TRANSFORMER = ENV_PROP_PREFIX + "exceptionTransformer";
+    
     private final String host;
     private final int port;
     private final Map<String,?> env;
@@ -63,6 +69,7 @@ public class SOAPJMXConnector implements JMXConnector {
     private long connectionNotificationSequence;
     private String connectionId;
     private Connector connector;
+    private ExceptionTransformer exceptionTransformer;
 
     public SOAPJMXConnector(String host, int port, Map<String,?> env) {
         this.host = host;
@@ -116,6 +123,10 @@ public class SOAPJMXConnector implements JMXConnector {
                 new Endpoint(host, port, jmxCredentials != null),
                 connectorConfigBuilder.build(),
                 attributes);
+        exceptionTransformer = (ExceptionTransformer)env.get(EXCEPTION_TRANSFORMER);
+        if (exceptionTransformer == null) {
+            exceptionTransformer = ExceptionTransformer.DEFAULT;
+        }
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
             connector.getServerMBean();
@@ -140,7 +151,7 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized MBeanServerConnection getMBeanServerConnection() throws IOException {
-        return new MBeanServerConnectionImpl(connector, connector.getAdapter(NotificationDispatcher.class));
+        return new MBeanServerConnectionImpl(connector, connector.getAdapter(NotificationDispatcher.class), exceptionTransformer);
     }
 
     @Override

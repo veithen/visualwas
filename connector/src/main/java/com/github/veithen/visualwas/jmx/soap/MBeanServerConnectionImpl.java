@@ -29,10 +29,12 @@ import com.github.veithen.visualwas.connector.notification.NotificationDispatche
 final class MBeanServerConnectionImpl implements MBeanServerConnection {
     private final AdminService adminService;
     private final NotificationDispatcher notificationDispatcher;
+    private final ExceptionTransformer exceptionTransformer;
     
-    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher) {
+    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
         this.adminService = adminService;
         this.notificationDispatcher = notificationDispatcher;
+        this.exceptionTransformer = exceptionTransformer;
     }
     
     @Override
@@ -95,12 +97,20 @@ final class MBeanServerConnectionImpl implements MBeanServerConnection {
 
     @Override
     public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, IOException {
-        return adminService.getAttribute(name, attribute);
+        try {
+            return adminService.getAttribute(name, attribute);
+        } catch (ClassNotFoundException ex) {
+            throw exceptionTransformer.transform(ex);
+        }
     }
 
     @Override
     public AttributeList getAttributes(ObjectName name, String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException {
-        return adminService.getAttributes(name, attributes);
+        try {
+            return adminService.getAttributes(name, attributes);
+        } catch (ClassNotFoundException ex) {
+            throw exceptionTransformer.transform(ex);
+        }
     }
 
     @Override
@@ -116,7 +126,11 @@ final class MBeanServerConnectionImpl implements MBeanServerConnection {
 
     @Override
     public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException, IOException {
-        return adminService.invoke(name, operationName, params, signature);
+        try {
+            return adminService.invoke(name, operationName, params, signature);
+        } catch (ClassNotFoundException ex) {
+            throw exceptionTransformer.transform(ex);
+        }
     }
 
     @Override
