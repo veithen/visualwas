@@ -10,4 +10,11 @@
     <packaging>bundle</packaging>
     <name>WebSphere Runtime Class Loader</name>
     <description>An optimized class loader implementation that loads classes from a WebSphere installation.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.osgi</groupId>
+            <artifactId>org.eclipse.osgi</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+    </dependencies>
 </project>

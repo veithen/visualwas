@@ -8,18 +8,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.eclipse.osgi.util.ManifestElement;
+import org.osgi.framework.BundleException;
 
 /**
  * Manages a set of OSGi bundles from which classes can be loaded.
  */
 // TODO: merge this into WebSphereRuntimeClassLoader and clean up
 final class Realm {
-    private final Map<String,Bundle> packageMap = new HashMap<String,Bundle>();
+    private final Map<String,List<Bundle>> packageMap = new HashMap<String,List<Bundle>>();
     private final ClassLoader parentClassLoader;
     private final URL[] bootstrapURLs;
     private WeakReference<BootstrapClassLoader> bootstrapClassLoader;
@@ -48,10 +53,20 @@ final class Realm {
                         String exportPackageAttr = manifest.getMainAttributes().getValue("Export-Package");
                         if (exportPackageAttr != null) {
                             Bundle bundle = new Bundle(this, jar.toURI().toURL());
-                            for (String val : exportPackageAttr.split(",")) {
-                                int idx = val.indexOf(';');
-                                String pkg = idx == -1 ? val : val.substring(0, idx);
-                                packageMap.put(pkg.trim(), bundle);
+                            ManifestElement[] exportPackageElements;
+                            try {
+                                exportPackageElements = ManifestElement.parseHeader("Export-Package", exportPackageAttr);
+                            } catch (BundleException ex) {
+                                throw new IOException("Invalid bundle manifest", ex);
+                            }
+                            for (ManifestElement exportPackage : exportPackageElements) {
+                                String pkg = exportPackage.getValue();
+                                List<Bundle> bundles = packageMap.get(pkg);
+                                if (bundles == null) {
+                                    bundles = new ArrayList<Bundle>();
+                                    packageMap.put(pkg, bundles);
+                                }
+                                bundles.add(bundle);
                             }
                         }
                         break;
@@ -90,11 +105,16 @@ final class Realm {
      *             if the class could not be found
      */
     Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        Bundle bundle = packageMap.get(name.substring(0, name.lastIndexOf('.')));
-        if (bundle == null) {
-            throw new ClassNotFoundException(name);
-        } else {
-            return bundle.getClassLoader().loadClassLocally(name, resolve);
+        List<Bundle> bundles = packageMap.get(name.substring(0, name.lastIndexOf('.')));
+        if (bundles != null) {
+            for (Bundle bundle : bundles) {
+                try {
+                    return bundle.getClassLoader().loadClassLocally(name, resolve);
+                } catch (ClassNotFoundException ex) {
+                    // Continue with next bundle
+                }
+            }
         }
+        throw new ClassNotFoundException(name);
     }
 }
