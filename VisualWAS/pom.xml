@@ -97,6 +97,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <codeNameBase>${project.groupId}</codeNameBase>
+                    <licenseName>GNU General Public License (GPL) version 3.0</licenseName>
+                    <licenseFile>../LICENSE.txt</licenseFile>
                 </configuration>
             </plugin>
             <plugin>
