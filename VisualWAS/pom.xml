@@ -72,7 +72,6 @@
             <!-- Transitive runtime dependencies are not included in the NBM by default -->
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>${axiom.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
