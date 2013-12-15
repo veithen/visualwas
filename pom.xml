@@ -6,7 +6,15 @@
     <name>VisualWAS Project</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <inceptionYear>2013</inceptionYear>
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL) version 3.0</name>
+            <distribution>http://www.gnu.org/licenses/gpl.html</distribution>
+        </license>
+    </licenses>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <axiom.version>1.2.15-SNAPSHOT</axiom.version>
     </properties>
     <dependencyManagement>
@@ -57,7 +65,7 @@
         <module>loader</module>
         <module>repoclient</module>
         <module>VisualWAS</module>
-        <module>samples/earscan</module>
+        <module>samples</module>
     </modules>
     <build>
         <plugins>
@@ -73,6 +81,17 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <projectName>VisualWAS</projectName>
+                    <organizationName>Andreas Veithen</organizationName>
+                    <licenseName>gpl_v3</licenseName>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
                 </configuration>
             </plugin>
         </plugins>
