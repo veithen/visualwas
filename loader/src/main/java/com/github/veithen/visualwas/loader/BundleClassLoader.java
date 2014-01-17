@@ -36,18 +36,21 @@ final class BundleClassLoader extends URLClassLoader {
     }
     
     @Override
-    protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         try {
-            return super.loadClass(name, resolve);
+            return loadClassLocally(name, resolve);
         } catch (ClassNotFoundException ex) {
+            // A class loaded from this bundle may depend on classes loaded from other bundles
+            // (OSGI imports). Therefore we need to delegate to the realm.
             return realm.loadClass(name, resolve);
         }
     }
 
     /**
-     * Load a class locally from this class loader, i.e. without delegating to other class loaders.
-     * This method is only used when the class loader that contains a given class is known in
-     * advance.
+     * Load a class from the bundle corresponding to this class loader. The method will first
+     * attempt to load the class from the realm's parent class loader. It will never delegate to any
+     * other bundle class loader. This method is only used when the bundle that contains a given
+     * class is known in advance.
      * 
      * @param name
      *            the class name
@@ -58,13 +61,17 @@ final class BundleClassLoader extends URLClassLoader {
      *             if the class could not be found
      */
     Class<?> loadClassLocally(String name, boolean resolve) throws ClassNotFoundException {
-        Class<?> clazz = findLoadedClass(name);
-        if (clazz == null) {
-            clazz = findClass(name);
+        try {
+            return super.loadClass(name, resolve);
+        } catch (ClassNotFoundException ex) {
+            Class<?> clazz = findLoadedClass(name);
+            if (clazz == null) {
+                clazz = findClass(name);
+            }
+            if (resolve) {
+                resolveClass(clazz);
+            }
+            return clazz;
         }
-        if (resolve) {
-            resolveClass(clazz);
-        }
-        return clazz;
     }
 }

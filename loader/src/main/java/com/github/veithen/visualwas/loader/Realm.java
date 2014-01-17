@@ -52,7 +52,9 @@ final class Realm {
     
     Realm(File wasHome, ClassLoader parentClassLoader) throws IOException {
         this.parentClassLoader = parentClassLoader;
-        bootstrapURLs = new URL[] { new File(wasHome, "lib/bootstrap.jar").toURI().toURL() };
+        bootstrapURLs = new URL[] {
+                new File(wasHome, "java/jre/lib/ibmcfw.jar").toURI().toURL(),
+                new File(wasHome, "lib/bootstrap.jar").toURI().toURL() };
         File pluginDir = new File(wasHome, "plugins");
         File[] jars = pluginDir.listFiles(new FileFilter() {
             @Override
@@ -99,11 +101,12 @@ final class Realm {
         }
     }
 
-    synchronized ClassLoader getParentClassLoader() {
+    synchronized BootstrapClassLoader getParentClassLoader() {
         // Classes in the plugins may depend on bootstrap.jar (mainly for logging). Therefore we
         // need to set up a class loader with this library and use it as the parent class loader for
         // the realm. Note that the way this is set up implies that the classes in
-        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader.
+        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader, except for classes in
+        // packages exported by some bundle.
         BootstrapClassLoader cl = bootstrapClassLoader == null ? null : bootstrapClassLoader.get();
         if (cl == null) {
             cl = new BootstrapClassLoader(bootstrapURLs, parentClassLoader);
