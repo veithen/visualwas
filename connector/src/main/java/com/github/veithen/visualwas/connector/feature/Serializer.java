@@ -35,7 +35,7 @@ public interface Serializer {
     
     /**
      * Read an object from the given stream (using standard Java serialization). The implementation
-     * must use the class loader returned by {@link InvocationContext#getClassLoader()} resolve
+     * must use the class loader returned by {@link InvocationContext#getClassLoader()} to resolve
      * classes referenced in the stream.
      * 
      * @param in
