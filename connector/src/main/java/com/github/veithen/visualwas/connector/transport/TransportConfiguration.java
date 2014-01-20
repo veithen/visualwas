@@ -76,6 +76,19 @@ public final class TransportConfiguration {
             return this;
         }
         
+        /**
+         * Disable certificate validation. This method configures a special trust manager that
+         * accepts any certificate. This turns off the validation of the trust chain as well as host
+         * name validation.
+         * <p>
+         * <b>Note:</b> This method should only be used for testing purposes!
+         * 
+         * @return this builder
+         */
+        public Builder disableCertificateValidation() {
+            return setTrustManager(DummyTrustManager.INSTANCE);
+        }
+        
         public TransportConfiguration build() {
             return new TransportConfiguration(proxy, connectTimeout, trustManager);
         }
