@@ -21,10 +21,23 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Connector;
+import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.ConfiguratorAdapter;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
+/**
+ * Feature that enables the creation of MBean proxies. Proxies can be created in two different ways:
+ * <ol>
+ * <li>A feature can use {@link ProxyConfigurator#registerProxy(Class, MBeanLocator)} to register a
+ * proxy. That proxy will be available through {@link Connector#getAdapter(Class)}. This will create
+ * a single proxy instance per connection. This method is typically used for singleton MBeans.
+ * <li>Application code can use {@link ProxyFactory} (obtained using
+ * {@link Connector#getAdapter(Class)} to create proxies. These proxies are not cached.
+ * </ol>
+ */
 @ConfiguratorAdapter(ProxyConfigurator.class)
 public final class ProxyFeature implements Feature {
     public static final ProxyFeature INSTANCE = new ProxyFeature();
@@ -34,5 +47,11 @@ public final class ProxyFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.registerConfiguratorAdapter(ProxyConfigurator.class, new ProxyConfiguratorImpl(configurator));
+        configurator.registerAdminServiceAdapter(ProxyFactory.class, new AdapterFactory<ProxyFactory>() {
+            @Override
+            public ProxyFactory createAdapter(AdminService adminService) {
+                return new ProxyFactoryImpl(adminService);
+            }
+        });
     }
 }

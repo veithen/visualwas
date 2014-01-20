@@ -30,33 +30,29 @@ import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
 
-public class SingletonMBeanLocator implements MBeanLocator {
-    private final String type;
+public class ObjectNamePatternMBeanLocator implements MBeanLocator {
+    private final ObjectName pattern;
 
-    public SingletonMBeanLocator(String type) {
-        this.type = type;
+    public ObjectNamePatternMBeanLocator(ObjectName pattern) {
+        this.pattern = pattern;
+    }
+    
+    public ObjectNamePatternMBeanLocator(String pattern) throws MalformedObjectNameException {
+        this(new ObjectName(pattern));
     }
 
     @Override
     public ObjectName locateMBean(AdminService adminService) throws IOException, InstanceNotFoundException {
-        ObjectName serverMBean = adminService.getServerMBean();
-        ObjectName pattern;
-        try {
-            pattern = new ObjectName(serverMBean.getDomain() + ":type=" + type + ",cell=" + serverMBean.getKeyProperty("cell") + ",node=" + serverMBean.getKeyProperty("node") + ",process=" + serverMBean.getKeyProperty("process") + ",*");
-        } catch (MalformedObjectNameException ex) {
-            // We should never get here
-            throw new RuntimeException(ex);
-        }
         Iterator<ObjectName> it = adminService.queryNames(pattern, null).iterator();
         if (it.hasNext()) {
             ObjectName mbean = it.next();
             if (it.hasNext()) {
-                throw new InstanceNotFoundException("Found multiple MBeans of type " + type);
+                throw new InstanceNotFoundException("Found multiple MBeans matching " + pattern);
             } else {
                 return mbean;
             }
         } else {
-            throw new InstanceNotFoundException("No MBean of type " + type + " found");
+            throw new InstanceNotFoundException(pattern + " not found");
         }
     }
 }
