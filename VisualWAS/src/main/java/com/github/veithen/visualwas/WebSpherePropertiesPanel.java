@@ -35,11 +35,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
+import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -58,6 +58,7 @@ import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.env.EnvUtil;
+import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
@@ -284,13 +285,24 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         new Thread() {
             @Override
             public void run() {
-                IOException tmpException = null;
+                Exception tmpException = null;
                 try {
-                    JMXConnectorFactory.connect(serviceURL, env);
-                } catch (IOException ex) {
+                    JMXConnector connector = JMXConnectorFactory.connect(serviceURL, env);
+                    try {
+                        // Test access to the pid attribute of the server MBean. If this fails, then it means that the
+                        // credentials are incorrect or that the user doesn't have monitor role. In that case, there would
+                        // be a failure when VisualVM attempts to inspect the platform MXBeans. Therefore we can't let
+                        // the user proceed.
+                        WebSphereMBeanServerConnection conn = (WebSphereMBeanServerConnection)connector.getMBeanServerConnection();
+                        ObjectName serverMBean = conn.getServerMBean();
+                        conn.getAttribute(serverMBean, "pid");
+                    } finally {
+                        connector.close();
+                    }
+                } catch (Exception ex) {
                     tmpException = ex;
                 }
-                final IOException exception = tmpException;
+                final Exception exception = tmpException;
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {

@@ -45,6 +45,13 @@ public interface AdminService {
     
     String getDefaultDomain() throws IOException;
     
+    /**
+     * Get the object name of the MBean representing the WebSphere Application Server instance the
+     * client is connected to.
+     * 
+     * @return the object name of the MBean representing the server
+     * @throws IOException
+     */
     ObjectName getServerMBean() throws IOException;
     
     Set<ObjectName> queryNames(@Param(name="objectname") ObjectName objectName,

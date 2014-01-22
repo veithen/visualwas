@@ -46,8 +46,9 @@ import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.notification.NotificationDispatcher;
+import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 
-final class MBeanServerConnectionImpl implements MBeanServerConnection {
+final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection {
     private final AdminService adminService;
     private final NotificationDispatcher notificationDispatcher;
     private final ExceptionTransformer exceptionTransformer;
@@ -212,5 +213,10 @@ final class MBeanServerConnectionImpl implements MBeanServerConnection {
     @Override
     public boolean isInstanceOf(ObjectName name, String className) throws InstanceNotFoundException, IOException {
         return adminService.isInstanceOf(name, className);
+    }
+
+    @Override
+    public ObjectName getServerMBean() throws IOException {
+        return adminService.getServerMBean();
     }
 }
