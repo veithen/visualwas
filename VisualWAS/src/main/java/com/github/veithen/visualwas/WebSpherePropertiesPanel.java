@@ -49,6 +49,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -335,5 +336,15 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         testConnectionResult.setIcon(null);
         testConnectionResult.setText(null);
         setSettingsValid(false);
+    }
+    
+    // This is for testing purposes only
+    public static void main(String[] args) {
+        WebSpherePropertiesPanel panel = new WebSpherePropertiesPanel();
+        JFrame frame = new JFrame();
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 }
