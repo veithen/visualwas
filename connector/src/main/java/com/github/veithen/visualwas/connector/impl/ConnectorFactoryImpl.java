@@ -36,6 +36,7 @@ import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.factory.DependencyUtil;
+import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
@@ -55,9 +56,10 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
         Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getOperationHandlers());
         adminServiceInterfaces.add(AdminService.class);
+        List<AdminServiceInterceptor> adminServiceInterceptors = new ArrayList<AdminServiceInterceptor>();
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, interceptors, adaptableDelegate);
+        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, adminServiceInterceptors, interceptors, adaptableDelegate);
         for (Feature feature : features) {
             feature.configureConnector(configurator);
         }
@@ -67,6 +69,9 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 new AdminServiceInvocationHandler(operationHandlers, interceptors.toArray(new Interceptor[interceptors.size()]),
                         config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, configurator.getSerializer(),
                         new Attributes(attributes)));
+        for (AdminServiceInterceptor interceptor : adminServiceInterceptors) {
+            adminService = interceptor.createProxy(adminService);
+        }
         return new ConnectorImpl(adminService, adaptableDelegate);
     }
 }

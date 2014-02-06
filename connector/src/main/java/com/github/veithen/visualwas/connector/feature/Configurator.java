@@ -56,6 +56,8 @@ public interface Configurator extends Adaptable {
      */
     void addAdminServiceDescription(AdminServiceDescription description);
     
+    void addInterceptor(AdminServiceInterceptor interceptor);
+    
     void addInterceptor(Interceptor interceptor);
     
     <T> void registerConfiguratorAdapter(Class<T> iface, T adapter);

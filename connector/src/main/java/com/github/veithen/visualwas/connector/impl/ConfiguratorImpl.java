@@ -30,6 +30,7 @@ import java.util.Set;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
+import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
@@ -38,13 +39,15 @@ final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
     private Set<Class<?>> adminServiceInterfaces;
     private Map<Method,OperationHandler> operationHandlers;
+    private List<AdminServiceInterceptor> adminServiceInterceptors;
     private List<Interceptor> interceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<Interceptor> interceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<AdminServiceInterceptor> adminServiceInterceptors, List<Interceptor> interceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.operationHandlers = operationHandlers;
+        this.adminServiceInterceptors = adminServiceInterceptors;
         this.interceptors = interceptors;
         this.adaptableDelegate = adaptableDelegate;
     }
@@ -73,6 +76,11 @@ final class ConfiguratorImpl implements Configurator {
         });
     }
 
+    @Override
+    public void addInterceptor(AdminServiceInterceptor interceptor) {
+        adminServiceInterceptors.add(interceptor);
+    }
+    
     @Override
     public void addInterceptor(Interceptor interceptor) {
         interceptors.add(interceptor);
