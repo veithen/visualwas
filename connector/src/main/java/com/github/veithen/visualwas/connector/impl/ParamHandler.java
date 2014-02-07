@@ -39,7 +39,13 @@ public final class ParamHandler {
     public void createOMElement(OMElement operationElement, OMNamespace xsiNS, Object value, InvocationContextImpl context) {
         OMFactory factory = operationElement.getOMFactory();
         OMElement element = factory.createOMElement(name, null, operationElement);
-        QName type = valueHandler.setValue(element, value, context);
+        QName type;
+        if (value != null) {
+            type = valueHandler.setValue(element, value, context);
+        } else {
+            element.addAttribute("nil", "true", xsiNS);
+            type = valueHandler.getXMLType(context);
+        }
         OMNamespace ns = element.findNamespace(type.getNamespaceURI(), null);
         if (ns == null) {
             ns = element.declareNamespace(type.getNamespaceURI(), type.getPrefix());

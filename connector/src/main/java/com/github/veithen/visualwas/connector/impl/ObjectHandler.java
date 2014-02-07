@@ -36,6 +36,11 @@ public final class ObjectHandler implements TypeHandler {
     }
 
     @Override
+    public QName getXMLType(InvocationContextImpl context) {
+        return new QName("http://schemas.xmlsoap.org/soap/encoding/", context.getSerializer().getRemoteClassName(type), "soap");
+    }
+
+    @Override
     public QName setValue(OMElement element, Object value, InvocationContextImpl context) {
         element.addChild(element.getOMFactory().createOMText(new ObjectDataHandler(value, context), false));
         return new QName("urn:AdminService", context.getSerializer().getRemoteClassName(type));

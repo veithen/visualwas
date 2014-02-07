@@ -70,6 +70,11 @@ public abstract class SimpleTypeHandler implements TypeHandler {
     }
 
     @Override
+    public final QName getXMLType(InvocationContextImpl context) {
+        return type;
+    }
+
+    @Override
     public final QName setValue(OMElement element, Object value, InvocationContextImpl context) {
         element.setText(toString(value));
         return type;

@@ -26,6 +26,24 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMElement;
 
 public interface TypeHandler {
+    /**
+     * Get the QName of the XML type produced by this type handler. This method is only used when
+     * serializing a nil value.
+     * 
+     * @param context
+     * @return the XML type
+     */
+    QName getXMLType(InvocationContextImpl context);
+
+    /**
+     * 
+     * 
+     * @param element
+     * @param value
+     * @param context
+     * @return the XML type, which may depend on <code>value</code> and be different from the one
+     *         returned by {@link #getXMLType(InvocationContextImpl)}
+     */
     QName setValue(OMElement element, Object value, InvocationContextImpl context);
     
     /**

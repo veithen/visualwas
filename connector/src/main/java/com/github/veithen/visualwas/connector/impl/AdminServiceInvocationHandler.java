@@ -86,7 +86,6 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         SOAPEnvelope request = factory.createSOAPEnvelope();
         SOAPHeader header = factory.createSOAPHeader(request);
         OMNamespace ns1 = factory.createOMNamespace("admin", "ns");
-        header.addAttribute("WASRemoteRuntimeVersion", "8.5.0.2", ns1);
         header.addAttribute("JMXMessageVersion", "1.2.0", ns1);
         header.addAttribute("JMXVersion", "1.2.0", ns1);
         // TODO: need this to prevent Axiom from skipping serialization of the header

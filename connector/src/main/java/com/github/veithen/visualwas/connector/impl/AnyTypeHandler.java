@@ -27,6 +27,7 @@ import org.apache.axiom.om.OMElement;
 
 public class AnyTypeHandler implements TypeHandler {
     private static final QName XSI_TYPE = new QName("http://www.w3.org/2001/XMLSchema-instance", "type");
+    private static final QName XML_TYPE = new QName("urn:AdminService", "java.lang.Object");
     
     private final ObjectHandler objectHandler;
     
@@ -34,6 +35,11 @@ public class AnyTypeHandler implements TypeHandler {
         objectHandler = new ObjectHandler(Object.class);
     }
     
+    @Override
+    public QName getXMLType(InvocationContextImpl context) {
+        return XML_TYPE;
+    }
+
     @Override
     public QName setValue(OMElement element, Object value, InvocationContextImpl context) {
         SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getByJavaType(value.getClass());
