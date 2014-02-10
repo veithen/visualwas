@@ -69,9 +69,6 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 new AdminServiceInvocationHandler(operationHandlers, interceptors.toArray(new Interceptor[interceptors.size()]),
                         config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, configurator.getSerializer(),
                         new Attributes(attributes)));
-        for (AdminServiceInterceptor interceptor : adminServiceInterceptors) {
-            adminService = interceptor.createProxy(adminService);
-        }
-        return new ConnectorImpl(adminService, adaptableDelegate);
+        return new ConnectorImpl(adminService, adminServiceInterceptors, adaptableDelegate);
     }
 }
