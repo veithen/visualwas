@@ -33,6 +33,7 @@ import javax.management.IntrospectionException;
 import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
+import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
@@ -64,6 +65,10 @@ final class ConnectorImpl implements Connector {
 
     public Set<ObjectName> queryNames(ObjectName objectName, QueryExp queryExp) throws IOException {
         return adminService.queryNames(objectName, queryExp);
+    }
+
+    public Set<ObjectInstance> queryMBeans(ObjectName objectName, QueryExp queryExp) throws IOException {
+        return adminService.queryMBeans(objectName, queryExp);
     }
 
     public boolean isRegistered(ObjectName objectName) throws IOException {

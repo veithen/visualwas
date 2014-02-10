@@ -97,8 +97,7 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return adminService.queryMBeans(name, query);
     }
 
     @Override

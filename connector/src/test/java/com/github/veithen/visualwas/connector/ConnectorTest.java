@@ -27,13 +27,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
+import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.modelmbean.RequiredModelMBean;
 
 import org.junit.Test;
 
 public class ConnectorTest {
     @Test
-    public void test() throws Exception {
+    public void testQueryNames() throws Exception {
         DummyTransport transport = new DummyTransport();
         Connector connector = transport.createConnector();
         transport.expect(ConnectorTest.class.getResource("queryNames-request.xml"),
@@ -44,5 +46,21 @@ public class ConnectorTest {
         assertEquals("WebSphere", name.getDomain());
         assertEquals("server1", name.getKeyProperty("name"));
         assertFalse(names.hasNext());
+    }
+    
+    @Test
+    public void testQueryMBeans() throws Exception {
+        DummyTransport transport = new DummyTransport();
+        Connector connector = transport.createConnector();
+        transport.expect(ConnectorTest.class.getResource("queryMBeans-request.xml"),
+                ConnectorTest.class.getResource("queryMBeans-response.xml"));
+        Iterator<ObjectInstance> mbeans = connector.queryMBeans(new ObjectName("WebSphere:type=Server,*"), null).iterator();
+        assertTrue(mbeans.hasNext());
+        ObjectInstance mbean = mbeans.next();
+        assertEquals(RequiredModelMBean.class.getName(), mbean.getClassName());
+        ObjectName name = mbean.getObjectName();
+        assertEquals("WebSphere", name.getDomain());
+        assertEquals("server1", name.getKeyProperty("name"));
+        assertFalse(mbeans.hasNext());
     }
 }

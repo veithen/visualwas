@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:WASRemoteRuntimeVersion="7.0.0.27" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:queryMBeansResponse xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<return xsi:type="ns1:java.util.HashSet">rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAXNyAB9qYXZheC5tYW5hZ2VtZW50Lk9iamVjdEluc3RhbmNlxxoKz60oe3YCAAJMAAljbGFzc05hbWV0ABJMamF2YS9sYW5nL1N0cmluZztMAARuYW1ldAAdTGphdmF4L21hbmFnZW1lbnQvT2JqZWN0TmFtZTt4cHQALmphdmF4Lm1hbmFnZW1lbnQubW9kZWxtYmVhbi5SZXF1aXJlZE1vZGVsTUJlYW5zcgAbamF2YXgubWFuYWdlbWVudC5PYmplY3ROYW1lDwOnG+ttFc8DAAB4cHQBHldlYlNwaGVyZTpuYW1lPXNlcnZlcjEscHJvY2Vzcz1zZXJ2ZXIxLHBsYXRmb3JtPXByb3h5LG5vZGU9cGhvYm9zTm9kZTAzLGoyZWVUeXBlPUoyRUVTZXJ2ZXIsdmVyc2lvbj03LjAuMC4yNyx0eXBlPVNlcnZlcixtYmVhbklkZW50aWZpZXI9Y2VsbHMvcGhvYm9zTm9kZTAzQ2VsbC9ub2Rlcy9waG9ib3NOb2RlMDMvc2VydmVycy9zZXJ2ZXIxL3NlcnZlci54bWwjU2VydmVyXzExODMxMjE5MDg2NTYsY2VsbD1waG9ib3NOb2RlMDNDZWxsLHNwZWM9MS4wLHByb2Nlc3NUeXBlPVVuTWFuYWdlZFByb2Nlc3N4eA==</return>
+</ns1:queryMBeansResponse>
+
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

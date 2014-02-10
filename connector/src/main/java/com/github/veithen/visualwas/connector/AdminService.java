@@ -32,6 +32,7 @@ import javax.management.IntrospectionException;
 import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
+import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
@@ -56,6 +57,9 @@ public interface AdminService {
     
     Set<ObjectName> queryNames(@Param(name="objectname") ObjectName objectName,
                                @Param(name="queryexp") QueryExp queryExp) throws IOException;
+    
+    Set<ObjectInstance> queryMBeans(@Param(name="objectname") ObjectName objectName,
+                                    @Param(name="queryexp") QueryExp queryExp) throws IOException;
 
     boolean isRegistered(@Param(name="objectname") ObjectName objectName) throws IOException;
     
