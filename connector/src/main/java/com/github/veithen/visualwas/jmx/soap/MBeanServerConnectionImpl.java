@@ -112,8 +112,7 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public Integer getMBeanCount() throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return adminService.getMBeanCount();
     }
 
     @Override

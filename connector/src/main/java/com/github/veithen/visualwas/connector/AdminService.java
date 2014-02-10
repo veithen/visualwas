@@ -55,6 +55,8 @@ public interface AdminService {
      */
     ObjectName getServerMBean() throws IOException;
     
+    Integer getMBeanCount() throws IOException;
+    
     Set<ObjectName> queryNames(@Param(name="objectname") ObjectName objectName,
                                @Param(name="queryexp") QueryExp queryExp) throws IOException;
     

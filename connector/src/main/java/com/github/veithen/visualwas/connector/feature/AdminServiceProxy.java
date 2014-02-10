@@ -54,6 +54,10 @@ public class AdminServiceProxy implements AdminService {
         return target.getServerMBean();
     }
 
+    public Integer getMBeanCount() throws IOException {
+        return target.getMBeanCount();
+    }
+
     public Set<ObjectName> queryNames(ObjectName objectName, QueryExp queryExp)
             throws IOException {
         return target.queryNames(objectName, queryExp);

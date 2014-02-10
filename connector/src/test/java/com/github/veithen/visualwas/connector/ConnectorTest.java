@@ -35,6 +35,15 @@ import org.junit.Test;
 
 public class ConnectorTest {
     @Test
+    public void testGetMBeanCount() throws Exception {
+        DummyTransport transport = new DummyTransport();
+        Connector connector = transport.createConnector();
+        transport.expect(ConnectorTest.class.getResource("getMBeanCount-request.xml"),
+                ConnectorTest.class.getResource("getMBeanCount-response.xml"));
+        assertEquals(Integer.valueOf(146), connector.getMBeanCount());
+    }
+    
+    @Test
     public void testQueryNames() throws Exception {
         DummyTransport transport = new DummyTransport();
         Connector connector = transport.createConnector();

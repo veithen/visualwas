@@ -63,6 +63,10 @@ final class ConnectorImpl implements Connector {
         return adminService.getServerMBean();
     }
 
+    public Integer getMBeanCount() throws IOException {
+        return adminService.getMBeanCount();
+    }
+
     public Set<ObjectName> queryNames(ObjectName objectName, QueryExp queryExp) throws IOException {
         return adminService.queryNames(objectName, queryExp);
     }
