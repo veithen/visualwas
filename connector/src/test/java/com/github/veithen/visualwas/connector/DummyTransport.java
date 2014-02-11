@@ -31,17 +31,11 @@ import org.apache.axiom.om.OMMetaFactory;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPMessage;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceConstants;
-import org.custommonkey.xmlunit.DifferenceListener;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
+import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.Transport;
 import com.github.veithen.visualwas.connector.transport.TransportCallback;
@@ -52,11 +46,15 @@ public class DummyTransport implements Transport, TransportFactory {
     public static final Endpoint ENDPOINT = new Endpoint("localhost", 8888, false);
     
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
-    private SOAPMessage expectedRequest;
-    private URL cannedResponse;
     
-    public Connector createConnector() {
-        return ConnectorFactory.getInstance().createConnector(DummyTransport.ENDPOINT, ConnectorConfiguration.custom().setTransportFactory(this).build(), null);
+    private final RequestMatcher requestMatcher;
+    
+    public DummyTransport(RequestMatcher requestMatcher) {
+        this.requestMatcher = requestMatcher;
+    }
+
+    public Connector createConnector(Feature... features) {
+        return ConnectorFactory.getInstance().createConnector(DummyTransport.ENDPOINT, ConnectorConfiguration.custom().addFeatures(features).setTransportFactory(this).build(), null);
     }
     
     private void normalize(SOAPEnvelope env) {
@@ -68,15 +66,26 @@ public class DummyTransport implements Transport, TransportFactory {
         }
     }
     
-    public void expect(URL request, URL response) throws IOException {
+    public void addExchange(URL request, URL response) throws IOException {
+        SOAPMessage requestMessage;
         InputStream in = request.openStream();
         try {
-            expectedRequest = OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPMessage();
-            expectedRequest.build();
+            requestMessage = OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPMessage();
+            requestMessage.build();
         } finally {
             in.close();
         }
-        cannedResponse = response;
+        requestMatcher.add(new Exchange((Document)requestMessage, response));
+    }
+    
+    public void addExchange(Class<?> relativeTo, String baseName) throws IOException {
+        addExchange(relativeTo.getResource(baseName + "-request.xml"), relativeTo.getResource(baseName + "-response.xml"));
+    }
+    
+    public void addExchanges(Class<?> relativeTo, String... baseNames) throws IOException {
+        for (String baseName : baseNames) {
+            addExchange(relativeTo, baseName);
+        }
     }
     
     @Override
@@ -86,46 +95,13 @@ public class DummyTransport implements Transport, TransportFactory {
 
     @Override
     public void send(SOAPEnvelope request, TransportCallback callback) throws IOException {
-        if (expectedRequest == null) {
-            throw new IllegalStateException();
-        }
+        SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
+        normalize(clonedRequest.getSOAPEnvelope());
+        InputStream in = requestMatcher.match((Document)clonedRequest).openStream();
         try {
-            SOAPMessage clonedRequestMessage = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
-            normalize(clonedRequestMessage.getSOAPEnvelope());
-            boolean ignoreWhitespace = XMLUnit.getIgnoreWhitespace();
-            boolean ignoreAttributeOrder = XMLUnit.getIgnoreAttributeOrder();
-            try {
-                XMLUnit.setIgnoreWhitespace(true);
-                XMLUnit.setIgnoreAttributeOrder(true);
-                Diff diff = XMLUnit.compareXML((Document)expectedRequest, (Document)clonedRequestMessage);
-                diff.overrideDifferenceListener(new DifferenceListener() {
-                    @Override
-                    public int differenceFound(Difference difference) {
-                        if (difference.getId() == DifferenceConstants.NAMESPACE_PREFIX_ID) {
-                            return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
-                        } else {
-                            return RETURN_ACCEPT_DIFFERENCE;
-                        }
-                    }
-                    
-                    @Override
-                    public void skippedComparison(Node control, Node test) {
-                    }
-                });
-                XMLAssert.assertXMLEqual(diff, true);
-            } finally {
-                XMLUnit.setIgnoreWhitespace(ignoreWhitespace);
-                XMLUnit.setIgnoreAttributeOrder(ignoreAttributeOrder);
-            }
-            InputStream in = cannedResponse.openStream();
-            try {
-                callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
-            } finally {
-                in.close();
-            }
+            callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
         } finally {
-            expectedRequest = null;
-            cannedResponse = null;
+            in.close();
         }
     }
 }

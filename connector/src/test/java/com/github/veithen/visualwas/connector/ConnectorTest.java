@@ -39,19 +39,17 @@ import org.junit.Test;
 public class ConnectorTest {
     @Test
     public void testGetMBeanCount() throws Exception {
-        DummyTransport transport = new DummyTransport();
+        DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
+        transport.addExchange(ConnectorTest.class, "getMBeanCount");
         Connector connector = transport.createConnector();
-        transport.expect(ConnectorTest.class.getResource("getMBeanCount-request.xml"),
-                ConnectorTest.class.getResource("getMBeanCount-response.xml"));
         assertEquals(Integer.valueOf(146), connector.getMBeanCount());
     }
     
     @Test
     public void testQueryNames() throws Exception {
-        DummyTransport transport = new DummyTransport();
+        DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
+        transport.addExchange(ConnectorTest.class, "queryNames");
         Connector connector = transport.createConnector();
-        transport.expect(ConnectorTest.class.getResource("queryNames-request.xml"),
-                ConnectorTest.class.getResource("queryNames-response.xml"));
         Iterator<ObjectName> names = connector.queryNames(new ObjectName("WebSphere:type=Server,*"), null).iterator();
         assertTrue(names.hasNext());
         ObjectName name = names.next();
@@ -62,10 +60,9 @@ public class ConnectorTest {
     
     @Test
     public void testQueryMBeans() throws Exception {
-        DummyTransport transport = new DummyTransport();
+        DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
+        transport.addExchange(ConnectorTest.class, "queryMBeans");
         Connector connector = transport.createConnector();
-        transport.expect(ConnectorTest.class.getResource("queryMBeans-request.xml"),
-                ConnectorTest.class.getResource("queryMBeans-response.xml"));
         Iterator<ObjectInstance> mbeans = connector.queryMBeans(new ObjectName("WebSphere:type=Server,*"), null).iterator();
         assertTrue(mbeans.hasNext());
         ObjectInstance mbean = mbeans.next();
@@ -78,13 +75,10 @@ public class ConnectorTest {
     
     @Test
     public void testSetAttributes() throws Exception {
-        DummyTransport transport = new DummyTransport();
+        DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
+        transport.addExchanges(ConnectorTest.class, "getServerMBean", "setAttributes");
         Connector connector = transport.createConnector();
-        transport.expect(ConnectorTest.class.getResource("getServerMBean-request.xml"),
-                ConnectorTest.class.getResource("getServerMBean-response.xml"));
         ObjectName server = connector.getServerMBean();
-        transport.expect(ConnectorTest.class.getResource("setAttributes-request.xml"),
-                ConnectorTest.class.getResource("setAttributes-response.xml"));
         AttributeList attributes = new AttributeList();
         attributes.add(new Attribute("threadMonitorAdjustmentThreshold", Integer.valueOf(100)));
         attributes.add(new Attribute("threadMonitorInterval", Integer.valueOf(180)));
