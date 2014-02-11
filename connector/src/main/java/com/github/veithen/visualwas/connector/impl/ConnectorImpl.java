@@ -103,6 +103,10 @@ final class ConnectorImpl implements Connector {
         adminService.setAttribute(objectName, attribute);
     }
 
+    public AttributeList setAttributes(ObjectName objectName, AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException {
+        return adminService.setAttributes(objectName, attributes);
+    }
+
     public <T> T getAdapter(Class<T> clazz) {
         return adaptableDelegate.getAdapter(clazz);
     }

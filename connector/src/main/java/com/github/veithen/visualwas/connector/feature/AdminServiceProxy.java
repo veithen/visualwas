@@ -109,4 +109,10 @@ public class AdminServiceProxy implements AdminService {
             ReflectionException, IOException {
         target.setAttribute(objectName, attribute);
     }
+
+    public AttributeList setAttributes(ObjectName objectName,
+            AttributeList attributes) throws InstanceNotFoundException,
+            ReflectionException, IOException {
+        return target.setAttributes(objectName, attributes);
+    }
 }

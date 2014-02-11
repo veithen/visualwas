@@ -152,4 +152,7 @@ public interface AdminService {
 
     void setAttribute(@Param(name="objectname") ObjectName objectName,
                       @Param(name="attribute") Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException;
+    
+    AttributeList setAttributes(@Param(name="objectname") ObjectName objectName,
+                                @Param(name="attribute") AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException;
 }

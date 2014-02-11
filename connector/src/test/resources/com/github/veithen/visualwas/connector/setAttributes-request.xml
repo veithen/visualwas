@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:setAttributes xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<objectname xsi:type="ns1:javax.management.ObjectName">rO0ABXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdAEeV2ViU3BoZXJlOm5hbWU9c2VydmVyMSxwcm9jZXNzPXNlcnZlcjEscGxhdGZvcm09cHJveHksbm9kZT1waG9ib3NOb2RlMDMsajJlZVR5cGU9SjJFRVNlcnZlcix2ZXJzaW9uPTcuMC4wLjI3LHR5cGU9U2VydmVyLG1iZWFuSWRlbnRpZmllcj1jZWxscy9waG9ib3NOb2RlMDNDZWxsL25vZGVzL3Bob2Jvc05vZGUwMy9zZXJ2ZXJzL3NlcnZlcjEvc2VydmVyLnhtbCNTZXJ2ZXJfMTE4MzEyMTkwODY1NixjZWxsPXBob2Jvc05vZGUwM0NlbGwsc3BlYz0xLjAscHJvY2Vzc1R5cGU9VW5NYW5hZ2VkUHJvY2Vzc3g=</objectname>
+<attribute xsi:type="ns1:javax.management.AttributeList">rO0ABXNyAB5qYXZheC5tYW5hZ2VtZW50LkF0dHJpYnV0ZUxpc3THa0gYG0hgbAIAAHhyABNqYXZhLnV0aWwuQXJyYXlMaXN0eIHSHZnHYZ0DAAFJAARzaXpleHAAAAADdwQAAAADc3IAGmphdmF4Lm1hbmFnZW1lbnQuQXR0cmlidXRlInm5B1OLOw4CAAJMAARuYW1ldAASTGphdmEvbGFuZy9TdHJpbmc7TAAFdmFsdWV0ABJMamF2YS9sYW5nL09iamVjdDt4cHQAIHRocmVhZE1vbml0b3JBZGp1c3RtZW50VGhyZXNob2xkc3IAEWphdmEubGFuZy5JbnRlZ2VyEuKgpPeBhzgCAAFJAAV2YWx1ZXhyABBqYXZhLmxhbmcuTnVtYmVyhqyVHQuU4IsCAAB4cAAAAGRzcQB+AAN0ABV0aHJlYWRNb25pdG9ySW50ZXJ2YWxzcQB+AAgAAAC0c3EAfgADdAAWdGhyZWFkTW9uaXRvclRocmVzaG9sZHNxAH4ACAAAAlh4</attribute>
+</ns1:setAttributes>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

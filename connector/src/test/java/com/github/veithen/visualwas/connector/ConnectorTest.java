@@ -23,10 +23,13 @@ package com.github.veithen.visualwas.connector;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
+import javax.management.Attribute;
+import javax.management.AttributeList;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.modelmbean.RequiredModelMBean;
@@ -71,5 +74,22 @@ public class ConnectorTest {
         assertEquals("WebSphere", name.getDomain());
         assertEquals("server1", name.getKeyProperty("name"));
         assertFalse(mbeans.hasNext());
+    }
+    
+    @Test
+    public void testSetAttributes() throws Exception {
+        DummyTransport transport = new DummyTransport();
+        Connector connector = transport.createConnector();
+        transport.expect(ConnectorTest.class.getResource("getServerMBean-request.xml"),
+                ConnectorTest.class.getResource("getServerMBean-response.xml"));
+        ObjectName server = connector.getServerMBean();
+        transport.expect(ConnectorTest.class.getResource("setAttributes-request.xml"),
+                ConnectorTest.class.getResource("setAttributes-response.xml"));
+        AttributeList attributes = new AttributeList();
+        attributes.add(new Attribute("threadMonitorAdjustmentThreshold", Integer.valueOf(100)));
+        attributes.add(new Attribute("threadMonitorInterval", Integer.valueOf(180)));
+        attributes.add(new Attribute("threadMonitorThreshold", Integer.valueOf(600)));
+        AttributeList ret = connector.setAttributes(server, attributes);
+        assertNotNull(ret);
     }
 }

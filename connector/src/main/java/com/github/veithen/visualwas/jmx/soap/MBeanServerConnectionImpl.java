@@ -140,8 +140,7 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public AttributeList setAttributes(ObjectName name, AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        return adminService.setAttributes(name, attributes);
     }
 
     @Override
