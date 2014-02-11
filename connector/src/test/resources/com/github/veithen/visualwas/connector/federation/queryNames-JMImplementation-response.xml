@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:queryNamesResponse xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<return xsi:type="ns1:java.util.HashSet">rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAABA/QAAAAAAAAXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdAApSk1JbXBsZW1lbnRhdGlvbjp0eXBlPU1CZWFuU2VydmVyRGVsZWdhdGV4eA==</return>
+</ns1:queryNamesResponse>
+
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

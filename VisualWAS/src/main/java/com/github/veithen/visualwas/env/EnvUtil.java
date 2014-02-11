@@ -28,13 +28,15 @@ import java.util.Map;
 
 import javax.management.remote.JMXConnectorFactory;
 
+import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.connector.federation.DisableFederationFeature;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.trust.TrustStore;
 
 public final class EnvUtil {
     private EnvUtil() {}
     
-    public static Map<String,Object> createEnvironment(boolean securityEnabled) {
+    public static Map<String,Object> createEnvironment(boolean securityEnabled, boolean federationDisabled) {
         Map<String,Object> env = new HashMap<String,Object>();
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, SOAPJMXConnector.class.getClassLoader());
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
@@ -50,6 +52,9 @@ public final class EnvUtil {
             }
         }
         env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, WebSphereClassLoaderProvider.getInstance());
+        if (federationDisabled) {
+            env.put(SOAPJMXConnector.FEATURES, new Feature[] { DisableFederationFeature.INSTANCE });
+        }
         return env;
     }
 }

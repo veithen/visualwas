@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:queryNamesResponse xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<return xsi:type="ns1:java.util.HashSet">rO0ABXNyABFqYXZhLnV0aWwuSGFzaFNldLpEhZWWuLc0AwAAeHB3DAAAACA/QAAAAAAAEHNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdAAaamF2YS5sYW5nOnR5cGU9Q29tcGlsYXRpb254c3EAfgACdAAtamF2YS5sYW5nOnR5cGU9TWVtb3J5UG9vbCxuYW1lPUpJVCBjb2RlIGNhY2hleHNxAH4AAnQAFWphdmEubGFuZzp0eXBlPU1lbW9yeXhzcQB+AAJ0ADVqYXZhLmxhbmc6dHlwZT1HYXJiYWdlQ29sbGVjdG9yLG5hbWU9TWFya1N3ZWVwQ29tcGFjdHhzcQB+AAJ0ABtqYXZhLmxhbmc6dHlwZT1DbGFzc0xvYWRpbmd4c3EAfgACdAAoamF2YS5sYW5nOnR5cGU9TWVtb3J5UG9vbCxuYW1lPUphdmEgaGVhcHhzcQB+AAJ0AB5qYXZhLmxhbmc6dHlwZT1PcGVyYXRpbmdTeXN0ZW14c3EAfgACdAAmamF2YS5sYW5nOnR5cGU9TWVtb3J5TWFuYWdlcixuYW1lPUNvcHl4c3EAfgACdAAYamF2YS5sYW5nOnR5cGU9VGhyZWFkaW5neHNxAH4AAnQAFmphdmEubGFuZzp0eXBlPVJ1bnRpbWV4c3EAfgACdAAsamF2YS5sYW5nOnR5cGU9TWVtb3J5UG9vbCxuYW1lPWNsYXNzIHN0b3JhZ2V4c3EAfgACdAApamF2YS5sYW5nOnR5cGU9R2FyYmFnZUNvbGxlY3RvcixuYW1lPUNvcHl4c3EAfgACdAAtamF2YS5sYW5nOnR5cGU9TWVtb3J5UG9vbCxuYW1lPUpJVCBkYXRhIGNhY2hleHNxAH4AAnQANWphdmEubGFuZzp0eXBlPU1lbW9yeU1hbmFnZXIsbmFtZT1KOSBub24taGVhcCBtYW5hZ2VyeHNxAH4AAnQAPWphdmEubGFuZzp0eXBlPU1lbW9yeVBvb2wsbmFtZT1taXNjZWxsYW5lb3VzIG5vbi1oZWFwIHN0b3JhZ2V4c3EAfgACdAAyamF2YS5sYW5nOnR5cGU9TWVtb3J5TWFuYWdlcixuYW1lPU1hcmtTd2VlcENvbXBhY3R4eA==</return>
+</ns1:queryNamesResponse>
+
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

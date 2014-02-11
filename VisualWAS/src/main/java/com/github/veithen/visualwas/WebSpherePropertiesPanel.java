@@ -78,6 +78,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JCheckBox saveCheckbox;
+    private final JCheckBox disableFederationCheckbox;
     private final JButton testConnectionButton;
     private final JLabel testConnectionResult;
     
@@ -169,7 +170,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         }
 
         {
-            saveCheckbox = new JCheckBox();   // NOI18N
+            saveCheckbox = new JCheckBox();
             Mnemonics.setLocalizedText(saveCheckbox, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Save_security_credentials"));
             saveCheckbox.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -180,6 +181,12 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         }
         
         {
+            disableFederationCheckbox = new JCheckBox();
+            Mnemonics.setLocalizedText(disableFederationCheckbox, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Disable_federation"));
+            add(disableFederationCheckbox, new GridBagConstraints(0, 6, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(5, 0, 2, 0), 0, 0));
+        }
+        
+        {
             testConnectionButton = new JButton(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -187,7 +194,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                 }
             });
             Mnemonics.setLocalizedText(testConnectionButton, NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Test_connection"));
-            add(testConnectionButton, new GridBagConstraints(0, 6, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(5, 0, 2, 0), 0, 0));
+            add(testConnectionButton, new GridBagConstraints(0, 7, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(5, 0, 2, 0), 0, 0));
         }
         
         {
@@ -196,10 +203,10 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             testConnectionResult.setBackground(Color.WHITE);
             testConnectionResult.setOpaque(true);
             testConnectionResult.setPreferredSize(new Dimension(50, 50));
-            add(testConnectionResult, new GridBagConstraints(0, 7, REMAINDER, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
+            add(testConnectionResult, new GridBagConstraints(0, 8, REMAINDER, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
         }
         
-        add(Spacer.create(), new GridBagConstraints(0, 8, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        add(Spacer.create(), new GridBagConstraints(0, 9, 2, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
         
         update();
     }
@@ -256,6 +263,14 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         saveCheckbox.setSelected(saveCredentials);
     }
     
+    public boolean isFederationDisabled() {
+        return disableFederationCheckbox.isSelected();
+    }
+    
+    public void setFederationDisabled(boolean federationDisabled) {
+        disableFederationCheckbox.setSelected(federationDisabled);
+    }
+    
     private void update() {
         int port = getPort();
         testConnectionButton.setEnabled(getHost().length() > 0 && port > 0 && port < 1<<16);
@@ -278,7 +293,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
             throw new Error(ex);
         }
         boolean securityEnabled = isSecurityEnabled();
-        final Map<String,Object> env = EnvUtil.createEnvironment(securityEnabled);
+        final Map<String,Object> env = EnvUtil.createEnvironment(securityEnabled, isFederationDisabled());
         if (securityEnabled) {
             env.put(JMXConnector.CREDENTIALS, new String[] { getUsername(), new String(getPassword()) });
         }

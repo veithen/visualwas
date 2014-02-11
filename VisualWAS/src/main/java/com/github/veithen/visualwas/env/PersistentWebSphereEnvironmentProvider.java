@@ -44,7 +44,7 @@ public class PersistentWebSphereEnvironmentProvider extends CredentialsProvider.
     @Override
     public Map<String,?> getEnvironment(Application application, Storage storage) {
         Map<String,?> parentEnv = super.getEnvironment(application, storage);
-        Map<String,Object> env = EnvUtil.createEnvironment(parentEnv.get(JMXConnector.CREDENTIALS) != null);
+        Map<String,Object> env = EnvUtil.createEnvironment(parentEnv.get(JMXConnector.CREDENTIALS) != null, Boolean.parseBoolean(storage.getCustomProperty(Constants.PROP_FEDERATION_DISABLED)));
         env.putAll(parentEnv);
         return env;
     }
