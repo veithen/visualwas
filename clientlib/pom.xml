@@ -6,10 +6,10 @@
         <artifactId>visualwas</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>repoclient</artifactId>
+    <artifactId>clientlib</artifactId>
     <packaging>bundle</packaging>
-    <name>WebSphere Configuration Repository Client</name>
-    <description>An alternate implementation of the classes required to access the configuration repository in WebSphere.</description>
+    <name>WebSphere Client Library</name>
+    <description>An alternate implementation of the classes required to access various WebSphere MBeans, including the configuration repository.</description>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

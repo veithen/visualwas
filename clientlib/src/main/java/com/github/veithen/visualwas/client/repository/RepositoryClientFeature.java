@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.repoclient;
+package com.github.veithen.visualwas.client.repository;
 
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;

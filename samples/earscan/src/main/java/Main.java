@@ -44,6 +44,9 @@ import org.apache.axiom.om.util.StAXParserConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.objectweb.asm.ClassReader;
 
+import com.github.veithen.visualwas.client.repository.ConfigRepository;
+import com.github.veithen.visualwas.client.repository.DocumentContentSource;
+import com.github.veithen.visualwas.client.repository.RepositoryClientFeature;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
@@ -52,9 +55,6 @@ import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
 import com.github.veithen.visualwas.connector.security.Credentials;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
-import com.github.veithen.visualwas.repoclient.ConfigRepository;
-import com.github.veithen.visualwas.repoclient.DocumentContentSource;
-import com.github.veithen.visualwas.repoclient.RepositoryClientFeature;
 
 public class Main {
     private static final Set<String> internalApps = new HashSet<>(Arrays.asList("commsvc", "WebSphereWSDM", "isclite", "OTiS", "ibmasyncrsp"));

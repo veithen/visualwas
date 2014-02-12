@@ -89,7 +89,7 @@
     <modules>
     	<module>connector</module>
         <module>loader</module>
-        <module>repoclient</module>
+        <module>clientlib</module>
         <module>VisualWAS</module>
         <module>samples</module>
     </modules>

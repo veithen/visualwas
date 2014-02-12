@@ -19,32 +19,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.repoclient;
-
-import java.io.Serializable;
+package com.github.veithen.visualwas.client.repository;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.management.filetransfer.client.FileTransferOptionsImpl")
-public class FileTransferOptions implements Serializable {
-    private static final long serialVersionUID = 2117824156845393319L;
-
-    private boolean compress;
-    private boolean deleteOnCompletion;
-    
-    public boolean isCompress() {
-        return compress;
-    }
-    
-    public void setCompress(boolean compress) {
-        this.compress = compress;
-    }
-    
-    public boolean isDeleteOnCompletion() {
-        return deleteOnCompletion;
-    }
-    
-    public void setDeleteOnCompletion(boolean deleteOnCompletion) {
-        this.deleteOnCompletion = deleteOnCompletion;
-    }
+@MappedClass("com.ibm.websphere.management.exception.RepositoryException")
+public class RepositoryException extends Exception {
+    private static final long serialVersionUID = -6533368811842769089L;
 }

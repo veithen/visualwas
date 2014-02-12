@@ -19,23 +19,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.repoclient;
-
-import java.io.Serializable;
-
-import org.apache.commons.codec.binary.Hex;
+package com.github.veithen.visualwas.client.repository;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-// TODO: implement equals and hashCode
-@MappedClass("com.ibm.ws.management.repository.DocumentDigestImpl")
-public class DocumentDigest implements Serializable {
-    private static final long serialVersionUID = 3015221028590796750L;
-
-    private byte[] digest;
-
-    @Override
-    public String toString() {
-        return Hex.encodeHexString(digest);
-    }
+@MappedClass("com.ibm.websphere.management.exception.DocumentNotFoundException")
+public class DocumentNotFoundException extends RepositoryException {
+    private static final long serialVersionUID = -3977638828059323939L;
 }

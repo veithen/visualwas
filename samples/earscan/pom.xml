@@ -10,7 +10,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>repoclient</artifactId>
+            <artifactId>clientlib</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
