@@ -32,7 +32,7 @@ import com.github.veithen.visualwas.connector.description.AdminServiceDescriptio
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Configurator;
-import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {
@@ -40,15 +40,15 @@ final class ConfiguratorImpl implements Configurator {
     private Set<Class<?>> adminServiceInterfaces;
     private Map<Method,OperationHandler> operationHandlers;
     private List<AdminServiceInterceptor> adminServiceInterceptors;
-    private List<Interceptor> interceptors;
+    private List<SOAPInterceptor> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<AdminServiceInterceptor> adminServiceInterceptors, List<Interceptor> interceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<AdminServiceInterceptor> adminServiceInterceptors, List<SOAPInterceptor> soapInterceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.operationHandlers = operationHandlers;
         this.adminServiceInterceptors = adminServiceInterceptors;
-        this.interceptors = interceptors;
+        this.soapInterceptors = soapInterceptors;
         this.adaptableDelegate = adaptableDelegate;
     }
 
@@ -82,8 +82,8 @@ final class ConfiguratorImpl implements Configurator {
     }
     
     @Override
-    public void addInterceptor(Interceptor interceptor) {
-        interceptors.add(interceptor);
+    public void addInterceptor(SOAPInterceptor interceptor) {
+        soapInterceptors.add(interceptor);
     }
 
     @Override
@@ -108,7 +108,7 @@ final class ConfiguratorImpl implements Configurator {
     void release() {
         adminServiceInterfaces = null;
         operationHandlers = null;
-        interceptors = null;
+        soapInterceptors = null;
         adaptableDelegate = null;
     }
 }

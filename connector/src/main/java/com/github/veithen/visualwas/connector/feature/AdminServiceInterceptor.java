@@ -25,7 +25,7 @@ import com.github.veithen.visualwas.connector.AdminService;
 
 /**
  * Interceptor that intercepts calls at the {@link AdminService} level. To intercept SOAP messages
- * sent and received by the connector, use {@link Interceptor}.
+ * sent and received by the connector, use {@link SOAPInterceptor}.
  */
 public interface AdminServiceInterceptor {
     /**

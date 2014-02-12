@@ -39,7 +39,7 @@ import com.github.veithen.visualwas.connector.factory.DependencyUtil;
 import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
-import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
@@ -57,16 +57,16 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getOperationHandlers());
         adminServiceInterfaces.add(AdminService.class);
         List<AdminServiceInterceptor> adminServiceInterceptors = new ArrayList<AdminServiceInterceptor>();
-        List<Interceptor> interceptors = new ArrayList<Interceptor>();
+        List<SOAPInterceptor> soapInterceptors = new ArrayList<SOAPInterceptor>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, adminServiceInterceptors, interceptors, adaptableDelegate);
+        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, adminServiceInterceptors, soapInterceptors, adaptableDelegate);
         for (Feature feature : features) {
             feature.configureConnector(configurator);
         }
         configurator.release();
         AdminService adminService = (AdminService)Proxy.newProxyInstance(ConnectorFactoryImpl.class.getClassLoader(),
                 adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
-                new AdminServiceInvocationHandler(operationHandlers, interceptors.toArray(new Interceptor[interceptors.size()]),
+                new AdminServiceInvocationHandler(operationHandlers, soapInterceptors.toArray(new SOAPInterceptor[soapInterceptors.size()]),
                         config.getTransportFactory().createTransport(endpoint, config.getTransportConfiguration()), config, configurator.getSerializer(),
                         new Attributes(attributes)));
         return new ConnectorImpl(adminService, adminServiceInterceptors, adaptableDelegate);

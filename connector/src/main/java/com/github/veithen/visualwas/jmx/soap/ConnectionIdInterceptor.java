@@ -25,10 +25,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-final class ConnectionIdInterceptor implements Interceptor {
+final class ConnectionIdInterceptor implements SOAPInterceptor {
     private static final QName HEADER_NAME = new QName("http://github.com/veithen/visualwas", "ConnectionId", "v");
     
     private final String connectionId;

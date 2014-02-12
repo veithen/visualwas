@@ -35,7 +35,7 @@ import org.apache.axiom.soap.SOAPHeader;
 
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.connector.transport.Transport;
 
@@ -44,13 +44,13 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,OperationHandler> operationHandlers;
     // TODO: this will eventually depend on the class loader
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
-    private final Interceptor[] interceptors;
+    private final SOAPInterceptor[] interceptors;
     private final Transport transport;
     private final ConnectorConfiguration config;
     private final Serializer serializer;
     private final Attributes attributes;
 
-    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, Interceptor[] interceptors,
+    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, SOAPInterceptor[] interceptors,
             Transport transport, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
@@ -92,7 +92,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, args, context);
-        for (Interceptor interceptor : interceptors) {
+        for (SOAPInterceptor interceptor : interceptors) {
             interceptor.processRequest(request, context);
         }
         TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler, context);
