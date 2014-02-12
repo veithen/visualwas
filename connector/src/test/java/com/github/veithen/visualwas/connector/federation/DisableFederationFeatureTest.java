@@ -58,6 +58,5 @@ public class DisableFederationFeatureTest {
             }
         }
         assertTrue(serverMBeanSeen);
-        System.out.println(names);
     }
 }
