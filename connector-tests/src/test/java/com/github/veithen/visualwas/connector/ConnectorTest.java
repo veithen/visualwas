@@ -36,6 +36,9 @@ import javax.management.modelmbean.RequiredModelMBean;
 
 import org.junit.Test;
 
+import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
+import com.github.veithen.visualwas.connector.transport.dummy.SequencedRequestMatcher;
+
 public class ConnectorTest {
     @Test
     public void testGetMBeanCount() throws Exception {

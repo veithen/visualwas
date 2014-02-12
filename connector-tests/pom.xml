@@ -6,24 +6,19 @@
         <artifactId>visualwas</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>connector</artifactId>
-    <packaging>bundle</packaging>
-    <name>VisualWAS Connector</name>
+    <artifactId>connector-tests</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-api</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>connector</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-impl</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <!-- Note: we use 1.4 because it's the version shipped with the Eclipse platform -->
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.4</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dummy-transport</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.transport.dummy;
 
 import java.net.URL;
 

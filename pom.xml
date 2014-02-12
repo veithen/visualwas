@@ -88,6 +88,8 @@
     </dependencyManagement>
     <modules>
     	<module>connector</module>
+        <module>connector-tests</module>
+        <module>dummy-transport</module>
         <module>loader</module>
         <module>clientlib</module>
         <module>VisualWAS</module>

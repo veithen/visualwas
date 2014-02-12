@@ -19,34 +19,32 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.transport.dummy;
+
+import static org.junit.Assert.fail;
 
 import java.net.URL;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
-/**
- * {@link RequestMatcher} that assumes that requests are produced in the order in which they
- * are added using {@link DummyTransport#addExchange(URL, URL)}.
- */
-public final class SequencedRequestMatcher extends RequestMatcher {
-    private final Deque<Exchange> sequence = new LinkedList<>();
-    
+public final class DictionaryRequestMatcher extends RequestMatcher {
+    private final List<Exchange> exchanges = new ArrayList<>();
+
     @Override
     void add(Exchange exchange) {
-        sequence.addLast(exchange);
+        exchanges.add(exchange);
     }
 
     @Override
-    URL match(Document request) {
-        if (sequence.isEmpty()) {
-            throw new IllegalStateException();
+    protected URL match(Document request) {
+        for (Exchange exchange : exchanges) {
+            if (exchange.diff(request).similar()) {
+                return exchange.getResponse();
+            }
         }
-        Exchange exchange = sequence.removeFirst();
-        XMLAssert.assertXMLEqual(exchange.diff(request), true);
-        return exchange.getResponse();
+        fail("No matching exchange found");
+        return null; // Make compiler happy
     }
 }

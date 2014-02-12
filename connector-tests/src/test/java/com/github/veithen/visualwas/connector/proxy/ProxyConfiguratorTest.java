@@ -24,8 +24,8 @@ package com.github.veithen.visualwas.connector.proxy;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.DummyTransport;
-import com.github.veithen.visualwas.connector.SequencedRequestMatcher;
+import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
+import com.github.veithen.visualwas.connector.transport.dummy.SequencedRequestMatcher;
 
 public class ProxyConfiguratorTest {
     @Test

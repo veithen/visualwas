@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.transport.dummy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +33,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
+import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;

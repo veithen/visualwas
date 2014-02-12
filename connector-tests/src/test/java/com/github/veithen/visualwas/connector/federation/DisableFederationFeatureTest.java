@@ -32,8 +32,8 @@ import javax.management.ObjectName;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.DictionaryRequestMatcher;
-import com.github.veithen.visualwas.connector.DummyTransport;
+import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
+import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
 
 public class DisableFederationFeatureTest {
     @Test
