@@ -23,7 +23,10 @@ package com.github.veithen.visualwas.client.pmi;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.websphere.pmi.stat.WSStats")
-public class WSStats {
+@MappedClass("com.ibm.ws.pmi.stat.BoundedRangeStatisticImpl")
+public class BoundedRangeStatistic extends RangeStatistic {
+    private static final long serialVersionUID = -6143293937412368962L;
 
+    private long upperBound;
+    private long lowerBound;
 }

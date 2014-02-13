@@ -21,6 +21,12 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-public interface Perf {
-    Stats getStatsObject(MBeanStatDescriptor msd, Boolean recursive);
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+
+@MappedClass("com.ibm.ws.pmi.stat.CountStatisticImpl")
+public class CountStatistic extends Statistic {
+    private static final long serialVersionUID = 6335644998767409978L;
+
+    private long count;
+    private CountStatistic baseValue;
 }

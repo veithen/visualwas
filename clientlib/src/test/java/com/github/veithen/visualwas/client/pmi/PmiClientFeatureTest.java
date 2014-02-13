@@ -27,17 +27,15 @@ import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
-import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
-import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
 
 public class PmiClientFeatureTest {
     @Test
     public void testGetStatObject() throws Exception {
         Connector connector = ConnectorFactory.getInstance().createConnector(new Endpoint("localhost", 8882, false), ConnectorConfiguration.custom().addFeatures(PmiClientFeature.INSTANCE).build(), null);
-//        DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
-//        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "queryNames", "invoke-getStatsObject");
+//        DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
+//        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "getServerMBean", "queryNames", "invoke-getStatsObject");
 //        Connector connector = transport.createConnector(PmiClientFeature.INSTANCE);
         Perf perf = connector.getAdapter(Perf.class);
-        WSStats stats = perf.getStatsObject(new MBeanStatDescriptor(connector.getServerMBean(), "threadPoolModule", "WebContainer"), false);
+        Stats stats = perf.getStatsObject(new MBeanStatDescriptor(connector.getServerMBean(), "threadPoolModule", "WebContainer"), false);
     }
 }

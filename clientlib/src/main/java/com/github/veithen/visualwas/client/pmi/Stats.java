@@ -21,6 +21,20 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-public interface Perf {
-    Stats getStatsObject(MBeanStatDescriptor msd, Boolean recursive);
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+
+@MappedClass("com.ibm.ws.pmi.stat.StatsImpl")
+public class Stats implements Serializable {
+    private static final long serialVersionUID = -5812710047173154854L;
+
+    private String statsType;
+    private String name;
+    private int type;
+    private int instrumentationLevel;
+    private ArrayList dataMembers;
+    private ArrayList subCollections;
+    private long time;
 }

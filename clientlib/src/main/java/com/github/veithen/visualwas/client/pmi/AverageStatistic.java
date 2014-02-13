@@ -21,6 +21,16 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-public interface Perf {
-    Stats getStatsObject(MBeanStatDescriptor msd, Boolean recursive);
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+
+@MappedClass("com.ibm.ws.pmi.stat.AverageStatisticImpl")
+public class AverageStatistic extends Statistic {
+    private static final long serialVersionUID = 532089977446362907L;
+
+    private long count;
+    private long min;
+    private long max;
+    private long total;
+    private double sumOfSquares;
+    private AverageStatistic baseValue;
 }

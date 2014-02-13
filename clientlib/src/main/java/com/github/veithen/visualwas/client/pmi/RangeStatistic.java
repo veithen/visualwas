@@ -21,6 +21,17 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-public interface Perf {
-    Stats getStatsObject(MBeanStatDescriptor msd, Boolean recursive);
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+
+@MappedClass("com.ibm.ws.pmi.stat.RangeStatisticImpl")
+public class RangeStatistic extends Statistic {
+    private static final long serialVersionUID = -855214334683355657L;
+
+    protected long highWaterMark;
+    
+    private long lowWaterMark;
+    private long current;
+    private double integral;
+    private boolean initWaterMark;
+    private RangeStatistic baseValue;
 }
