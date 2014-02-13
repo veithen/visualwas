@@ -19,29 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.jmx.soap;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.soap.SOAPEnvelope;
+package com.github.veithen.visualwas.connector.impl;
 
 import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-final class ConnectionIdInterceptor implements Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
-    private static final QName HEADER_NAME = new QName("http://github.com/veithen/visualwas", "ConnectionId", "v");
-    
-    private final String connectionId;
+final class InterceptorHandler<S,T,F> implements Handler<S,T,F> {
+    private final Interceptor<S,T,F> interceptor;
+    private final Handler<S,T,F> nextHandler;
 
-    ConnectionIdInterceptor(String connectionId) {
-        this.connectionId = connectionId;
+    InterceptorHandler(Interceptor<S,T,F> interceptor, Handler<S,T,F> nextHandler) {
+        this.interceptor = interceptor;
+        this.nextHandler = nextHandler;
     }
 
     @Override
-    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback, Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> nextHandler) {
-        request.getOrCreateHeader().addHeaderBlock(HEADER_NAME).setText(connectionId);
-        nextHandler.invoke(context, request, callback);
+    public void invoke(InvocationContext context, S request, Callback<T,F> callback) {
+        interceptor.invoke(context, request, callback, nextHandler);
     }
 }

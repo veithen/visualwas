@@ -19,11 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.transport;
+package com.github.veithen.visualwas.connector;
 
-import org.apache.axiom.soap.SOAPEnvelope;
+import java.io.IOException;
 
-public interface TransportCallback {
-    void onResponse(SOAPEnvelope envelope);
-    void onFault(SOAPEnvelope envelope);
+public interface Callback<T,F> {
+    void onResponse(T response);
+    void onFault(F fault);
+    void onTransportError(IOException ex);
 }

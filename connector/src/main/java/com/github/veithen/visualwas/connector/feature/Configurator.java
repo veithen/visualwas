@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import org.apache.axiom.soap.SOAPEnvelope;
+
 import com.github.veithen.visualwas.connector.Adaptable;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
@@ -58,7 +60,7 @@ public interface Configurator extends Adaptable {
     
     void addInterceptor(AdminServiceInterceptor interceptor);
     
-    void addInterceptor(SOAPInterceptor interceptor);
+    void addInterceptor(Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> interceptor);
     
     <T> void registerConfiguratorAdapter(Class<T> iface, T adapter);
     

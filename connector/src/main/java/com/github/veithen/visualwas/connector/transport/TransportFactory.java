@@ -21,13 +21,17 @@
  */
 package com.github.veithen.visualwas.connector.transport;
 
+import org.apache.axiom.soap.SOAPEnvelope;
+
+import com.github.veithen.visualwas.connector.Handler;
+
 public interface TransportFactory {
     TransportFactory DEFAULT = new TransportFactory() {
         @Override
-        public Transport createTransport(Endpoint endpoint, TransportConfiguration config) {
+        public Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> createHandler(Endpoint endpoint, TransportConfiguration config) {
             return new DefaultTransport(endpoint, config);
         }
     };
     
-    Transport createTransport(Endpoint endpoint, TransportConfiguration config);
+    Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> createHandler(Endpoint endpoint, TransportConfiguration config);
 }

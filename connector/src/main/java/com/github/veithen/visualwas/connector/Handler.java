@@ -19,10 +19,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector;
 
-import org.apache.axiom.soap.SOAPEnvelope;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-public interface SOAPInterceptor {
-    void processRequest(SOAPEnvelope request, InvocationContext context);
+public interface Handler<S,T,F> {
+    void invoke(InvocationContext context, S request, Callback<T,F> callback);
 }

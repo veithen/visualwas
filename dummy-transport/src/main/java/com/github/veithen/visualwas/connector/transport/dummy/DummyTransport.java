@@ -33,17 +33,18 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
+import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Connector;
+import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
-import com.github.veithen.visualwas.connector.transport.Transport;
-import com.github.veithen.visualwas.connector.transport.TransportCallback;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.connector.transport.TransportFactory;
 
-public class DummyTransport implements Transport, TransportFactory {
+public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope>, TransportFactory {
     public static final Endpoint ENDPOINT = new Endpoint("localhost", 8888, false);
     
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
@@ -90,19 +91,23 @@ public class DummyTransport implements Transport, TransportFactory {
     }
     
     @Override
-    public Transport createTransport(Endpoint endpoint, TransportConfiguration config) {
+    public Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> createHandler(Endpoint endpoint, TransportConfiguration config) {
         return this;
     }
 
     @Override
-    public void send(SOAPEnvelope request, TransportCallback callback) throws IOException {
+    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback) {
         SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
         normalize(clonedRequest.getSOAPEnvelope());
-        InputStream in = requestMatcher.match((Document)clonedRequest).openStream();
         try {
-            callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
-        } finally {
-            in.close();
+            InputStream in = requestMatcher.match((Document)clonedRequest).openStream();
+            try {
+                callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
+            } finally {
+                in.close();
+            }
+        } catch (IOException ex) {
+            callback.onTransportError(ex);
         }
     }
 }

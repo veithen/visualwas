@@ -33,7 +33,11 @@ import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 
-final class DefaultTransport implements Transport {
+import com.github.veithen.visualwas.connector.Callback;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
+
+final class DefaultTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
     private final URL endpointUrl;
     private final TransportConfiguration config;
     
@@ -43,7 +47,7 @@ final class DefaultTransport implements Transport {
     }
 
     @Override
-    public void send(SOAPEnvelope request, TransportCallback callback) throws IOException {
+    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback) {
         try {
             HttpURLConnection conn = config.createURLConnection(endpointUrl);
             conn.setDoOutput(true);
@@ -69,7 +73,9 @@ final class DefaultTransport implements Transport {
             }
         } catch (XMLStreamException ex) {
             // TODO: attempt to unwrap the exception first
-            throw new IOException(ex);
+            callback.onTransportError(new IOException(ex));
+        } catch (IOException ex) {
+            callback.onTransportError(ex);
         }
     }
 }

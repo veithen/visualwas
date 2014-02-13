@@ -21,19 +21,21 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.io.IOException;
+
 import org.apache.axiom.soap.SOAPEnvelope;
 
+import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.ConnectorException;
-import com.github.veithen.visualwas.connector.transport.TransportCallback;
 
-final class TransportCallbackImpl implements TransportCallback {
+final class CallbackImpl implements Callback<SOAPEnvelope,SOAPEnvelope> {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
     private final InvocationContextImpl context;
     private Throwable throwable;
     private Object result;
     
-    TransportCallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
+    CallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
@@ -59,6 +61,11 @@ final class TransportCallbackImpl implements TransportCallback {
         } catch (TypeHandlerException ex) {
             throwable = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
         }
+    }
+
+    @Override
+    public void onTransportError(IOException ex) {
+        throwable = ex;
     }
 
     public Throwable getThrowable() {

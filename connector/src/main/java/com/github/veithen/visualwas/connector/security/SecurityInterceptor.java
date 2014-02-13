@@ -26,16 +26,18 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
+import com.github.veithen.visualwas.connector.Callback;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-final class SecurityInterceptor implements SOAPInterceptor {
+final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
     static final SecurityInterceptor INSTANCE = new SecurityInterceptor();
     
     private SecurityInterceptor() {}
 
     @Override
-    public void processRequest(SOAPEnvelope request, InvocationContext context) {
+    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback, Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> nextHandler) {
         Credentials credentials = context.getAttribute(Credentials.class);
         if (credentials != null) {
             OMFactory factory = request.getOMFactory();
@@ -52,5 +54,6 @@ final class SecurityInterceptor implements SOAPInterceptor {
                 throw new UnsupportedOperationException();
             }
         }
+        nextHandler.invoke(context, request, callback);
     }
 }

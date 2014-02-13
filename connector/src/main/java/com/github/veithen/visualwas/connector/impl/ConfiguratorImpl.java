@@ -27,12 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axiom.soap.SOAPEnvelope;
+
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Configurator;
-import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {
@@ -40,15 +43,15 @@ final class ConfiguratorImpl implements Configurator {
     private Set<Class<?>> adminServiceInterfaces;
     private Map<Method,OperationHandler> operationHandlers;
     private List<AdminServiceInterceptor> adminServiceInterceptors;
-    private List<SOAPInterceptor> soapInterceptors;
+    private Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<AdminServiceInterceptor> adminServiceInterceptors, List<SOAPInterceptor> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, List<AdminServiceInterceptor> adminServiceInterceptors, Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.operationHandlers = operationHandlers;
         this.adminServiceInterceptors = adminServiceInterceptors;
-        this.soapInterceptors = soapInterceptors;
+        this.soapHandler = soapHandler;
         this.adaptableDelegate = adaptableDelegate;
     }
 
@@ -82,8 +85,8 @@ final class ConfiguratorImpl implements Configurator {
     }
     
     @Override
-    public void addInterceptor(SOAPInterceptor interceptor) {
-        soapInterceptors.add(interceptor);
+    public void addInterceptor(Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> interceptor) {
+        soapHandler = new InterceptorHandler<>(interceptor, soapHandler);
     }
 
     @Override
@@ -105,10 +108,15 @@ final class ConfiguratorImpl implements Configurator {
         return serializer;
     }
 
+    Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> getSOAPHandler() {
+        return soapHandler;
+    }
+
     void release() {
         adminServiceInterfaces = null;
         operationHandlers = null;
-        soapInterceptors = null;
+        adminServiceInterceptors = null;
+        soapHandler = null;
         adaptableDelegate = null;
     }
 }

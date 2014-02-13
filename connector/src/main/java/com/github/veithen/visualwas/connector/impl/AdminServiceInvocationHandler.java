@@ -33,29 +33,26 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.feature.SOAPInterceptor;
 import com.github.veithen.visualwas.connector.feature.Serializer;
-import com.github.veithen.visualwas.connector.transport.Transport;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final OMMetaFactory metaFactory;
     private final Map<Method,OperationHandler> operationHandlers;
     // TODO: this will eventually depend on the class loader
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
-    private final SOAPInterceptor[] interceptors;
-    private final Transport transport;
+    private final Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler;
     private final ConnectorConfiguration config;
     private final Serializer serializer;
     private final Attributes attributes;
 
-    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers, SOAPInterceptor[] interceptors,
-            Transport transport, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
+    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers,
+            Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
         metaFactory = OMAbstractFactory.getMetaFactory();
         this.operationHandlers = operationHandlers;
-        this.interceptors = interceptors;
-        this.transport = transport;
+        this.soapHandler = soapHandler;
         this.config = config;
         this.serializer = serializer;
         this.attributes = attributes;
@@ -92,11 +89,8 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, args, context);
-        for (SOAPInterceptor interceptor : interceptors) {
-            interceptor.processRequest(request, context);
-        }
-        TransportCallbackImpl callback = new TransportCallbackImpl(operationHandler, faultReasonHandler, context);
-        transport.send(request, callback);
+        CallbackImpl callback = new CallbackImpl(operationHandler, faultReasonHandler, context);
+        soapHandler.invoke(context, request, callback);
         Throwable throwable = callback.getThrowable();
         if (throwable != null) {
             throw throwable;
