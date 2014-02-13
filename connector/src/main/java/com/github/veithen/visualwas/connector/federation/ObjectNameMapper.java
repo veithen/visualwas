@@ -38,54 +38,20 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
     private static final Set<String> nonRoutableDomains = new HashSet<String>(Arrays.asList("JMImplementation", "java.lang"));
     private static final Set<String> routingPropertyKeys = new HashSet<String>(Arrays.asList("cell", "node", "process"));
     
-    private final ServerMBeanSource serverMBeanSource;
-    private final Object routingPropertiesLock = new Object();
-    private String cell;
-    private String node;
-    private String process;
+    private final String cell;
+    private final String node;
+    private final String process;
     private final Set<ObjectName> nonRoutableMBeans = Collections.synchronizedSet(new HashSet<ObjectName>());
     private final Map<ObjectName,ObjectName> localToRemoteCache = new WeakHashMap<>();
     // TODO: for localToRemoteCache, WeakHashMap is a good choice, but not for remoteToLocalCache
     private final Map<ObjectName,ObjectName> remoteToLocalCache = new WeakHashMap<>();
     
-    ObjectNameMapper(ServerMBeanSource serverMBeanSource) {
-        this.serverMBeanSource = serverMBeanSource;
+    ObjectNameMapper(String cell, String node, String process) {
+        this.cell = cell;
+        this.node = node;
+        this.process = process;
     }
 
-    private void loadRoutingProperties() throws IOException {
-        ObjectName serverMBean = serverMBeanSource.getServerMBean();
-        cell = serverMBean.getKeyProperty("cell");
-        node = serverMBean.getKeyProperty("node");
-        process = serverMBean.getKeyProperty("process");
-    }
-    
-    private String getCell() throws IOException {
-        synchronized (routingPropertiesLock) {
-            if (cell == null) {
-                loadRoutingProperties();
-            }
-            return cell;
-        }
-    }
-    
-    private String getNode() throws IOException {
-        synchronized (routingPropertiesLock) {
-            if (node == null) {
-                loadRoutingProperties();
-            }
-            return node;
-        }
-    }
-    
-    private String getProcess() throws IOException {
-        synchronized (routingPropertiesLock) {
-            if (process == null) {
-                loadRoutingProperties();
-            }
-            return process;
-        }
-    }
-    
     ObjectName localToRemote(ObjectName localName) throws IOException {
         if (nonRoutableDomains.contains(localName.getDomain()) || nonRoutableMBeans.contains(localName)) {
             return localName;
@@ -94,9 +60,9 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                 ObjectName remoteName = localToRemoteCache.get(localName);
                 if (remoteName == null) {
                     Hashtable<String,String> newProps = new Hashtable<String,String>(localName.getKeyPropertyList());
-                    newProps.put("cell", getCell());
-                    newProps.put("node", getNode());
-                    newProps.put("process", getProcess());
+                    newProps.put("cell", cell);
+                    newProps.put("node", node);
+                    newProps.put("process", process);
                     try {
                         remoteName = new ObjectName(localName.getDomain(), newProps);
                         if (localName.isPropertyListPattern()) {
@@ -169,10 +135,9 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
             throw new UnsupportedOperationException();
         }
         if (objectName == null) {
-            loadRoutingProperties();
             try {
                 Set<T> results = new HashSet<T>();
-                for (T result : queryExecutor.execute(new ObjectName("*:cell=" + getCell() + ",node=" + getNode() + ",process=" + getProcess() + ",*"), queryExp)) {
+                for (T result : queryExecutor.execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp)) {
                     results.add(mapper.remoteToLocal(result));
                 }
                 for (String domain : nonRoutableDomains) {

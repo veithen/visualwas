@@ -23,6 +23,8 @@ package com.github.veithen.visualwas.connector.feature;
 
 import java.io.IOException;
 
+import com.github.veithen.visualwas.connector.Param;
+
 public interface DummyAdminServiceExtension {
-    void dummyMethod() throws IOException;
+    String echo(@Param(name="in") String in) throws IOException;
 }

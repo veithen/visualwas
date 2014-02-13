@@ -31,6 +31,6 @@ public final class SecurityFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addInterceptor(SecurityInterceptor.INSTANCE);
+        configurator.addSOAPInterceptor(SecurityInterceptor.INSTANCE);
     }
 }

@@ -27,7 +27,7 @@ public final class Invocation {
     private final OperationDescription operation;
     private final Object[] args;
     
-    public Invocation(OperationDescription operation, Object[] args) {
+    public Invocation(OperationDescription operation, Object... args) {
         this.operation = operation;
         this.args = args;
     }

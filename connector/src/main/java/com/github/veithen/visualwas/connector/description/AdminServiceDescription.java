@@ -60,4 +60,5 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
  */
 public interface AdminServiceDescription {
     Class<?> getInterface();
+    OperationDescription getOperation(String name);
 }

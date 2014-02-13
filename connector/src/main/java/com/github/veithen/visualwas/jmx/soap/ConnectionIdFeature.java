@@ -33,6 +33,6 @@ final class ConnectionIdFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addInterceptor(new ConnectionIdInterceptor(connectionId));
+        configurator.addSOAPInterceptor(new ConnectionIdInterceptor(connectionId));
     }
 }

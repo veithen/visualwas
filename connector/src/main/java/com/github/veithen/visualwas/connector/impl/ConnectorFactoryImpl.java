@@ -34,12 +34,11 @@ import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.factory.DependencyUtil;
-import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
@@ -58,18 +57,20 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
         Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getOperationHandlers());
         adminServiceInterfaces.add(AdminService.class);
-        List<AdminServiceInterceptor> adminServiceInterceptors = new ArrayList<AdminServiceInterceptor>();
+        InterceptorChainBuilder<Invocation,Object,Throwable> invocationInterceptors = new InterceptorChainBuilder<>();
+        InterceptorChainBuilder<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, adminServiceInterceptors, config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration()), adaptableDelegate);
+        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, invocationInterceptors, soapInterceptors, adaptableDelegate);
         for (Feature feature : features) {
             feature.configureConnector(configurator);
         }
-        Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler = configurator.getSOAPHandler();
         configurator.release();
         AdminService adminService = (AdminService)Proxy.newProxyInstance(ConnectorFactoryImpl.class.getClassLoader(),
                 adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
-                new AdminServiceInvocationHandler(operationHandlers, new MarshallingHandler(soapHandler), config, configurator.getSerializer(),
+                new AdminServiceInvocationHandler(operationHandlers,
+                        invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
+                        config, configurator.getSerializer(),
                         new Attributes(attributes)));
-        return new ConnectorImpl(adminService, adminServiceInterceptors, adaptableDelegate);
+        return new ConnectorImpl(adminService, adaptableDelegate);
     }
 }

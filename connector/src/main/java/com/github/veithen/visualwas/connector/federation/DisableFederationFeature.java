@@ -21,8 +21,6 @@
  */
 package com.github.veithen.visualwas.connector.federation;
 
-import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
@@ -60,11 +58,6 @@ public final class DisableFederationFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addInterceptor(new AdminServiceInterceptor() {
-            @Override
-            public AdminService createProxy(AdminService adminService) {
-                return new AdminServiceProxy(adminService);
-            }
-        });
+        configurator.addInvocationInterceptor(new InvocationInterceptor());
     }
 }

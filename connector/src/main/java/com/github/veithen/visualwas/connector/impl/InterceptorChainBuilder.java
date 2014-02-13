@@ -19,12 +19,26 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.federation;
+package com.github.veithen.visualwas.connector.impl;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.management.ObjectName;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.Interceptor;
 
-interface ServerMBeanSource {
-    ObjectName getServerMBean() throws IOException;
+final class InterceptorChainBuilder<S,T,F> {
+    private final List<Interceptor<S,T,F>> interceptors = new ArrayList<>();
+    
+    void add(Interceptor<S,T,F> interceptor) {
+        interceptors.add(interceptor);
+    }
+    
+    Handler<S,T,F> buildHandler(Handler<S,T,F> targetHandler) {
+        Handler<S,T,F> handler = targetHandler;
+        for (Interceptor<S,T,F> interceptor : interceptors) {
+            handler = new InterceptorHandler<>(interceptor, handler);
+        }
+        return handler;
+    }
 }

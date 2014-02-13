@@ -21,33 +21,45 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Connector;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public class FeatureTest {
     @Test
-    public void testAdminServiceInterceptorWithAdminServiceExtension() {
+    public void testInvocationInterceptorWithAdminServiceExtension() throws Exception {
         ConnectorConfiguration config = ConnectorConfiguration.custom().addFeatures(new Feature() {
             @Override
             public void configureConnector(Configurator configurator) {
-                configurator.addAdminServiceDescription(AdminServiceDescriptionFactory.getInstance().createDescription(DummyAdminServiceExtension.class));
-                configurator.addInterceptor(new AdminServiceInterceptor() {
-                    @Override
-                    public AdminService createProxy(AdminService adminService) {
-                        return new AdminServiceProxy(adminService);
+                AdminServiceDescription desc = AdminServiceDescriptionFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
+                configurator.addAdminServiceDescription(desc);
+                final OperationDescription operation = desc.getOperation("echo");
+                configurator.addInvocationInterceptor(new Interceptor<Invocation,Object,Throwable>() {
+                    public void invoke(InvocationContext context, Invocation invocation, Callback<Object,Throwable> callback, Handler<Invocation,Object,Throwable> nextHandler) {
+                        if (invocation.getOperation() == operation) {
+                            callback.onResponse(invocation.getArgs()[0]);
+                        } else {
+                            nextHandler.invoke(context, invocation, callback);
+                        }
                     }
                 });
             }
         }).build();
         Connector connector = ConnectorFactory.getInstance().createConnector(new Endpoint("localhost", 8880, false), config, null);
-        assertNotNull(connector.getAdapter(DummyAdminServiceExtension.class));
+        DummyAdminServiceExtension extension = connector.getAdapter(DummyAdminServiceExtension.class);
+        assertNotNull(extension);
+        assertEquals("test", extension.echo("test"));
     }
 }
