@@ -68,7 +68,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         configurator.release();
         AdminService adminService = (AdminService)Proxy.newProxyInstance(ConnectorFactoryImpl.class.getClassLoader(),
                 adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
-                new AdminServiceInvocationHandler(operationHandlers, soapHandler, config, configurator.getSerializer(),
+                new AdminServiceInvocationHandler(operationHandlers, new MarshallingHandler(soapHandler), config, configurator.getSerializer(),
                         new Attributes(attributes)));
         return new ConnectorImpl(adminService, adminServiceInterceptors, adaptableDelegate);
     }

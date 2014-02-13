@@ -25,34 +25,23 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMMetaFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.soap.SOAPBody;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
-import org.apache.axiom.soap.SOAPHeader;
-
 import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
-    private final OMMetaFactory metaFactory;
     private final Map<Method,OperationHandler> operationHandlers;
-    // TODO: this will eventually depend on the class loader
-    private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
-    private final Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler;
+    private final Handler<Invocation,Object,Throwable> handler;
     private final ConnectorConfiguration config;
     private final Serializer serializer;
     private final Attributes attributes;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers,
-            Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
-        metaFactory = OMAbstractFactory.getMetaFactory();
+            Handler<Invocation,Object,Throwable> handler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
         this.operationHandlers = operationHandlers;
-        this.soapHandler = soapHandler;
+        this.handler = handler;
         this.config = config;
         this.serializer = serializer;
         this.attributes = attributes;
@@ -78,19 +67,8 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
         InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
-        OperationHandler operationHandler = operationHandlers.get(method);
-        SOAPFactory factory = metaFactory.getSOAP11Factory();
-        SOAPEnvelope request = factory.createSOAPEnvelope();
-        SOAPHeader header = factory.createSOAPHeader(request);
-        OMNamespace ns1 = factory.createOMNamespace("admin", "ns");
-        header.addAttribute("JMXMessageVersion", "1.2.0", ns1);
-        header.addAttribute("JMXVersion", "1.2.0", ns1);
-        // TODO: need this to prevent Axiom from skipping serialization of the header
-        header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
-        SOAPBody body = factory.createSOAPBody(request);
-        operationHandler.createRequest(body, args, context);
-        CallbackImpl callback = new CallbackImpl(operationHandler, faultReasonHandler, context);
-        soapHandler.invoke(context, request, callback);
+        SynchronousInvocationCallback callback = new SynchronousInvocationCallback();
+        handler.invoke(context, new Invocation(operationHandlers.get(method), args), callback);
         Throwable throwable = callback.getThrowable();
         if (throwable != null) {
             throw throwable;

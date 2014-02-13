@@ -28,51 +28,43 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.ConnectorException;
 
-final class CallbackImpl implements Callback<SOAPEnvelope,SOAPEnvelope> {
+final class UnmarshallingCallback implements Callback<SOAPEnvelope,SOAPEnvelope> {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
     private final InvocationContextImpl context;
-    private Throwable throwable;
-    private Object result;
+    private final Callback<Object,Throwable> callback;
     
-    CallbackImpl(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
+    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context, Callback<Object,Throwable> callback) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
+        this.callback = callback;
     }
 
     @Override
     public void onResponse(SOAPEnvelope envelope) {
         try {
-            result = operationHandler.processResponse(envelope.getBody().getFirstElement(), context);
+            callback.onResponse(operationHandler.processResponse(envelope.getBody().getFirstElement(), context));
         } catch (ClassNotFoundException ex) {
-            throwable = ex;
+            callback.onFault(ex);
         } catch (OperationHandlerException ex) {
-            throwable = new ConnectorException("Invocation failed", ex);
+            callback.onFault(new ConnectorException("Invocation failed", ex));
         }
     }
 
     @Override
     public void onFault(SOAPEnvelope envelope) {
         try {
-            throwable = (Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), context);
+            callback.onFault((Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), context));
         } catch (ClassNotFoundException ex) {
-            throwable = ex;
+            callback.onFault(ex);
         } catch (TypeHandlerException ex) {
-            throwable = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
+            callback.onFault(new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex));
         }
     }
 
     @Override
     public void onTransportError(IOException ex) {
-        throwable = ex;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
-    public Object getResult() {
-        return result;
+        callback.onTransportError(ex);
     }
 }
