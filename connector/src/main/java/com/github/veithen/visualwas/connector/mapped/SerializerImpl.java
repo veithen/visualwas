@@ -49,6 +49,6 @@ final class SerializerImpl implements Serializer {
 
     @Override
     public void writeObject(Object object, OutputStream out, InvocationContext context) throws IOException {
-        new MappedObjectOutputStream(out, classMapper, context).writeObject(object);
+        new MappedObjectOutputStream(new ClassDescriptorRewritingOutputStream(out, classMapper), context).writeObject(object);
     }
 }
