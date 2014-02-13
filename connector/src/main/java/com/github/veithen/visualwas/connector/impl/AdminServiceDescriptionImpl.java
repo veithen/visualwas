@@ -25,14 +25,17 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 
 final class AdminServiceDescriptionImpl implements AdminServiceDescription {
     private final Class<?> iface;
-    private final Map<Method,OperationHandler> operationHandlers;
+    private final Map<String,OperationHandler> operationNameToOperationHandler;
+    private final Map<Method,OperationHandler> methodToOperationHandler;
 
-    AdminServiceDescriptionImpl(Class<?> iface, Map<Method, OperationHandler> operationHandlers) {
+    AdminServiceDescriptionImpl(Class<?> iface, Map<String,OperationHandler> operationNameToOperationHandler, Map<Method,OperationHandler> methodToOperationHandler) {
         this.iface = iface;
-        this.operationHandlers = operationHandlers;
+        this.operationNameToOperationHandler = operationNameToOperationHandler;
+        this.methodToOperationHandler = methodToOperationHandler;
     }
 
     @Override
@@ -40,7 +43,12 @@ final class AdminServiceDescriptionImpl implements AdminServiceDescription {
         return iface;
     }
 
-    Map<Method, OperationHandler> getOperationHandlers() {
-        return operationHandlers;
+    @Override
+    public OperationDescription getOperation(String name) {
+        return operationNameToOperationHandler.get(name);
+    }
+
+    Map<Method,OperationHandler> getOperationHandlers() {
+        return methodToOperationHandler;
     }
 }

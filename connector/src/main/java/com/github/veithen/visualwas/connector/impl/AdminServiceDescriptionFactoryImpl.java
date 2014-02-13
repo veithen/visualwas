@@ -36,7 +36,8 @@ import com.github.veithen.visualwas.connector.description.AdminServiceDescriptio
 public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescriptionFactory {
     @Override
     public AdminServiceDescription createDescription(Class<?> iface) throws AdminServiceDescriptionFactoryException {
-        Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>();
+        Map<String,OperationHandler> operationNameToOperationHandler = new HashMap<>();
+        Map<Method,OperationHandler> methodToOperationHandler = new HashMap<>();
         for (Method method : iface.getDeclaredMethods()) {
             boolean hasConnectorException = false;
             for (Class<?> exceptionType : method.getExceptionTypes()) {
@@ -71,10 +72,12 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
             Operation operationAnnotation = method.getAnnotation(Operation.class);
             String operationName = operationAnnotation != null ? operationAnnotation.name() : method.getName();
             Class<?> returnType = method.getReturnType();
-            operationHandlers.put(method, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                    returnType == Void.TYPE ? null : getTypeHandler(returnType)));
+            OperationHandler operationHandler = new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
+                    returnType == Void.TYPE ? null : getTypeHandler(returnType));
+            operationNameToOperationHandler.put(operationName, operationHandler);
+            methodToOperationHandler.put(method, operationHandler);
         }
-        return new AdminServiceDescriptionImpl(iface, operationHandlers);
+        return new AdminServiceDescriptionImpl(iface, operationNameToOperationHandler, methodToOperationHandler);
     }
     
     private static TypeHandler getTypeHandler(Class<?> javaType) {

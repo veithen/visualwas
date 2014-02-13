@@ -23,42 +23,28 @@ package com.github.veithen.visualwas.connector.federation;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.junit.Test;
 
 public class ObjectNameMapperTest {
-    private static final ServerMBeanSource smbs = new ServerMBeanSource() {
-        @Override
-        public ObjectName getServerMBean() throws IOException {
-            try {
-                return new ObjectName("WebSphere:cell=test,node=node1,process=server1");
-            } catch (MalformedObjectNameException ex) {
-                throw new IOException(ex);
-            }
-        }
-    };
-    
     @Test
     public void testLocalToRemote() throws Exception {
-        ObjectNameMapper mapper = new ObjectNameMapper(smbs);
+        ObjectNameMapper mapper = new ObjectNameMapper("test", "node1", "server1");
         assertEquals(new ObjectName("WebSphere:type=MyMBean,cell=test,node=node1,process=server1"),
                 mapper.localToRemote(new ObjectName("WebSphere:type=MyMBean")));
     }
     
     @Test
     public void testPropertyListPattern() throws Exception {
-        ObjectNameMapper mapper = new ObjectNameMapper(smbs);
+        ObjectNameMapper mapper = new ObjectNameMapper("test", "node1", "server1");
         assertEquals(new ObjectName("WebSphere:type=Server,cell=test,node=node1,process=server1,*"),
                 mapper.localToRemote(new ObjectName("WebSphere:type=Server,*")));
     }
     
     @Test
     public void testNonRoutable() throws Exception {
-        ObjectNameMapper mapper = new ObjectNameMapper(smbs);
+        ObjectNameMapper mapper = new ObjectNameMapper("test", "node1", "server1");
         ObjectName name = new ObjectName("java.lang:type=Runtime");
         assertEquals(name, mapper.localToRemote(name));
     }

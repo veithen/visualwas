@@ -22,7 +22,6 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import javax.management.Attribute;
@@ -40,18 +39,14 @@ import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.feature.AdminServiceInterceptor;
 
 final class ConnectorImpl implements Connector {
     private final AdminService adminService;
     private final AdaptableDelegate adaptableDelegate;
     
-    ConnectorImpl(AdminService adminService, List<AdminServiceInterceptor> adminServiceInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConnectorImpl(AdminService adminService, AdaptableDelegate adaptableDelegate) {
         this.adaptableDelegate = adaptableDelegate;
         adaptableDelegate.setAdminService(adminService);
-        for (AdminServiceInterceptor interceptor : adminServiceInterceptors) {
-            adminService = interceptor.createProxy(adminService);
-        }
         this.adminService = adminService;
     }
     

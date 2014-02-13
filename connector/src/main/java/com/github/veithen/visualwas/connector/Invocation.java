@@ -19,12 +19,24 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector;
 
-import java.io.IOException;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 
-import com.github.veithen.visualwas.connector.Param;
+public final class Invocation {
+    private final OperationDescription operation;
+    private final Object[] args;
+    
+    public Invocation(OperationDescription operation, Object... args) {
+        this.operation = operation;
+        this.args = args;
+    }
 
-public interface DummyAdminServiceExtension {
-    String echo(@Param(name="in") String in) throws IOException;
+    public OperationDescription getOperation() {
+        return operation;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
 }

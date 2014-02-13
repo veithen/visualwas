@@ -19,22 +19,36 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.AdminService;
+import java.io.IOException;
 
-/**
- * Interceptor that intercepts calls at the {@link AdminService} level. To intercept SOAP messages
- * sent and received by the connector, use {@link SOAPInterceptor}.
- */
-public interface AdminServiceInterceptor {
-    /**
-     * Create an {@link AdminService} proxy. The proxy should implement the necessary interception
-     * logic.
-     * 
-     * @param adminService
-     *            the {@link AdminService} instance to create a proxy for
-     * @return the proxy; never <code>null</code>
-     */
-    AdminService createProxy(AdminService adminService);
+import com.github.veithen.visualwas.connector.Callback;
+
+public class SynchronousInvocationCallback implements Callback<Object,Throwable> {
+    private Throwable throwable;
+    private Object result;
+
+    @Override
+    public void onResponse(Object response) {
+        result = response;
+    }
+
+    @Override
+    public void onFault(Throwable fault) {
+        throwable = fault;
+    }
+
+    @Override
+    public void onTransportError(IOException ex) {
+        throwable = ex;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public Object getResult() {
+        return result;
+    }
 }

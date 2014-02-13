@@ -19,12 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector.description;
 
-import java.io.IOException;
+public interface OperationDescription {
 
-import com.github.veithen.visualwas.connector.Param;
-
-public interface DummyAdminServiceExtension {
-    String echo(@Param(name="in") String in) throws IOException;
 }
