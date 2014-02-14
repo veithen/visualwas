@@ -41,10 +41,19 @@ final class ProxyInvocationHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
-        Class<?>[] paramTypes = method.getParameterTypes();
-        String[] signature = new String[paramTypes.length];
-        for (int i=0; i<paramTypes.length; i++) {
-            signature[i] = paramTypes[i].getName();
+        // Normalize the params argument
+        if (params != null && params.length == 0) {
+            params = null;
+        }
+        String[] signature;
+        if (params == null) {
+            signature = null;
+        } else {
+            Class<?>[] paramTypes = method.getParameterTypes();
+            signature = new String[paramTypes.length];
+            for (int i=0; i<paramTypes.length; i++) {
+                signature[i] = paramTypes[i].getName();
+            }
         }
         int attempts = 0;
         while (true) {

@@ -43,15 +43,17 @@ final class InvocationInterceptor implements Interceptor<Invocation,Object,Throw
         if (invocation.getOperation() == invokeOperation) {
             Object[] args = invocation.getArgs();
             String[] signature = (String[])args[3];
-            boolean cloned = false;
-            for (int i=0; i<signature.length; i++) {
-                String originalClass = classMapper.getOriginalClass(signature[i]);
-                if (originalClass != null) {
-                    if (!cloned) {
-                        args[3] = signature = signature.clone();
-                        cloned = true;
+            if (signature != null) {
+                boolean cloned = false;
+                for (int i=0; i<signature.length; i++) {
+                    String originalClass = classMapper.getOriginalClass(signature[i]);
+                    if (originalClass != null) {
+                        if (!cloned) {
+                            args[3] = signature = signature.clone();
+                            cloned = true;
+                        }
+                        signature[i] = originalClass;
                     }
-                    signature[i] = originalClass;
                 }
             }
         }

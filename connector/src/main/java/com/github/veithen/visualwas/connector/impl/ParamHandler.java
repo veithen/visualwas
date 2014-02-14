@@ -40,7 +40,8 @@ public final class ParamHandler {
         OMFactory factory = operationElement.getOMFactory();
         OMElement element = factory.createOMElement(name, null, operationElement);
         QName type;
-        if (value != null) {
+        // TODO: quick and dirty hack: the WebSphere SOAP connector doesn't use xsi:nil in all cases; once we have determined the logic (and have enough test cases), this needs to be cleaned up
+        if (value != null || (valueHandler instanceof ObjectHandler && ((ObjectHandler)valueHandler).getType().isArray())) {
             type = valueHandler.setValue(element, value, context);
         } else {
             element.addAttribute("nil", "true", xsiNS);

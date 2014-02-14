@@ -22,24 +22,16 @@
 package com.github.veithen.visualwas.client.pmi;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.StatsImpl")
-public class Stats implements Serializable {
-    private static final long serialVersionUID = -5812710047173154854L;
+@MappedClass("com.ibm.websphere.pmi.PmiModuleConfig")
+public class PmiModuleConfig implements Serializable {
+    private static final long serialVersionUID = 9139791110927568058L;
 
-    private String statsType;
-    private String name;
-    private int type;
-    private int instrumentationLevel;
-    private List<Statistic> dataMembers;
-    private ArrayList subCollections;
-    private long time;
-    
-    public String getStatsType() {
-        return statsType;
+    private String UID;
+
+    public String getUID() {
+        return UID;
     }
 }

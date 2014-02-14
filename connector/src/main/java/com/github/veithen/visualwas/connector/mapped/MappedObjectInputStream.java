@@ -63,9 +63,16 @@ public final class MappedObjectInputStream extends ObjectInputStream {
         String result = super.readUTF();
         if (nextIsClassName) {
             nextIsClassName = false;
-            String replacementClass = classMapper.getReplacementClass(result);
-            if (replacementClass != null) {
-                result = replacementClass;
+            int dims = 0;
+            while (result.charAt(dims) == '[') {
+                dims++;
+            }
+            if (dims == 0 || result.charAt(dims) == 'L') {
+                String className = dims == 0 ? result : result.substring(dims+1, result.length()-1);
+                String replacementClass = classMapper.getReplacementClass(className);
+                if (replacementClass != null) {
+                    result = dims == 0 ? replacementClass : result.substring(0, dims+1) + replacementClass + ";";
+                }
             }
         }
         return result;

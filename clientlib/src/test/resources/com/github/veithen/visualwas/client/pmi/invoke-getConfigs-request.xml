@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:invoke xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<objectname xsi:type="ns1:javax.management.ObjectName">rO0ABXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdACkV2ViU3BoZXJlOm5hbWU9UGVyZk1CZWFuLHByb2Nlc3M9c2VydmVyMSxwbGF0Zm9ybT1keW5hbWljcHJveHksbm9kZT1waG9ib3NOb2RlMDMsdmVyc2lvbj03LjAuMC4yNyx0eXBlPVBlcmYsbWJlYW5JZGVudGlmaWVyPVBlcmZNQmVhbixjZWxsPXBob2Jvc05vZGUwM0NlbGwsc3BlYz0xLjB4</objectname>
+<operationname xsi:type="xsd:string">getConfigs</operationname>
+<params xsi:type="ns1:[Ljava.lang.Object;">rO0ABXA=</params>
+<signature xsi:type="ns1:[Ljava.lang.String;">rO0ABXA=</signature>
+</ns1:invoke>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
