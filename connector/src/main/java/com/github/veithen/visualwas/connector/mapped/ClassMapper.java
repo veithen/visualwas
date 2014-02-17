@@ -33,11 +33,26 @@ final class ClassMapper {
         originalClasses.put(replacementClass, originalClass);
     }
     
-    String getReplacementClass(String originalClass) {
-        return replacementClasses.get(originalClass);
+    private static String map(Map<String,String> map, String signature) {
+        int dims = 0;
+        while (signature.charAt(dims) == '[') {
+            dims++;
+        }
+        if (dims == 0 || signature.charAt(dims) == 'L') {
+            String className = dims == 0 ? signature : signature.substring(dims+1, signature.length()-1);
+            String replacementClass = map.get(className);
+            if (replacementClass != null) {
+                return dims == 0 ? replacementClass : signature.substring(0, dims+1) + replacementClass + ";";
+            }
+        }
+        return signature;
     }
-
-    String getOriginalClass(String replacementClass) {
-        return originalClasses.get(replacementClass);
+    
+    String toRemoteClass(String localClass) {
+        return map(originalClasses, localClass);
+    }
+    
+    String toLocalClass(String remoteClass) {
+        return map(replacementClasses, remoteClass);
     }
 }

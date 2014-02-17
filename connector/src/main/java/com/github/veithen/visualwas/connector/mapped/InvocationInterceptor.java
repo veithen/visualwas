@@ -46,13 +46,14 @@ final class InvocationInterceptor implements Interceptor<Invocation,Object,Throw
             if (signature != null) {
                 boolean cloned = false;
                 for (int i=0; i<signature.length; i++) {
-                    String originalClass = classMapper.getOriginalClass(signature[i]);
-                    if (originalClass != null) {
+                    String localClass = signature[i];
+                    String remoteClass = classMapper.toRemoteClass(localClass);
+                    if (remoteClass != localClass) {
                         if (!cloned) {
                             args[3] = signature = signature.clone();
                             cloned = true;
                         }
-                        signature[i] = originalClass;
+                        signature[i] = remoteClass;
                     }
                 }
             }

@@ -63,12 +63,20 @@ final class Buffer {
         return (readByte() << 8) | readByte();
     }
     
-    long readLong() {
-        long l = 0;
-        for (int i=0; i<8; i++) {
-            l = (l << 8) | readByte(); 
+    int readInt() {
+        int result = 0;
+        for (int i=0; i<4; i++) {
+            result = (result << 8) | readByte(); 
         }
-        return l;
+        return result;
+    }
+    
+    long readLong() {
+        long result = 0;
+        for (int i=0; i<8; i++) {
+            result = (result << 8) | readByte(); 
+        }
+        return result;
     }
     
     String readUTF() {

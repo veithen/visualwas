@@ -37,9 +37,7 @@ final class SerializerImpl implements Serializer {
 
     @Override
     public String getRemoteClassName(Class<?> localClass) {
-        String localClassName = localClass.getName();
-        String remoteClassName = classMapper.getOriginalClass(localClassName);
-        return remoteClassName == null ? localClassName : remoteClassName;
+        return classMapper.toRemoteClass(localClass.getName());
     }
 
     @Override

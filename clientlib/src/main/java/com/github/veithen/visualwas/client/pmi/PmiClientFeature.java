@@ -41,9 +41,9 @@ public final class PmiClientFeature implements Feature {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
                 BoundedRangeStatistic.class,
                 CountStatistic.class,
-                MBeanLevelSpec.class,
-                MBeanStatDescriptor.class,
                 PmiModuleConfig.class,
+                StatDescriptor.class,
+                StatLevelSpec.class,
                 Stats.class,
                 TimeStatistic.class);
         configurator.getAdapter(ProxyConfigurator.class).registerProxy(Perf.class, new SingletonMBeanLocator("Perf"));

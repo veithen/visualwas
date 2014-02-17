@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,14 +39,16 @@ public class PmiClientFeatureTest {
     @Before
     public void setUp() throws Exception {
         DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
-        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "queryNames", "invoke-getStatsObject", "invoke-getConfigs", "invoke-getInstrumentationLevel");
+        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "queryNames", "invoke-getStatsArray", "invoke-getConfigs", "invoke-getInstrumentationLevel", "invoke-setInstrumentationLevel");
         connector = transport.createConnector(PmiClientFeature.INSTANCE);
         perf = connector.getAdapter(Perf.class);
     }
     
     @Test
-    public void testGetStatObject() throws Exception {
-        Stats stats = perf.getStatsObject(new MBeanStatDescriptor(connector.getServerMBean(), "threadPoolModule", "WebContainer"), false);
+    public void testGetStatsArray() throws Exception {
+        Stats[] statsArray = perf.getStatsArray(new StatDescriptor[] { new StatDescriptor(PmiModules.THREAD_POOL, "WebContainer") }, false);
+        assertEquals(1, statsArray.length);
+        Stats stats = statsArray[0];
         assertEquals(PmiModules.THREAD_POOL, stats.getStatsType());
         // TODO: validate content
     }
@@ -60,10 +61,19 @@ public class PmiClientFeatureTest {
     
     @Test
     public void testGetInstrumentationLevel() throws Exception {
-        MBeanLevelSpec[] levels = perf.getInstrumentationLevel(new MBeanStatDescriptor(connector.getServerMBean(), "threadPoolModule", "WebContainer"), false);
+        StatLevelSpec[] levels = perf.getInstrumentationLevel(new StatDescriptor(PmiModules.THREAD_POOL, "WebContainer"), false);
         assertEquals(1, levels.length);
-        MBeanLevelSpec level = levels[0];
+        StatLevelSpec level = levels[0];
         assertTrue(level.isEnabled(1));
         assertFalse(level.isEnabled(10));
+    }
+    
+    @Test
+    public void testSetInstrumentationLevel() throws Exception {
+        StatLevelSpec spec = new StatLevelSpec(PmiModules.THREAD_POOL, "WebContainer");
+        spec.enable(1);
+        spec.enable(2);
+        spec.enable(3);
+        perf.setInstrumentationLevel(new StatLevelSpec[] { spec }, Boolean.FALSE);
     }
 }

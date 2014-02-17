@@ -19,23 +19,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.client.pmi;
+package com.github.veithen.visualwas.connector.mapped;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertEquals;
 
-import javax.management.ObjectName;
+import java.io.ObjectStreamClass;
 
-import com.github.veithen.visualwas.connector.mapped.MappedClass;
+import org.junit.Test;
 
-@MappedClass("com.ibm.websphere.pmi.stat.MBeanStatDescriptor")
-public final class MBeanStatDescriptor implements Serializable {
-    private static final long serialVersionUID = 8434304601722208723L;
-    
-    private final ObjectName mName;
-    private final StatDescriptor sd;
-    
-    public MBeanStatDescriptor(ObjectName mbean, String... path) {
-        mName = mbean;
-        sd = new StatDescriptor(path);
+public class UtilsTest {
+    @Test
+    public void testComputeArraySUID() {
+        Class<?> clazz = String[][].class;
+        assertEquals(ObjectStreamClass.lookup(clazz).getSerialVersionUID(), Utils.computeArraySUID(clazz.getName()));
     }
 }

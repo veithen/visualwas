@@ -32,7 +32,7 @@ public class StatDescriptor implements Serializable {
     private final String[] subPath;
     private final int dataId = -3;
     
-    public StatDescriptor(String[] subPath) {
+    public StatDescriptor(String... subPath) {
         this.subPath = subPath;
     }
 }

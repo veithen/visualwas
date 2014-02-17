@@ -43,13 +43,15 @@ final class ClassDescriptorRewritingOutputStream extends OutputStream {
     
     void endClassDescriptor() throws IOException {
         inClassDescriptor = false;
-        String className = buffer.readUTF();
-        String originalClass = classMapper.getOriginalClass(className);
-        if (originalClass != null) {
-            className = originalClass;
+        String localClass = buffer.readUTF();
+        String remoteClass = classMapper.toRemoteClass(localClass);
+        out.writeUTF(remoteClass);
+        long suid = buffer.readLong();
+        // If the class is an array, we need to recompute the serial version ID
+        if (localClass != remoteClass && localClass.charAt(0) == '[') {
+            suid = Utils.computeArraySUID(remoteClass);
         }
-        out.writeUTF(className);
-        out.writeLong(buffer.readLong());
+        out.writeLong(suid);
         out.writeByte(buffer.readByte());
         int nfields = buffer.readUnsignedShort();
         out.writeShort(nfields);
@@ -68,15 +70,17 @@ final class ClassDescriptorRewritingOutputStream extends OutputStream {
                     }
                     if (signature.charAt(pos) == 'L') {
                         pos++;
-                        originalClass = classMapper.getOriginalClass(signature.substring(pos, signature.length()-1).replace('/', '.'));
-                        if (originalClass != null) {
-                            signature = signature.substring(0, pos) + originalClass.replace('.', '/') + ";";
+                        localClass = signature.substring(pos, signature.length()-1).replace('/', '.');
+                        remoteClass = classMapper.toRemoteClass(localClass);
+                        if (remoteClass != localClass) {
+                            signature = signature.substring(0, pos) + remoteClass.replace('.', '/') + ";";
                         }
                     }
                     out.writeUTF(signature);
+                } else if (type == ObjectOutputStream.TC_REFERENCE) {
+                    out.writeInt(buffer.readInt());
                 } else {
-                    // TODO: handles?
-                    throw new UnsupportedOperationException();
+                    throw new IllegalStateException();
                 }
             }
         }

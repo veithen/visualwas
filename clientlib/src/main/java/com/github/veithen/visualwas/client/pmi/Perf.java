@@ -22,8 +22,8 @@
 package com.github.veithen.visualwas.client.pmi;
 
 public interface Perf {
-    Stats getStatsObject(MBeanStatDescriptor msd, Boolean recursive);
+    Stats[] getStatsArray(StatDescriptor[] statDescriptors, Boolean recursive);
     PmiModuleConfig[] getConfigs();
-    MBeanLevelSpec[] getInstrumentationLevel(MBeanStatDescriptor msd, Boolean recursive);
-    void setInstrumentationLevel(MBeanLevelSpec mbeanLevelSpec, Boolean recursive);
+    StatLevelSpec[] getInstrumentationLevel(StatDescriptor statDescriptor, Boolean recursive);
+    void setInstrumentationLevel(StatLevelSpec[] statLevelSpec, Boolean recursive);
 }

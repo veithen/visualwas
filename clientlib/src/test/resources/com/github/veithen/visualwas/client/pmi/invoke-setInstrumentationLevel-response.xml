@@ -4,7 +4,7 @@
 </SOAP-ENV:Header>
 <SOAP-ENV:Body>
 <ns1:invokeResponse xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-<return xsi:type="ns1:[Lcom.ibm.websphere.pmi.stat.StatLevelSpec;">rO0ABXVyACtbTGNvbS5pYm0ud2Vic3BoZXJlLnBtaS5zdGF0LlN0YXRMZXZlbFNwZWM7dmcZ7azS6koCAAB4cAAAAAFzcgAoY29tLmlibS53ZWJzcGhlcmUucG1pLnN0YXQuU3RhdExldmVsU3BlY6+6vr+YGZofAgACWwAGZW5hYmxldAACW0lbAARwYXRodAATW0xqYXZhL2xhbmcvU3RyaW5nO3hwdXIAAltJTbpgJnbqsqUCAAB4cAAAAAkAAAADAAAACQAAAAcAAAAIAAAAAQAAAAYAAAACAAAABQAAAAR1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAACdAAQdGhyZWFkUG9vbE1vZHVsZXQADFdlYkNvbnRhaW5lcg==</return>
+<return xsi:type="xsd:anyType" xsi:nil="true"/>
 </ns1:invokeResponse>
 
 </SOAP-ENV:Body>
