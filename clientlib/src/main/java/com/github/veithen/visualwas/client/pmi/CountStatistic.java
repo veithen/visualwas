@@ -29,4 +29,8 @@ public class CountStatistic extends Statistic {
 
     private long count;
     private CountStatistic baseValue;
+    
+    public long getCount() {
+        return count;
+    }
 }

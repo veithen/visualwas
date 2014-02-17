@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:invoke xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<objectname xsi:type="ns1:javax.management.ObjectName">rO0ABXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdACkV2ViU3BoZXJlOm5hbWU9UGVyZk1CZWFuLHByb2Nlc3M9c2VydmVyMSxwbGF0Zm9ybT1keW5hbWljcHJveHksbm9kZT1waG9ib3NOb2RlMDMsdmVyc2lvbj03LjAuMC4yNyx0eXBlPVBlcmYsbWJlYW5JZGVudGlmaWVyPVBlcmZNQmVhbixjZWxsPXBob2Jvc05vZGUwM0NlbGwsc3BlYz0xLjB4</objectname>
+<operationname xsi:type="xsd:string">getStatsArray</operationname>
+<params xsi:type="ns1:[Ljava.lang.Object;">rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAAJ1cgAsW0xjb20uaWJtLndlYnNwaGVyZS5wbWkuc3RhdC5TdGF0RGVzY3JpcHRvcju9G87QFRj9cAIAAHhwAAAAAXNyACljb20uaWJtLndlYnNwaGVyZS5wbWkuc3RhdC5TdGF0RGVzY3JpcHRvctiHmZIdVHBeAgACSQAGZGF0YUlkWwAHc3ViUGF0aHQAE1tMamF2YS9sYW5nL1N0cmluZzt4cP////11cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAADdAAMd2ViQXBwTW9kdWxldAATaXNjbGl0ZSNpc2NsaXRlLndhcnQAFXdlYkFwcE1vZHVsZS5zZXJ2bGV0c3NyABFqYXZhLmxhbmcuQm9vbGVhbs0gcoDVnPruAgABWgAFdmFsdWV4cAE=</params>
+<signature xsi:type="ns1:[Ljava.lang.String;">rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAJ0ACxbTGNvbS5pYm0ud2Vic3BoZXJlLnBtaS5zdGF0LlN0YXREZXNjcmlwdG9yO3QAEWphdmEubGFuZy5Cb29sZWFu</signature>
+</ns1:invoke>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

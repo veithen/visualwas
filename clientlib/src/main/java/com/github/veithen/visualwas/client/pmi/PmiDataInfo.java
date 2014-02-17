@@ -22,26 +22,37 @@
 package com.github.veithen.visualwas.client.pmi;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.StatisticImpl")
-public abstract class Statistic implements Serializable {
-    private static final long serialVersionUID = 1358353157061734347L;
+@MappedClass("com.ibm.websphere.pmi.PmiDataInfo")
+public final class PmiDataInfo implements Serializable {
+    private static final long serialVersionUID = -1609400918066043034L;
 
     private int id;
-    private long startTime;
-    private long lastSampleTime;
+    private String name;
+    private int type;
+    private String description;
+    private String category;
+    private String unit;
+    private int level;
+    private boolean resettable;
+    private boolean aggregatable;
+    private boolean zosAggregatable;
+    private boolean onRequest;
+    private String statSet;
+    private String platform;
+    private String submoduleName;
+    private String participation;
+    private String comment;
+    private ArrayList dependencyList;
     
     public int getId() {
         return id;
     }
 
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public long getLastSampleTime() {
-        return lastSampleTime;
+    public String getName() {
+        return name;
     }
 }

@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.client.pmi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class PmiClientFeatureTest {
     @Before
     public void setUp() throws Exception {
         DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
-        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "queryNames", "invoke-getStatsArray", "invoke-getConfigs", "invoke-getInstrumentationLevel", "invoke-setInstrumentationLevel");
+        transport.addExchanges(PmiClientFeatureTest.class, "getServerMBean", "queryNames", "invoke-getStatsArray", "invoke-getStatsArray2", "invoke-getConfigs", "invoke-getInstrumentationLevel", "invoke-setInstrumentationLevel");
         connector = transport.createConnector(PmiClientFeature.INSTANCE);
         perf = connector.getAdapter(Perf.class);
     }
@@ -50,12 +51,50 @@ public class PmiClientFeatureTest {
         assertEquals(1, statsArray.length);
         Stats stats = statsArray[0];
         assertEquals(PmiModules.THREAD_POOL, stats.getStatsType());
-        // TODO: validate content
+        assertEquals("WebContainer", stats.getName());
+        
+        Statistic stat = stats.getStatistic(1);
+        assertTrue(stat instanceof CountStatistic);
+        assertEquals(6, ((CountStatistic)stat).getCount());
+        
+        stat = stats.getStatistic(4);
+        assertTrue(stat instanceof BoundedRangeStatistic);
+        assertEquals(5, ((BoundedRangeStatistic)stat).getCurrent());
+    }
+    
+    @Test
+    public void testGetStatsArray2() throws Exception {
+        Stats[] statsArray = perf.getStatsArray(new StatDescriptor[] { new StatDescriptor(PmiModules.WEB_APP, "isclite#isclite.war", PmiModules.WEB_APP_SERVLETS) }, true);
+        assertEquals(1, statsArray.length);
+        Stats stats = statsArray[0];
+        assertEquals("com.ibm.ws.wswebcontainer.stats.servletStats", stats.getStatsType());
+        assertEquals(PmiModules.WEB_APP_SERVLETS, stats.getName());
+        Stats actionStats = stats.getSubStats("action");
+        assertNotNull(actionStats);
+        Statistic stat = actionStats.getStatistic(13);
+        assertTrue(stat instanceof TimeStatistic);
+        TimeStatistic timeStat = (TimeStatistic)stat;
+        assertEquals(1392644768352L, timeStat.getStartTime());
+        assertEquals(1392644905141L, timeStat.getLastSampleTime());
+        assertEquals(58, timeStat.getCount());
+        assertEquals(8412, timeStat.getTotal());
+        assertEquals(1, timeStat.getMin());
+        assertEquals(1607, timeStat.getMax());
+        assertEquals(4176605.0, timeStat.getSumOfSquares(), 0.01d);
     }
     
     @Test
     public void testGetConfigs() throws Exception {
-        perf.getConfigs();
+        PmiModuleConfig[] configs = perf.getConfigs();
+        PmiModuleConfig threadPoolConfig = null;
+        for (PmiModuleConfig config : configs) {
+            if (config.getUID().equals(PmiModules.THREAD_POOL)) {
+                threadPoolConfig = config;
+                break;
+            }
+        }
+        assertNotNull(threadPoolConfig);
+        assertEquals(4, threadPoolConfig.getDataId("PoolSize"));
         // TODO: validate return value
     }
     

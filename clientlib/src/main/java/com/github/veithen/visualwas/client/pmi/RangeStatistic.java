@@ -34,4 +34,8 @@ public class RangeStatistic extends Statistic {
     private double integral;
     private boolean initWaterMark;
     private RangeStatistic baseValue;
+    
+    public long getCurrent() {
+        return current;
+    }
 }

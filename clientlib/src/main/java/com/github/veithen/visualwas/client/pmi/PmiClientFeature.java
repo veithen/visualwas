@@ -41,6 +41,7 @@ public final class PmiClientFeature implements Feature {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
                 BoundedRangeStatistic.class,
                 CountStatistic.class,
+                PmiDataInfo.class,
                 PmiModuleConfig.class,
                 StatDescriptor.class,
                 StatLevelSpec.class,

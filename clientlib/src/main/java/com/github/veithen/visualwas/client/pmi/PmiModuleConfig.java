@@ -22,16 +22,38 @@
 package com.github.veithen.visualwas.client.pmi;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
 @MappedClass("com.ibm.websphere.pmi.PmiModuleConfig")
-public class PmiModuleConfig implements Serializable {
+public final class PmiModuleConfig implements Serializable {
     private static final long serialVersionUID = 9139791110927568058L;
 
     private String UID;
+    private String description;
+    private String mbeanType;
+    private HashMap<Integer,PmiDataInfo> perfData;
+    private String statsNLSFile;
+    private int[] dependList;
+    private boolean hasSubMod;
+    private boolean hasSubModInit;
 
     public String getUID() {
         return UID;
+    }
+    
+    public int getDataId(String name) {
+        for (Map.Entry<Integer,PmiDataInfo> entry : perfData.entrySet()) {
+            if (entry.getValue().getName().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return -1;
+    }
+    
+    public PmiDataInfo[] listAllData() {
+        return perfData.values().toArray(new PmiDataInfo[perfData.size()]);
     }
 }

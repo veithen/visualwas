@@ -28,7 +28,7 @@ import java.util.List;
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
 @MappedClass("com.ibm.ws.pmi.stat.StatsImpl")
-public class Stats implements Serializable {
+public final class Stats implements Serializable {
     private static final long serialVersionUID = -5812710047173154854L;
 
     private String statsType;
@@ -36,10 +36,32 @@ public class Stats implements Serializable {
     private int type;
     private int instrumentationLevel;
     private List<Statistic> dataMembers;
-    private ArrayList subCollections;
+    private ArrayList<Stats> subCollections;
     private long time;
     
     public String getStatsType() {
         return statsType;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public Statistic getStatistic(int dataId) {
+        for (Statistic s : dataMembers) {
+            if (s.getId() == dataId) {
+                return s;
+            }
+        }
+        return null;
+    }
+    
+    public Stats getSubStats(String name) {
+        for (Stats stats : subCollections) {
+            if (stats.getName().equals(name)) {
+                return stats;
+            }
+        }
+        return null;
     }
 }

@@ -33,4 +33,24 @@ public class AverageStatistic extends Statistic {
     private long total;
     private double sumOfSquares;
     private AverageStatistic baseValue;
+
+    public long getCount() {
+        return count;
+    }
+    
+    public long getTotal() {
+        return total;
+    }
+
+    public long getMin() {
+        return min;
+    }
+
+    public long getMax() {
+        return max;
+    }
+
+    public double getSumOfSquares() {
+        return sumOfSquares;
+    }
 }
