@@ -30,6 +30,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
@@ -61,10 +62,13 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnv
     
     private void normalize(SOAPEnvelope env) {
         // TODO: this should eventually disappear
-        Iterator it = env.getHeader().getChildrenWithNamespaceURI("urn:dummy");
-        while (it.hasNext()) {
-            it.next();
-            it.remove();
+        SOAPHeader header = env.getHeader();
+        if (header != null) {
+            Iterator it = header.getChildrenWithNamespaceURI("urn:dummy");
+            while (it.hasNext()) {
+                it.next();
+                it.remove();
+            }
         }
     }
     

@@ -70,10 +70,10 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
             Operation operationAnnotation = method.getAnnotation(Operation.class);
-            String operationName = operationAnnotation != null ? operationAnnotation.name() : method.getName();
+            String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : method.getName();
             Class<?> returnType = method.getReturnType();
             OperationHandler operationHandler = new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                    returnType == Void.TYPE ? null : getTypeHandler(returnType));
+                    returnType == Void.TYPE ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader());
             operationNameToOperationHandler.put(operationName, operationHandler);
             methodToOperationHandler.put(method, operationHandler);
         }

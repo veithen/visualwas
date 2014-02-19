@@ -38,13 +38,19 @@ public class OperationHandler implements OperationDescription {
     private final String responseElementName;
     private final ParamHandler[] paramHandlers;
     private final TypeHandler returnValueHandler;
+    private final boolean suppressSOAPHeader;
     
-    public OperationHandler(String operationName, String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler) {
+    public OperationHandler(String operationName, String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler, boolean suppressSOAPHeader) {
         this.operationName = operationName;
         this.requestElementName = requestElementName;
         this.responseElementName = responseElementName;
         this.paramHandlers = paramHandlers;
         this.returnValueHandler = returnValueHandler;
+        this.suppressSOAPHeader = suppressSOAPHeader;
+    }
+
+    boolean isSuppressSOAPHeader() {
+        return suppressSOAPHeader;
     }
 
     public void createRequest(SOAPBody body, Object[] args, InvocationContextImpl context) {

@@ -19,16 +19,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.mapped;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Operation {
-    String name() default "";
-    boolean suppressHeader() default false;
+@MappedClass("com.ibm.websphere.management.Session")
+public class Session implements Serializable {
+    private static final long serialVersionUID = 2853465199951878373L;
+
+    private long id;
+    private String userName;
+    private boolean shareWorkspace;
 }

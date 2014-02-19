@@ -36,6 +36,7 @@ public final class ClassMappingFeature implements Feature {
         configurator.registerConfiguratorAdapter(ClassMappingConfigurator.class, adapter);
         configurator.setSerializer(new SerializerImpl(classMapper));
         configurator.addInvocationInterceptor(new InvocationInterceptor(classMapper));
-        adapter.addMappedClasses(SOAPException.class);
+        adapter.addMappedClasses(Session.class, SOAPException.class);
+        configurator.addAdminServiceDescription(IsAliveSupport.DESCRIPTION);
     }
 }

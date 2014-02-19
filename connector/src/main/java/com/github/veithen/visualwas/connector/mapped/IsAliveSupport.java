@@ -19,16 +19,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.mapped;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Operation {
-    String name() default "";
-    boolean suppressHeader() default false;
+import com.github.veithen.visualwas.connector.Operation;
+import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+
+public interface IsAliveSupport {
+    AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(IsAliveSupport.class);
+    
+    @Operation(suppressHeader=true)
+    Session isAlive() throws IOException;
 }
