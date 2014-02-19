@@ -21,9 +21,11 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
+import java.io.IOException;
+
 public interface Perf {
-    Stats[] getStatsArray(StatDescriptor[] statDescriptors, Boolean recursive);
-    PmiModuleConfig[] getConfigs();
-    StatLevelSpec[] getInstrumentationLevel(StatDescriptor statDescriptor, Boolean recursive);
-    void setInstrumentationLevel(StatLevelSpec[] statLevelSpec, Boolean recursive);
+    Stats[] getStatsArray(StatDescriptor[] statDescriptors, Boolean recursive) throws IOException;
+    PmiModuleConfig[] getConfigs() throws IOException;
+    StatLevelSpec[] getInstrumentationLevel(StatDescriptor statDescriptor, Boolean recursive) throws IOException;
+    void setInstrumentationLevel(StatLevelSpec[] statLevelSpec, Boolean recursive) throws IOException;
 }

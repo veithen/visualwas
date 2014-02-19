@@ -77,7 +77,7 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnv
         } finally {
             in.close();
         }
-        requestMatcher.add(new Exchange((Document)requestMessage, response));
+        requestMatcher.add(new Exchange((Document)requestMessage, new CannedResponse(response)));
     }
     
     public void addExchange(Class<?> relativeTo, String baseName) throws IOException {
@@ -99,15 +99,6 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnv
     public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback) {
         SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
         normalize(clonedRequest.getSOAPEnvelope());
-        try {
-            InputStream in = requestMatcher.match((Document)clonedRequest).openStream();
-            try {
-                callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
-            } finally {
-                in.close();
-            }
-        } catch (IOException ex) {
-            callback.onTransportError(ex);
-        }
+        requestMatcher.match((Document)clonedRequest).produce(callback);
     }
 }

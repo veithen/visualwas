@@ -23,7 +23,6 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 
 import static org.junit.Assert.fail;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,11 @@ import org.w3c.dom.Document;
 
 public final class DictionaryRequestMatcher extends RequestMatcher {
     private final List<Exchange> exchanges = new ArrayList<>();
+    private Response defaultResponse;
+
+    public void setDefaultResponse(Response defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
 
     @Override
     void add(Exchange exchange) {
@@ -38,13 +42,15 @@ public final class DictionaryRequestMatcher extends RequestMatcher {
     }
 
     @Override
-    protected URL match(Document request) {
+    Response match(Document request) {
         for (Exchange exchange : exchanges) {
             if (exchange.diff(request).similar()) {
                 return exchange.getResponse();
             }
         }
-        fail("No matching exchange found");
-        return null; // Make compiler happy
+        if (defaultResponse == null) {
+            fail("No matching exchange found");
+        }
+        return defaultResponse;
     }
 }

@@ -41,7 +41,7 @@ public final class SequencedRequestMatcher extends RequestMatcher {
     }
 
     @Override
-    URL match(Document request) {
+    Response match(Document request) {
         if (sequence.isEmpty()) {
             throw new IllegalStateException();
         }

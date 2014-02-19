@@ -21,8 +21,6 @@
  */
 package com.github.veithen.visualwas.connector.transport.dummy;
 
-import java.net.URL;
-
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceConstants;
@@ -33,9 +31,9 @@ import org.w3c.dom.Node;
 
 final class Exchange {
     private final Document request;
-    private final URL response;
+    private final Response response;
     
-    Exchange(Document request, URL response) {
+    Exchange(Document request, Response response) {
         this.request = request;
         this.response = response;
     }
@@ -68,7 +66,7 @@ final class Exchange {
         }
     }
 
-    URL getResponse() {
+    Response getResponse() {
         return response;
     }
 }

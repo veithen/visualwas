@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import java.io.IOException;
+
 public interface ApplicationManager {
-    void stopApplication(String applicationName);
+    void stopApplication(String applicationName) throws IOException;
 }

@@ -21,11 +21,19 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.net.SocketException;
+
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
+import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
 import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
 import com.github.veithen.visualwas.connector.transport.dummy.SequencedRequestMatcher;
+import com.github.veithen.visualwas.connector.transport.dummy.TransportErrorResponse;
 
 public class ProxyConfiguratorTest {
     @Test
@@ -35,5 +43,22 @@ public class ProxyConfiguratorTest {
         Connector connector = transport.createConnector(ApplicationManagerFeature.INSTANCE);
         ApplicationManager appman = connector.getAdapter(ApplicationManager.class);
         appman.stopApplication("ibmasyncrsp");
+    }
+    
+    @Test
+    public void testTransportError() throws Exception {
+        DictionaryRequestMatcher requestMatcher = new DictionaryRequestMatcher();
+        IOException exception = new SocketException("Connection refused");
+        requestMatcher.setDefaultResponse(new TransportErrorResponse(exception));
+        DummyTransport transport = new DummyTransport(requestMatcher);
+        transport.addExchange(ProxyConfiguratorTest.class, "queryNames-ApplicationManager");
+        Connector connector = transport.createConnector(ApplicationManagerFeature.INSTANCE);
+        ApplicationManager appman = connector.getAdapter(ApplicationManager.class);
+        try {
+            appman.stopApplication("test");
+            fail("Expected IOException");
+        } catch (IOException ex) {
+            assertSame(exception, ex);
+        }
     }
 }

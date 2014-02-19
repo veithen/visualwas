@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
@@ -29,6 +31,18 @@ final class ProxyHelper {
     private ProxyHelper() {}
 
     static <T> T createProxy(AdminService adminService, Class<T> iface, MBeanLocator locator) {
+        for (Method method : iface.getMethods()) {
+            boolean throwsIOException = false;
+            for (Class<?> exceptionType : method.getExceptionTypes()) {
+                if (exceptionType.isAssignableFrom(IOException.class)) {
+                    throwsIOException = true;
+                    break;
+                }
+            }
+            if (!throwsIOException) {
+                throw new IllegalArgumentException("All proxy methods must throw IOException");
+            }
+        }
         // TODO: correct class loader?
         return iface.cast(Proxy.newProxyInstance(ProxyAdapterFactory.class.getClassLoader(), new Class<?>[] { iface }, new ProxyInvocationHandler(adminService, locator)));
     }

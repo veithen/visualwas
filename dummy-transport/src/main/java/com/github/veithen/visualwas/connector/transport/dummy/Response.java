@@ -21,9 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.transport.dummy;
 
-import org.w3c.dom.Document;
+import org.apache.axiom.soap.SOAPEnvelope;
 
-public abstract class RequestMatcher {
-    abstract void add(Exchange exchange);
-    abstract Response match(Document request);
+import com.github.veithen.visualwas.connector.Callback;
+
+public abstract class Response {
+    abstract void produce(Callback<SOAPEnvelope,SOAPEnvelope> callback);
 }

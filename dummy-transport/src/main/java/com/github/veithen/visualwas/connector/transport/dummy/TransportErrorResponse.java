@@ -21,9 +21,21 @@
  */
 package com.github.veithen.visualwas.connector.transport.dummy;
 
-import org.w3c.dom.Document;
+import java.io.IOException;
 
-public abstract class RequestMatcher {
-    abstract void add(Exchange exchange);
-    abstract Response match(Document request);
+import org.apache.axiom.soap.SOAPEnvelope;
+
+import com.github.veithen.visualwas.connector.Callback;
+
+public final class TransportErrorResponse extends Response {
+    private final IOException exception;
+
+    public TransportErrorResponse(IOException exception) {
+        this.exception = exception;
+    }
+
+    @Override
+    void produce(Callback<SOAPEnvelope, SOAPEnvelope> callback) {
+        callback.onTransportError(exception);
+    }
 }
