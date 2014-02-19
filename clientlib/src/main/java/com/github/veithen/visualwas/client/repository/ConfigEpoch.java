@@ -21,11 +21,22 @@
  */
 package com.github.veithen.visualwas.client.repository;
 
-import java.io.IOException;
+import java.io.Serializable;
 
-public interface ConfigRepository {
-    ConfigEpoch getRepositoryEpoch() throws IOException;
-    DocumentContentSource extract(String docURI) throws RepositoryException, IOException;
-    String[] listResourceNames(String parent, int type, int depth) throws IOException;
-    DocumentDigest getDigest(String docURI) throws RepositoryException, IOException;
+import com.github.veithen.visualwas.connector.mapped.MappedClass;
+
+@MappedClass("com.ibm.websphere.management.repository.ConfigEpoch")
+// TODO: implement equals and compareTo
+public final class ConfigEpoch implements Serializable {
+    private static final long serialVersionUID = -7841316273706136171L;
+
+    private final long versionId;
+
+    public ConfigEpoch(long versionId) {
+        this.versionId = versionId;
+    }
+
+    public long getVersionId() {
+        return versionId;
+    }
 }

@@ -39,6 +39,7 @@ public final class RepositoryClientFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
+                ConfigEpoch.class,
                 DocumentContentSource.class,
                 DocumentNotFoundException.class,
                 RemoteSource.class);
