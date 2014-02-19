@@ -78,4 +78,12 @@ public final class PmiModules {
     public static final String WEBSERVICES = "webServicesModule";
     
     public static final String WEBSERVICES_SERVICES = "webServicesModule.services";
+
+    public static final String EJB_ENTITY = "ejb.entity";
+    
+    public static final String EJB_STATEFUL = "ejb.stateful";
+    
+    public static final String EJB_STATELESS = "ejb.stateless";
+    
+    public static final String EJB_MESSAGEDRIVEN = "ejb.messageDriven";
 }
