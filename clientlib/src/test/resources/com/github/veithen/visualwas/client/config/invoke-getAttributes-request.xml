@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:invoke xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<objectname xsi:type="ns1:javax.management.ObjectName">rO0ABXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdACuV2ViU3BoZXJlOm5hbWU9Q29uZmlnU2VydmljZSxwcm9jZXNzPXNlcnZlcjEscGxhdGZvcm09cHJveHksbm9kZT1waG9ib3NOb2RlMDMsdmVyc2lvbj03LjAuMC4yNyx0eXBlPUNvbmZpZ1NlcnZpY2UsbWJlYW5JZGVudGlmaWVyPUNvbmZpZ1NlcnZpY2UsY2VsbD1waG9ib3NOb2RlMDNDZWxsLHNwZWM9MS4weA==</objectname>
+<operationname xsi:type="xsd:string">getAttributes</operationname>
+<params xsi:type="ns1:[Ljava.lang.Object;">rO0ABXVyABNbTGphdmEubGFuZy5PYmplY3Q7kM5YnxBzKWwCAAB4cAAAAARzcgAkY29tLmlibS53ZWJzcGhlcmUubWFuYWdlbWVudC5TZXNzaW9uJ5mLeyYSGOUCAANKAAJpZFoADnNoYXJlV29ya3NwYWNlTAAIdXNlck5hbWV0ABJMamF2YS9sYW5nL1N0cmluZzt4cAAAAUROUABJAHQABHRlc3RzcgAbamF2YXgubWFuYWdlbWVudC5PYmplY3ROYW1lDwOnG+ttFc8DAAB4cHQBBVdlYnNwaGVyZTpfV2Vic3BoZXJlX0NvbmZpZ19EYXRhX0Rpc3BsYXlfTmFtZT1XZWJDb250YWluZXIsX1dlYnNwaGVyZV9Db25maWdfRGF0YV9UeXBlPVRocmVhZFBvb2wsX1dlYnNwaGVyZV9Db25maWdfRGF0YV9JZD1jZWxscy9waG9ib3NOb2RlMDNDZWxsL25vZGVzL3Bob2Jvc05vZGUwMy9zZXJ2ZXJzL3NlcnZlcjF8c2VydmVyLnhtbCNUaHJlYWRQb29sXzExODMxMjE5MDg2NTcsX1dFQlNQSEVSRV9DT05GSUdfU0VTU0lPTj10ZXN0MTM5Mjg4MzI2OTcwNXh1cgATW0xqYXZhLmxhbmcuU3RyaW5nO63SVufpHXtHAgAAeHAAAAACdAALbWluaW11bVNpemV0AAttYXhpbXVtU2l6ZXNyABFqYXZhLmxhbmcuQm9vbGVhbs0gcoDVnPruAgABWgAFdmFsdWV4cAA=</params>
+<signature xsi:type="ns1:[Ljava.lang.String;">rO0ABXVyABNbTGphdmEubGFuZy5TdHJpbmc7rdJW5+kde0cCAAB4cAAAAAR0ACRjb20uaWJtLndlYnNwaGVyZS5tYW5hZ2VtZW50LlNlc3Npb250ABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWV0ABNbTGphdmEubGFuZy5TdHJpbmc7dAAHYm9vbGVhbg==</signature>
+</ns1:invoke>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

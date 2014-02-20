@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<SOAP-ENV:Header xmlns:ns0="admin" ns0:WASRemoteRuntimeVersion="7.0.0.27" ns0:JMXMessageVersion="1.2.0" ns0:JMXVersion="1.2.0">
+</SOAP-ENV:Header>
+<SOAP-ENV:Body>
+<ns1:invokeResponse xmlns:ns1="urn:AdminService" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+<return xsi:type="ns1:[Ljavax.management.ObjectName;">rO0ABXVyAB5bTGphdmF4Lm1hbmFnZW1lbnQuT2JqZWN0TmFtZTsRg49UNTjJ7gIAAHhwAAAAAXNyABtqYXZheC5tYW5hZ2VtZW50Lk9iamVjdE5hbWUPA6cb620VzwMAAHhwdAEFV2Vic3BoZXJlOl9XZWJzcGhlcmVfQ29uZmlnX0RhdGFfRGlzcGxheV9OYW1lPVdlYkNvbnRhaW5lcixfV2Vic3BoZXJlX0NvbmZpZ19EYXRhX1R5cGU9VGhyZWFkUG9vbCxfV2Vic3BoZXJlX0NvbmZpZ19EYXRhX0lkPWNlbGxzL3Bob2Jvc05vZGUwM0NlbGwvbm9kZXMvcGhvYm9zTm9kZTAzL3NlcnZlcnMvc2VydmVyMXxzZXJ2ZXIueG1sI1RocmVhZFBvb2xfMTE4MzEyMTkwODY1NyxfV0VCU1BIRVJFX0NPTkZJR19TRVNTSU9OPXRlc3QxMzkyODgzMjY5NzA1eA==</return>
+</ns1:invokeResponse>
+
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

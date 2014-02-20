@@ -19,25 +19,18 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.mapped;
+package com.github.veithen.visualwas.client.config;
 
-import java.io.Serializable;
+import java.io.IOException;
 
-@MappedClass("com.ibm.websphere.management.Session")
-public class Session implements Serializable {
-    private static final long serialVersionUID = 2853465199951878373L;
+import javax.management.AttributeList;
+import javax.management.ObjectName;
 
-    private long id;
-    private String userName;
-    private boolean shareWorkspace;
-    
-    public Session(long id, String userName, boolean shareWorkspace) {
-        this.id = id;
-        this.userName = userName;
-        this.shareWorkspace = shareWorkspace;
-    }
-    
-    public Session(String userName, boolean shareWorkspace) {
-        this(System.currentTimeMillis(), userName, shareWorkspace);
-    }
+import com.github.veithen.visualwas.connector.mapped.Session;
+
+public interface ConfigService {
+    ObjectName[] resolve(Session session, String containmentPath) throws IOException;
+    Object getAttribute(Session session, ObjectName parent, String attributeName) throws IOException;
+    AttributeList getAttributes(Session session, ObjectName parent, String[] attributes, boolean recursive) throws IOException;
+    void discard(Session session) throws IOException;
 }
