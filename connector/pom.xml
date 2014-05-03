@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.veithen.visualwas</groupId>
-        <artifactId>visualwas</artifactId>
+        <artifactId>visualwas-project</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>connector</artifactId>
