@@ -79,6 +79,18 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>cloudbees-release</id>
+            <url>http://repository-veithen.forge.cloudbees.com/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
