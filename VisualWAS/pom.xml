@@ -10,7 +10,7 @@
     <packaging>nbm</packaging>
     <name>VisualWAS Plugin</name>
     <properties>
-        <visualvm.version>VISUALVM136</visualvm.version>
+        <visualvm.version>VISUALVM138</visualvm.version>
     </properties>
     <dependencies>
         <dependency>
@@ -80,16 +80,18 @@
         </dependency>
     </dependencies>
     <repositories>
-        <repository>
-            <id>cloudbees-release</id>
-            <url>http://repository-veithen.forge.cloudbees.com/release/</url>
-            <releases>
+		<repository>
+			<!-- required for VisualVM dependencies -->
+			<id>pvdbosch-bintray</id>
+			<name>pvdbosch bintray repository</name>
+			<url>http://dl.bintray.com/pvdbosch/maven</url>
+			<releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
     </repositories>
     <build>
         <plugins>
@@ -110,6 +112,13 @@
                 <version>2.2</version>
                 <configuration>
                     <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+			<plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Turn off annotation processing to workaround a bug. No class files get generated during compilation when active -->
+					<proc>none</proc>
                 </configuration>
             </plugin>
         </plugins>
