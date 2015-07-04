@@ -15,7 +15,7 @@
     </licenses>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <axiom.version>1.2.15-SNAPSHOT</axiom.version>
+        <axiom.version>1.2.15</axiom.version>
     </properties>
     <repositories>
         <repository>
