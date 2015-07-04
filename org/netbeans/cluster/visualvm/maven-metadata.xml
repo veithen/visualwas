@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.netbeans.cluster</groupId>
+  <artifactId>visualvm</artifactId>
+  <versioning>
+    <release>VISUALVM138</release>
+    <versions>
+      <version>VISUALVM138</version>
+    </versions>
+    <lastUpdated>20150704174604</lastUpdated>
+  </versioning>
+</metadata>
