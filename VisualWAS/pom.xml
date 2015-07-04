@@ -82,9 +82,9 @@
     <repositories>
         <repository>
             <!-- required for VisualVM dependencies -->
-            <id>pvdbosch-bintray</id>
-            <name>pvdbosch bintray repository</name>
-            <url>http://dl.bintray.com/pvdbosch/maven</url>
+            <id>visualwas-mvn-repo</id>
+            <name>VisualVM Maven repository</name>
+            <url>https://raw.githubusercontent.com/veithen/visualwas/mvn-repo</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
