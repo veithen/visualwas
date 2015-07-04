@@ -80,18 +80,18 @@
         </dependency>
     </dependencies>
     <repositories>
-		<repository>
-			<!-- required for VisualVM dependencies -->
-			<id>pvdbosch-bintray</id>
-			<name>pvdbosch bintray repository</name>
-			<url>http://dl.bintray.com/pvdbosch/maven</url>
-			<releases>
+        <repository>
+            <!-- required for VisualVM dependencies -->
+            <id>pvdbosch-bintray</id>
+            <name>pvdbosch bintray repository</name>
+            <url>http://dl.bintray.com/pvdbosch/maven</url>
+            <releases>
                 <enabled>true</enabled>
             </releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <build>
         <plugins>
@@ -114,11 +114,11 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-			<plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <!-- Turn off annotation processing to workaround a bug. No class files get generated during compilation when active -->
-					<proc>none</proc>
+                    <proc>none</proc>
                 </configuration>
             </plugin>
         </plugins>
