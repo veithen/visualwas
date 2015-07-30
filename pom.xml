@@ -84,6 +84,11 @@
                 <artifactId>junit</artifactId>
                 <version>4.11</version>
             </dependency>
+            <dependency>
+                <groupId>org.eclipse.osgi</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>3.7.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <modules>
@@ -94,6 +99,8 @@
         <module>clientlib</module>
         <module>VisualWAS</module>
         <module>samples</module>
+        <module>websphere-api-stubs</module>
+        <module>websphere-plugin</module>
     </modules>
     <build>
         <plugins>
