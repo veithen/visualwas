@@ -143,6 +143,10 @@
                     <organizationName>Andreas Veithen</organizationName>
                     <licenseName>gpl_v3</licenseName>
                     <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <excludes>
+                        <exclude>**/*-request.xml</exclude>
+                        <exclude>**/*-response.xml</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
