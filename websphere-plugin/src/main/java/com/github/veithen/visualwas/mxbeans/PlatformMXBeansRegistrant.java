@@ -21,22 +21,30 @@
  */
 package com.github.veithen.visualwas.mxbeans;
 
+import java.io.IOException;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryManagerMXBean;
 import java.lang.management.MemoryPoolMXBean;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.ibm.websphere.management.AdminService;
 import com.ibm.websphere.management.AdminServiceFactory;
 import com.ibm.ws.management.PlatformMBeanServer;
+import com.ibm.ws.security.service.SecurityService;
 import com.ibm.wsspi.runtime.component.WsComponent;
+import com.ibm.wsspi.runtime.service.WsServiceRegistry;
 
 public final class PlatformMXBeansRegistrant implements WsComponent {
     private static final Logger log = Logger.getLogger(PlatformMXBeansRegistrant.class.getName());
@@ -48,6 +56,8 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
      * the MBean server can't be located during startup.
      */
     private MBeanServer mbs;
+    
+    private AccessChecker accessChecker;
     
     /**
      * The list of MBeans registered by {@link #start()}.
@@ -68,6 +78,7 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
 
     public void start() {
         state = STARTING;
+        SecurityService securityService = (SecurityService)WsServiceRegistry.getService(this, SecurityService.class);
         MBeanServer wasMBeanServer = AdminServiceFactory.getMBeanFactory().getMBeanServer();
         if (log.isLoggable(Level.FINE)) {
             log.fine("AdminServiceFactory.getMBeanFactory().getMBeanServer() returned an instance of type "
@@ -86,6 +97,35 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
                     + wasMBeanServer.getClass().getName());
             mbs = wasMBeanServer;
         }
+        Authorizer authorizer;
+        if (securityService.isSecurityEnabled()) {
+            AdminService adminService = AdminServiceFactory.getAdminService();
+            // See http://publib.boulder.ibm.com/infocenter/wasinfo/v6r1/topic/com.ibm.websphere.express.doc/info/exp/ae/tjmx_admin_finegr_mbsec.html
+            String resource = "/nodes/" + adminService.getNodeName() + "/servers/" + adminService.getProcessName();
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("resource = " + resource);
+            }
+            authorizer = new AuthorizerImpl(resource);
+            log.info("MXBean access control enabled");
+        } else {
+            authorizer = new NoAuthorizer();
+            log.info("MXBean access control not enabled");
+        }
+        log.fine("Configuring access rules for platform MXBeans");
+        Properties accessProperties = new Properties();
+        try {
+            accessProperties.load(PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties"));
+        } catch (IOException ex) {
+            log.log(Level.SEVERE, "Failed to load access rules", ex);
+        }
+        Map<String,String> accessRules = new HashMap<String,String>();
+        for (Map.Entry<Object,Object> entry : accessProperties.entrySet()) {
+            accessRules.put((String)entry.getKey(), (String)entry.getValue());
+        }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("accessRules = " + accessRules);
+        }
+        accessChecker = new AccessChecker(authorizer, accessRules);
         registerMBean(ManagementFactory.getClassLoadingMXBean(),
                 ManagementFactory.CLASS_LOADING_MXBEAN_NAME);
         registerMBean(ManagementFactory.getMemoryMXBean(),
@@ -122,7 +162,8 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
      */
     private void registerMBean(Object object, String name) {
         try {
-            registeredMBeans.add(mbs.registerMBean(object, new ObjectName(name)).getObjectName());
+            ObjectName objectName = new ObjectName(name);
+            registeredMBeans.add(mbs.registerMBean(new AccessControlProxy((DynamicMBean)object, objectName.getKeyProperty("type"), accessChecker), objectName).getObjectName());
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Registered MBean " + name + " (type " + object.getClass().getName() + ")");
             }

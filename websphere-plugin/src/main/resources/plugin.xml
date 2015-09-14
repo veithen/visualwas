@@ -28,7 +28,9 @@
                        class="com.github.veithen.visualwas.mxbeans.PlatformMXBeansRegistrant"
                        processType="Servant"
                        component-id="PlatformMXBeansRegistrant"
-                       startup-mode="immediate"/>
+                       startup-mode="immediate">
+                <dependency type="service" name="com.ibm.ws.security.service.SecurityService"/>
+            </component>
         </components>
     </extension>
 </plugin>
