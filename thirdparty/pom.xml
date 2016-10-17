@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.veithen.visualwas</groupId>
+        <artifactId>visualwas-project</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.github.veithen.visualwas.thirdparty</groupId>
+    <artifactId>thirdparty</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>visualvm</module>
+        <module>com.sun.tools.visualvm.application</module>
+        <module>com.sun.tools.visualvm.core</module>
+        <module>com.sun.tools.visualvm.host</module>
+        <module>com.sun.tools.visualvm.jmx</module>
+        <module>com.sun.tools.visualvm.tools</module>
+        <module>org.netbeans.modules.options.api</module>
+        <module>org.openide.awt</module>
+        <module>org.openide.modules</module>
+        <module>org.openide.util</module>
+        <module>org.openide.util.lookup</module>
+    </modules>
+</project>

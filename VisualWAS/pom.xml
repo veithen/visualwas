@@ -9,59 +9,56 @@
     <artifactId>VisualWAS</artifactId>
     <packaging>nbm</packaging>
     <name>VisualWAS Plugin</name>
-    <properties>
-        <visualvm.version>VISUALVM138</visualvm.version>
-    </properties>
     <dependencies>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>com-sun-tools-visualvm-application</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>com.sun.tools.visualvm.application</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>com-sun-tools-visualvm-core</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>com.sun.tools.visualvm.core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>com-sun-tools-visualvm-host</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>com.sun.tools.visualvm.host</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>com-sun-tools-visualvm-jmx</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>com.sun.tools.visualvm.jmx</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>com-sun-tools-visualvm-tools</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>com.sun.tools.visualvm.tools</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-options-api</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.netbeans.modules.options.api</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-awt</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.openide.awt</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-modules</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.openide.modules</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.openide.util</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>${visualvm.version}</version>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.openide.util.lookup</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -79,20 +76,6 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <!-- required for VisualVM dependencies -->
-            <id>visualwas-mvn-repo</id>
-            <name>VisualVM Maven repository</name>
-            <url>https://raw.githubusercontent.com/veithen/visualwas/mvn-repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
