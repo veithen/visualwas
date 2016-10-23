@@ -18,6 +18,8 @@
  */
 package com.github.veithen.visualwas.mxbeans;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.Proxy;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.management.JMX;
+import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -32,7 +35,6 @@ import javax.management.remote.JMXServiceURL;
 
 import org.junit.Test;
 
-import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 
 public class MXBeansITCase {
@@ -45,10 +47,10 @@ public class MXBeansITCase {
         env.put(SOAPJMXConnector.TRUST_MANAGER, new PromiscuousTrustManager());
         JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
         JMXConnector connector = JMXConnectorFactory.connect(url, env);
-        WebSphereMBeanServerConnection connection = (WebSphereMBeanServerConnection)connector.getMBeanServerConnection();
-        System.out.println(connection.getServerMBean());
+        MBeanServerConnection connection = connector.getMBeanServerConnection();
         RuntimeMXBean runtimeMXBean = JMX.newMXBeanProxy(connection, new ObjectName(ManagementFactory.RUNTIME_MXBEAN_NAME), RuntimeMXBean.class);
-        System.out.println(runtimeMXBean.getSystemProperties());
+        Map<String,String> systemProperties = runtimeMXBean.getSystemProperties();
+        assertThat(systemProperties).containsEntry("java.util.logging.manager", "com.ibm.ws.bootstrap.WsLogManager");
         connector.close();
     }
 }
