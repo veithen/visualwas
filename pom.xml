@@ -2,6 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.github.veithen</groupId>
+        <artifactId>parent</artifactId>
+        <version>1-SNAPSHOT</version>
+    </parent>
+
     <groupId>com.github.veithen.visualwas</groupId>
     <artifactId>visualwas-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -30,7 +36,6 @@
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <axiom.version>1.2.15</axiom.version>
     </properties>
 
@@ -174,9 +179,7 @@
                 <version>1.5</version>
                 <configuration>
                     <projectName>VisualWAS</projectName>
-                    <organizationName>Andreas Veithen</organizationName>
                     <licenseName>gpl_v3</licenseName>
-                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
                     <excludes>
                         <exclude>**/*-request.xml</exclude>
                         <exclude>**/*-response.xml</exclude>
