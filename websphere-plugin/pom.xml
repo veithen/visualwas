@@ -64,22 +64,18 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.16.8</version>
                 <configuration>
                     <images>
                         <image>
                             <name>visualwas-websphere</name>
                             <build>
-                                <from>ibmcom/websphere-traditional:8.5.5.10-profile</from>
+                                <from>visualwas-websphere-base</from>
                                 <assembly>
                                     <basedir>/opt/IBM/WebSphere/AppServer/plugins</basedir>
                                     <descriptorRef>artifact</descriptorRef>
                                 </assembly>
                             </build>
                             <run>
-                                <volumes>
-                                    <bind>${basedir}/src/test/files/PASSWORD:/tmp/PASSWORD:ro</bind>
-                                </volumes>
                                 <ports>
                                     <port>was.soapPort:8880</port>
                                 </ports>

@@ -1,0 +1,4 @@
+#!/bin/sh
+tail -F /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemOut.log -n +0 2>/dev/null &
+tail -F /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemErr.log -n +0 2>/dev/null >&2 &
+exec /work/start_server1.sh

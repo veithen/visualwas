@@ -140,6 +140,11 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.10</version>
                 </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>0.16.8</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -185,6 +190,50 @@
                         <exclude>**/*-response.xml</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>visualwas-websphere-base</name>
+                                    <build>
+                                        <from>ibmcom/websphere-traditional:8.5.5.10-profile</from>
+                                        <!-- Replace the start_server script with a wrapper script that executes the generated
+                                             server startup script. -->
+                                        <assembly>
+                                            <basedir>/work</basedir>
+                                            <inline>
+                                                <fileSets>
+                                                    <fileSet>
+                                                        <directory>src/main/scripts</directory>
+                                                        <outputDirectory>/</outputDirectory>
+                                                    </fileSet>
+                                                </fileSets>
+                                            </inline>
+                                        </assembly>
+                                        <runCmds>
+                                            <!-- Do the configuration work during image creation instead of container start. -->
+                                            <runCmd>echo abcd1234 > /tmp/PASSWORD</runCmd>
+                                            <runCmd>/work/modify_password</runCmd>
+                                            <!-- Generate a start script so that we can further accelerate the startup of container
+                                                 based on this image. -->
+                                            <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1 -script /work/start_server1.sh</runCmd>
+                                        </runCmds>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
