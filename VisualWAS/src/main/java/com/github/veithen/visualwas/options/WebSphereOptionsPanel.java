@@ -21,8 +21,10 @@
  */
 package com.github.veithen.visualwas.options;
 
+import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.HORIZONTAL;
 import static java.awt.GridBagConstraints.NONE;
+import static java.awt.GridBagConstraints.NORTHWEST;
 import static java.awt.GridBagConstraints.REMAINDER;
 import static java.awt.GridBagConstraints.WEST;
 
@@ -47,6 +49,9 @@ import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.SimpleDocumentListener;
 import com.github.veithen.visualwas.trust.TrustStore;
+import com.sun.tools.visualvm.core.options.UISupport;
+import com.sun.tools.visualvm.core.ui.components.SectionSeparator;
+import com.sun.tools.visualvm.core.ui.components.Spacer;
 
 public class WebSphereOptionsPanel extends JPanel {
     private final JTextField wasHomeField;
@@ -55,9 +60,15 @@ public class WebSphereOptionsPanel extends JPanel {
         setLayout(new GridBagLayout());
         
         {
+            SectionSeparator section = UISupport.createSectionSeparator(
+                    NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Classloading"));
+            add(section, new GridBagConstraints(0, 0, REMAINDER, 1, 0.0, 0.0, WEST, HORIZONTAL, new Insets(0, 0, 5, 0), 0, 0));
+        }
+        
+        {
             JLabel label = new JLabel();
             Mnemonics.setLocalizedText(label, NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_WAS_home"));
-            add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
+            add(label, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(3, 15, 3, 0), 0, 0));
 
             wasHomeField = new JTextField();
             label.setLabelFor(wasHomeField);
@@ -67,7 +78,7 @@ public class WebSphereOptionsPanel extends JPanel {
                     controller.changed();
                 }
             });
-            add(wasHomeField, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 5, 2, 0), 0, 0));
+            add(wasHomeField, new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(3, 10, 3, 0), 0, 0));
             
             JButton btn = new JButton(new AbstractAction() {
                 @Override
@@ -81,7 +92,13 @@ public class WebSphereOptionsPanel extends JPanel {
                 }
             });
             Mnemonics.setLocalizedText(btn, NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Browse"));
-            add(btn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 5, 2, 0), 0, 0));
+            add(btn, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(0, 10, 0, 0), 0, 0));
+        }
+        
+        {
+            SectionSeparator section = UISupport.createSectionSeparator(
+                    NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Truststore_utilities"));
+            add(section, new GridBagConstraints(0, 2, REMAINDER, 1, 0.0, 0.0, WEST, HORIZONTAL, new Insets(15, 0, 5, 0), 0, 0));
         }
         
         {
@@ -92,8 +109,10 @@ public class WebSphereOptionsPanel extends JPanel {
                 }
             });
             Mnemonics.setLocalizedText(exportTrustStoreButton, NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Export_trust_store"));
-            add(exportTrustStoreButton, new GridBagConstraints(0, 1, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(0, 0, 0, 0), 0, 0));
+            add(exportTrustStoreButton, new GridBagConstraints(0, 3, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(3, 15, 3, 0), 0, 0));
         }
+        
+        add(Spacer.create(), new GridBagConstraints(0, 4, REMAINDER, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
     
     private void exportTrustStore() {
