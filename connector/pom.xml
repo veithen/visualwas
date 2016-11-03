@@ -13,6 +13,11 @@
 
     <name>VisualWAS Connector</name>
 
+    <scm>
+        <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
+        <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>

@@ -14,6 +14,11 @@
     <name>WebSphere Runtime Class Loader</name>
     <description>An optimized class loader implementation that loads classes from a WebSphere installation.</description>
 
+    <scm>
+        <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
+        <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.osgi</groupId>

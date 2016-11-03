@@ -11,6 +11,11 @@
     <artifactId>com.sun.tools.visualvm.jmx</artifactId>
     <packaging>pom</packaging>
 
+    <scm>
+        <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
+        <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
