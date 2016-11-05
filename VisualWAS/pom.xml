@@ -12,6 +12,7 @@
     <packaging>nbm</packaging>
 
     <name>VisualWAS Plugin</name>
+    <description>WebSphere plugin for VisualVM</description>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>

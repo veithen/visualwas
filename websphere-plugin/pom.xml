@@ -11,6 +11,9 @@
     <artifactId>websphere-plugin</artifactId>
     <packaging>bundle</packaging>
 
+    <name>WebSphere plugin</name>
+    <description>Plugin that registers the platform MXBeans in WebSphere's MBean server</description>
+
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
