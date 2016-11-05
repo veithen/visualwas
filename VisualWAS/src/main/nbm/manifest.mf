@@ -3,5 +3,3 @@ OpenIDE-Module: com.github.veithen.visualwas
 OpenIDE-Module-Install: com/github/veithen/visualwas/Installer.class
 OpenIDE-Module-Layer: com/github/veithen/visualwas/layer.xml
 OpenIDE-Module-Localizing-Bundle: com/github/veithen/visualwas/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-
