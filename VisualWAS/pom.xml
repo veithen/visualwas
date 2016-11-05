@@ -145,4 +145,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.jutzig</groupId>
+                        <artifactId>github-release-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>release</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

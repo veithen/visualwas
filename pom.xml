@@ -199,6 +199,13 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>de.jutzig</groupId>
+                <artifactId>github-release-plugin</artifactId>
+                <configuration>
+                    <description>VisualWAS version ${project.version}</description>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

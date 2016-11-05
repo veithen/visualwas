@@ -19,6 +19,10 @@
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
     </scm>
 
+    <properties>
+        <symbolicName>com.github.veithen.visualwas.mxbeans</symbolicName>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -45,6 +49,7 @@
     </dependencies>
 
     <build>
+        <finalName>${symbolicName}_${project.version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -61,7 +66,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Name>Platform MXBeans plugin</Bundle-Name>
-                        <Bundle-SymbolicName>com.github.veithen.visualwas.mxbeans;singleton:=true</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${symbolicName};singleton:=true</Bundle-SymbolicName>
                         <Bundle-Activator>com.github.veithen.visualwas.mxbeans.Activator</Bundle-Activator>
                         <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         <Eclipse-AutoStart>true</Eclipse-AutoStart>
@@ -141,6 +146,27 @@
                                     <systemPropertyVariables>
                                         <was.soapPort>${was.soapPort}</was.soapPort>
                                     </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.jutzig</groupId>
+                        <artifactId>github-release-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>release</goal>
+                                </goals>
+                                <configuration>
+                                    <artifact>${project.build.directory}/${project.build.finalName}.jar</artifact>
                                 </configuration>
                             </execution>
                         </executions>
