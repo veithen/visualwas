@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.github.veithen.visualwas</groupId>
-        <artifactId>visualwas-project</artifactId>
+        <artifactId>visualwas</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 

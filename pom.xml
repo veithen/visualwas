@@ -9,11 +9,11 @@
     </parent>
 
     <groupId>com.github.veithen.visualwas</groupId>
-    <artifactId>visualwas-project</artifactId>
+    <artifactId>visualwas</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>VisualWAS Project</name>
+    <name>VisualWAS</name>
     <description>Open Source implementation of the WebSphere SOAP JMX protocol</description>
     <url>https://github.com/veithen/visualwas</url>
     <inceptionYear>2013</inceptionYear>
@@ -30,7 +30,7 @@
         <module>dummy-transport</module>
         <module>loader</module>
         <module>clientlib</module>
-        <module>VisualWAS</module>
+        <module>visualvm-plugin</module>
         <module>samples</module>
         <module>websphere-api-stubs</module>
         <module>websphere-plugin</module>
