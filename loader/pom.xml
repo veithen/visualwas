@@ -13,6 +13,7 @@
 
     <name>WebSphere Runtime Class Loader</name>
     <description>An optimized class loader implementation that loads classes from a WebSphere installation.</description>
+    <url>https://github.com/veithen/visualwas</url>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>

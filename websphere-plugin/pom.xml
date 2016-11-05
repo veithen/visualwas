@@ -13,6 +13,7 @@
 
     <name>WebSphere plugin</name>
     <description>Plugin that registers the platform MXBeans in WebSphere's MBean server</description>
+    <url>https://github.com/veithen/visualwas</url>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>

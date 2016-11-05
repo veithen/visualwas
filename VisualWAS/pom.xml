@@ -13,6 +13,7 @@
 
     <name>VisualWAS Plugin</name>
     <description>WebSphere plugin for VisualVM</description>
+    <url>https://github.com/veithen/visualwas</url>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>

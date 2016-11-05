@@ -12,6 +12,7 @@
     <packaging>bundle</packaging>
 
     <name>VisualWAS Connector</name>
+    <url>https://github.com/veithen/visualwas</url>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>

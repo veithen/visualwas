@@ -15,6 +15,7 @@
 
     <name>VisualWAS Project</name>
     <description>Open Source implementation of the WebSphere SOAP JMX protocol</description>
+    <url>https://github.com/veithen/visualwas</url>
     <inceptionYear>2013</inceptionYear>
     <licenses>
         <license>

@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
 
     <name>Samples</name>
+    <url>https://github.com/veithen/visualwas</url>
 
     <modules>
         <module>earscan</module>

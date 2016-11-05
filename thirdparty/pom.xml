@@ -12,6 +12,8 @@
     <artifactId>thirdparty</artifactId>
     <packaging>pom</packaging>
 
+    <url>https://github.com/veithen/visualwas</url>
+
     <modules>
         <module>visualvm</module>
         <module>com.sun.tools.visualvm.application</module>

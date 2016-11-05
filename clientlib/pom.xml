@@ -13,6 +13,7 @@
 
     <name>WebSphere Client Library</name>
     <description>An alternate implementation of the classes required to access various WebSphere MBeans, including the configuration repository.</description>
+    <url>https://github.com/veithen/visualwas</url>
 
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
