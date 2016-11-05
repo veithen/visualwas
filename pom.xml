@@ -47,17 +47,6 @@
         <axiom.version>1.2.15</axiom.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>apache.snapshots</id>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <name>Apache Snapshot Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
