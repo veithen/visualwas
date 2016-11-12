@@ -22,7 +22,6 @@
 package com.github.veithen.visualwas.env;
 
 import java.net.Proxy;
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,12 +43,7 @@ public final class EnvUtil {
         // i.e. to connect to the Internet. SOAP connections to WebSphere should not pass through that proxy.
         env.put(SOAPJMXConnector.PROXY, Proxy.NO_PROXY);
         if (securityEnabled) {
-            try {
-                env.put(SOAPJMXConnector.TRUST_MANAGER, TrustStore.getInstance().createTrustManager());
-            } catch (GeneralSecurityException ex) {
-                // TODO: log this error somehow
-                ex.printStackTrace();
-            }
+            env.put(SOAPJMXConnector.TRUST_MANAGER, TrustStore.getInstance().createTrustManager());
         }
         env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, WebSphereClassLoaderProvider.getInstance());
         if (federationDisabled) {

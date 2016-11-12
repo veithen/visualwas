@@ -31,7 +31,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
 import javax.swing.AbstractAction;
@@ -82,12 +81,7 @@ public class SignerExchangeDialog extends JDialog {
         JButton addButton = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    TrustStore.getInstance().addCertificate(certSelector.getSelectedValue());
-                } catch (GeneralSecurityException ex) {
-                    // TODO: should not happen
-                    ex.printStackTrace();
-                }
+                TrustStore.getInstance().addCertificate(certSelector.getSelectedValue());
                 dispose();
                 certificateAdded = true;
             }

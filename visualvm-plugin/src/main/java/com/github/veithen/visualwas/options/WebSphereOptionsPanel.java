@@ -33,6 +33,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -124,7 +125,7 @@ public class WebSphereOptionsPanel extends JPanel {
             if (JOptionPane.showConfirmDialog(null, pwd, NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Enter_password"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 try {
                     TrustStore.getInstance().export(chooser.getSelectedFile(), pwd.getPassword());
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     // TODO
                     ex.printStackTrace();
                 }

@@ -55,15 +55,15 @@ public final class TrustStore {
         return instance;
     }
     
-    private KeyStore getTrustStore() throws GeneralSecurityException {
-        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        byte[] trustStoreContent = prefs.getByteArray(PROP_KEY, null);
+    private KeyStore getTrustStore() {
         try {
+            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            byte[] trustStoreContent = prefs.getByteArray(PROP_KEY, null);
             trustStore.load(trustStoreContent == null ? null : new ByteArrayInputStream(trustStoreContent), new char[0]);
-        } catch (IOException ex) {
-            // We should never get here
+            return trustStore;
+        } catch (IOException | GeneralSecurityException ex) {
+            throw new TrustStoreError(ex);
         }
-        return trustStore;
     }
     
     /**
@@ -74,40 +74,48 @@ public final class TrustStore {
      * @return the trust manager
      * @throws GeneralSecurityException
      */
-    public TrustManager createTrustManager() throws GeneralSecurityException {
-        KeyStore trustStore = getTrustStore();
-        if (trustStore.aliases().hasMoreElements()) {
-            TrustManagerFactory tmfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmfactory.init(trustStore);
-            TrustManager[] trustManagers = tmfactory.getTrustManagers();
-            if (trustManagers.length != 1) {
-                throw new RuntimeException("Expected a TrustManager array with a single entry");
+    public TrustManager createTrustManager() {
+        try {
+            KeyStore trustStore = getTrustStore();
+            if (trustStore.aliases().hasMoreElements()) {
+                TrustManagerFactory tmfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                tmfactory.init(trustStore);
+                TrustManager[] trustManagers = tmfactory.getTrustManagers();
+                if (trustManagers.length != 1) {
+                    throw new RuntimeException("Expected a TrustManager array with a single entry");
+                }
+                return new TrustManagerWrapper((X509ExtendedTrustManager)trustManagers[0]);
+            } else {
+                return new NoTrustManager();
             }
-            return new TrustManagerWrapper((X509ExtendedTrustManager)trustManagers[0]);
-        } else {
-            return new NoTrustManager();
+        } catch (GeneralSecurityException ex) {
+            throw new TrustStoreError(ex);
         }
     }
 
-    public void addCertificate(X509Certificate cert) throws GeneralSecurityException {
-        KeyStore trustStore = getTrustStore();
-        trustStore.setCertificateEntry(String.valueOf(System.currentTimeMillis()), cert);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public void addCertificate(X509Certificate cert) {
         try {
+            KeyStore trustStore = getTrustStore();
+            trustStore.setCertificateEntry(String.valueOf(System.currentTimeMillis()), cert);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             trustStore.store(baos, new char[0]);
-        } catch (IOException ex) {
-            // We should never get here
+            prefs.putByteArray(PROP_KEY, baos.toByteArray());
+        } catch (IOException | GeneralSecurityException ex) {
+            throw new TrustStoreError(ex);
         }
-        prefs.putByteArray(PROP_KEY, baos.toByteArray());
     }
     
-    public void export(File file, char[] password) throws GeneralSecurityException, IOException {
-        KeyStore trustStore = getTrustStore();
-        FileOutputStream out = new FileOutputStream(file);
+    public void export(File file, char[] password) throws IOException {
         try {
-            trustStore.store(out, password);
-        } finally {
-            out.close();
+            KeyStore trustStore = getTrustStore();
+            FileOutputStream out = new FileOutputStream(file);
+            try {
+                trustStore.store(out, password);
+            } finally {
+                out.close();
+            }
+        } catch (GeneralSecurityException ex) {
+            throw new TrustStoreError(ex);
         }
     }
 }
