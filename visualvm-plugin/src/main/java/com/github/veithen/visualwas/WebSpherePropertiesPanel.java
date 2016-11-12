@@ -322,6 +322,10 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                     @Override
                     public void run() {
                         testConnectionButton.setEnabled(true);
+                        // If we don't request the focus, then the next button will get the focus.
+                        // This would be the "Cancel" button, which is unnatural. Ideally we would
+                        // set the focus to the OK button, but we don't have access to it.
+                        testConnectionButton.requestFocusInWindow();
                         if (exception == null) {
                             testConnectionResult.setIcon(okIcon);
                             testConnectionResult.setText(NbBundle.getMessage(WebSpherePropertiesPanel.class, "MSG_Connection_successful"));
