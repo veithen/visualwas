@@ -53,6 +53,7 @@ import com.sun.tools.visualvm.core.options.UISupport;
 import com.sun.tools.visualvm.core.ui.components.SectionSeparator;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
 
+@SuppressWarnings("serial")
 public class WebSphereOptionsPanel extends JPanel {
     private final JTextField wasHomeField;
 

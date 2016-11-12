@@ -65,9 +65,8 @@ import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.sun.tools.visualvm.core.properties.PropertiesPanel;
 import com.sun.tools.visualvm.core.ui.components.Spacer;
 
+@SuppressWarnings("serial")
 public class WebSpherePropertiesPanel extends PropertiesPanel {
-    private static final long serialVersionUID = -5821630337324177997L;
-    
     private static ImageIcon connectingIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("connecting.gif"));
     private static ImageIcon errorIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("error.png"));
     private static ImageIcon okIcon = new ImageIcon(WebSpherePropertiesPanel.class.getResource("ok.png"));

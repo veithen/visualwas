@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 
 import javax.swing.AbstractListModel;
 
+@SuppressWarnings("serial")
 final class CertificateChainListModel extends AbstractListModel<X509Certificate> {
     private final X509Certificate[] chain;
 

@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+@SuppressWarnings("serial")
 final class CertificateChainListCellRenderer extends JLabel implements ListCellRenderer<X509Certificate> {
     private static ImageIcon icon = new ImageIcon(CertificateChainListCellRenderer.class.getResource("certificate.png"));
     

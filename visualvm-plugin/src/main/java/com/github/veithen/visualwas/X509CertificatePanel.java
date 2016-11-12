@@ -40,9 +40,8 @@ import javax.swing.JTextField;
 
 import org.openide.util.NbBundle;
 
+@SuppressWarnings("serial")
 public final class X509CertificatePanel extends JPanel {
-    private static final long serialVersionUID = 1163922421062646559L;
-    
     private static final Logger log = Logger.getLogger(X509CertificatePanel.class.getName());
     
     private final JTextField subjectField;

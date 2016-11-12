@@ -50,9 +50,8 @@ import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.trust.TrustStore;
 
+@SuppressWarnings("serial")
 public class SignerExchangeDialog extends JDialog {
-    private static final long serialVersionUID = 5822625643082961287L;
-
     private boolean certificateAdded;
     
     public SignerExchangeDialog(Window window, X509Certificate[] chain) {
