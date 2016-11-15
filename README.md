@@ -39,6 +39,26 @@ To access the MBeans registered in WebSphere's MBean server, you need to install
 
 1. Click the _Install_ button, review and accept the plugin license and wait for the plugin to be installed.
 
+## Usage
+
+In order to connect to a WebSphere instance, select _Add JMX Connection_ as usual, but then select _WebSphere_ from the _Connection type_ list and enter the relevant information:
+
+![WebSphere connection properties](screenshots/properties.png)
+
+Use _Test connection_ to check that a connection to the WebSphere instance can successfully be established. If security is enabled, then you may be presented with a dialog to import the server certificate or one of the certificates in the certificate chain to the trust store:
+
+![Signer exchange dialog](screenshots/signer-exchange.png)
+
+You should typically add the root certificate to avoid problems later when the server certificate is renewed. For Network Deployment cells, this also allows you to connect to all servers in a cell without importing additional certificates.
+
+After clicking _OK_ the new connection should appear in the _Applications_ view and you can start monitoring the server:
+
+![WebSphere monitor tab](screenshots/monitor.png)
+
+If you have installed VisualVM-MBeans plugin you can also interact with the MBeans exported by the server:
+
+![MBeans tab](screenshots/mbeans.png)
+
 [1]: http://docs.oracle.com/javase/7/docs/technotes/guides/management/mxbeans.html
 [2]: https://github.com/veithen/visualwas/releases
 [3]: http://www-01.ibm.com/support/docview.wss?uid=swg21607887
