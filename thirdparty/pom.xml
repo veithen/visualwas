@@ -33,4 +33,8 @@
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
+
+    <properties>
+        <visualvm.version>visualvm_131</visualvm.version>
+    </properties>
 </project>

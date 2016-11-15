@@ -33,7 +33,7 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>visualvm_139.zip</file>
+                                    <file>${visualvm.version}.zip</file>
                                     <type>zip</type>
                                 </artifact>
                             </artifacts>

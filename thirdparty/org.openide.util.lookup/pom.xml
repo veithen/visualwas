@@ -40,7 +40,7 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includes>visualvm_139/platform/lib/org-openide-util-lookup.jar</includes>
+                            <includes>${visualvm.version}/platform/lib/org-openide-util-lookup.jar</includes>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -58,7 +58,7 @@
                         <configuration>
                             <artifacts>
                                 <artifact>
-                                    <file>${project.build.directory}/visualvm_139/platform/lib/org-openide-util-lookup.jar</file>
+                                    <file>${project.build.directory}/${visualvm.version}/platform/lib/org-openide-util-lookup.jar</file>
                                     <type>jar</type>
                                 </artifact>
                             </artifacts>
