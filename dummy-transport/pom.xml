@@ -15,8 +15,8 @@
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>

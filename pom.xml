@@ -41,8 +41,8 @@
         <url>https://github.com/veithen/visualwas/tree/master</url>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <properties>
         <github.repository>visualwas</github.repository>
