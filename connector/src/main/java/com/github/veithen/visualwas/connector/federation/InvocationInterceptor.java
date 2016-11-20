@@ -35,7 +35,6 @@ import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
 final class InvocationInterceptor implements Interceptor<Invocation,Object> {
     private static final OperationDescription getServerMBeanOperation = AdminService.DESCRIPTION.getOperation("getServerMBean");
@@ -62,7 +61,6 @@ final class InvocationInterceptor implements Interceptor<Invocation,Object> {
             mapperFuture = this.mapperFuture;
         }
         if (invocation.getOperation() == queryNamesOperation) {
-            final SettableFuture<Object> result = SettableFuture.create();
             Object[] args = invocation.getArgs();
             final ObjectName objectName = (ObjectName)args[0];
             final QueryExp queryExp = (QueryExp)args[1];
