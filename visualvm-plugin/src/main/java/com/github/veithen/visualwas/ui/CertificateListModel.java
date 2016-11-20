@@ -19,17 +19,17 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas;
+package com.github.veithen.visualwas.ui;
 
 import java.security.cert.X509Certificate;
 
 import javax.swing.AbstractListModel;
 
 @SuppressWarnings("serial")
-final class CertificateChainListModel extends AbstractListModel<X509Certificate> {
+public final class CertificateListModel extends AbstractListModel<X509Certificate> {
     private final X509Certificate[] chain;
 
-    CertificateChainListModel(X509Certificate[] chain) {
+    public CertificateListModel(X509Certificate[] chain) {
         this.chain = chain;
     }
 

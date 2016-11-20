@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.net.ssl.TrustManager;
@@ -101,6 +104,19 @@ public final class TrustStore {
             trustStore.store(baos, new char[0]);
             prefs.putByteArray(PROP_KEY, baos.toByteArray());
         } catch (IOException | GeneralSecurityException ex) {
+            throw new TrustStoreError(ex);
+        }
+    }
+    
+    public X509Certificate[] getCertificates() {
+        try {
+            List<X509Certificate> result = new ArrayList<>();
+            KeyStore trustStore = getTrustStore();
+            for (Enumeration<String> e = trustStore.aliases(); e.hasMoreElements(); ) {
+                result.add((X509Certificate)trustStore.getCertificate(e.nextElement()));
+            }
+            return result.toArray(new X509Certificate[result.size()]);
+        } catch (GeneralSecurityException ex) {
             throw new TrustStoreError(ex);
         }
     }

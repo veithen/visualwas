@@ -48,6 +48,8 @@ import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.trust.TrustStore;
+import com.github.veithen.visualwas.ui.CertificateListCellRenderer;
+import com.github.veithen.visualwas.ui.CertificateListModel;
 
 @SuppressWarnings("serial")
 public class SignerExchangeDialog extends JDialog {
@@ -61,9 +63,9 @@ public class SignerExchangeDialog extends JDialog {
         JLabel label = new JLabel();
         Mnemonics.setLocalizedText(label, NbBundle.getMessage(SignerExchangeDialog.class, "LBL_untrusted_warning"));
         add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
-        final JList<X509Certificate> certSelector = new JList<X509Certificate>(new CertificateChainListModel(chain));
+        final JList<X509Certificate> certSelector = new JList<X509Certificate>(new CertificateListModel(chain));
         label.setLabelFor(certSelector);
-        certSelector.setCellRenderer(new CertificateChainListCellRenderer());
+        certSelector.setCellRenderer(new CertificateListCellRenderer(true));
         certSelector.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         add(certSelector, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, WEST, HORIZONTAL, new Insets(2, 0, 2, 0), 0, 0));
         

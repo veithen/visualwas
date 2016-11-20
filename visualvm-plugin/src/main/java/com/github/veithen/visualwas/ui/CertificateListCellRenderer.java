@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas;
+package com.github.veithen.visualwas.ui;
 
 import java.awt.Component;
 import java.security.cert.X509Certificate;
@@ -31,12 +31,15 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 @SuppressWarnings("serial")
-final class CertificateChainListCellRenderer extends JLabel implements ListCellRenderer<X509Certificate> {
-    private static ImageIcon icon = new ImageIcon(CertificateChainListCellRenderer.class.getResource("certificate.png"));
+public final class CertificateListCellRenderer extends JLabel implements ListCellRenderer<X509Certificate> {
+    private static ImageIcon icon = new ImageIcon(CertificateListCellRenderer.class.getResource("certificate.png"));
     
-    CertificateChainListCellRenderer() {
+    private final boolean chain;
+    
+    public CertificateListCellRenderer(boolean chain) {
         setIcon(icon);
         setOpaque(true);
+        this.chain = chain;
     }
     
     public Component getListCellRendererComponent(JList<? extends X509Certificate> list,
@@ -51,7 +54,9 @@ final class CertificateChainListCellRenderer extends JLabel implements ListCellR
         }
         setEnabled(list.isEnabled());
         setFont(list.getFont());
-        setBorder(BorderFactory.createEmptyBorder(0, 10*index, 0, 0));
+        if (chain) {
+            setBorder(BorderFactory.createEmptyBorder(0, 10*index, 0, 0));
+        }
         return this;
     }
 }

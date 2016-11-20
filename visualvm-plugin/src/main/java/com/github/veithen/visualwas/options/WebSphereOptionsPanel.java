@@ -34,11 +34,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.security.cert.X509Certificate;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -50,9 +52,10 @@ import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.SimpleDocumentListener;
 import com.github.veithen.visualwas.trust.TrustStore;
+import com.github.veithen.visualwas.ui.CertificateListCellRenderer;
+import com.github.veithen.visualwas.ui.CertificateListModel;
 import com.sun.tools.visualvm.core.options.UISupport;
 import com.sun.tools.visualvm.core.ui.components.SectionSeparator;
-import com.sun.tools.visualvm.core.ui.components.Spacer;
 
 @SuppressWarnings("serial")
 public class WebSphereOptionsPanel extends JPanel {
@@ -113,8 +116,12 @@ public class WebSphereOptionsPanel extends JPanel {
             Mnemonics.setLocalizedText(exportTrustStoreButton, NbBundle.getMessage(WebSphereOptionsPanel.class, "LBL_Export_trust_store"));
             add(exportTrustStoreButton, new GridBagConstraints(0, 3, REMAINDER, 1, 0.0, 0.0, WEST, NONE, new Insets(3, 15, 3, 0), 0, 0));
         }
-        
-        add(Spacer.create(), new GridBagConstraints(0, 4, REMAINDER, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+
+        {
+            JList<X509Certificate> certificateList = new JList<>(new CertificateListModel(TrustStore.getInstance().getCertificates()));
+            certificateList.setCellRenderer(new CertificateListCellRenderer(false));
+            add(certificateList, new GridBagConstraints(0, 4, REMAINDER, 1, 1.0, 1.0, NORTHWEST, BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        }
     }
     
     private void exportTrustStore() {
