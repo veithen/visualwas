@@ -34,18 +34,19 @@ import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.connector.transport.TransportFactory;
+import com.google.common.util.concurrent.ListenableFuture;
 
-public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope>, TransportFactory {
+public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, TransportFactory {
     public static final Endpoint ENDPOINT = new Endpoint("localhost", 8888, false);
     
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
@@ -95,14 +96,14 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnv
     }
     
     @Override
-    public Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> createHandler(Endpoint endpoint, TransportConfiguration config) {
+    public Handler<SOAPEnvelope,SOAPResponse> createHandler(Endpoint endpoint, TransportConfiguration config) {
         return this;
     }
 
     @Override
-    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback) {
+    public ListenableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
         SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
         normalize(clonedRequest.getSOAPEnvelope());
-        requestMatcher.match((Document)clonedRequest).produce(callback);
+        return requestMatcher.match((Document)clonedRequest).produce(context.getExecutor());
     }
 }

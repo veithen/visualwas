@@ -21,22 +21,22 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.google.common.util.concurrent.ListenableFuture;
 
-final class InterceptorHandler<S,T,F> implements Handler<S,T,F> {
-    private final Interceptor<S,T,F> interceptor;
-    private final Handler<S,T,F> nextHandler;
+final class InterceptorHandler<S,T> implements Handler<S,T> {
+    private final Interceptor<S,T> interceptor;
+    private final Handler<S,T> nextHandler;
 
-    InterceptorHandler(Interceptor<S,T,F> interceptor, Handler<S,T,F> nextHandler) {
+    InterceptorHandler(Interceptor<S,T> interceptor, Handler<S,T> nextHandler) {
         this.interceptor = interceptor;
         this.nextHandler = nextHandler;
     }
 
     @Override
-    public void invoke(InvocationContext context, S request, Callback<T,F> callback) {
-        interceptor.invoke(context, request, callback, nextHandler);
+    public ListenableFuture<? extends T> invoke(InvocationContext context, S request) {
+        return interceptor.invoke(context, request, nextHandler);
     }
 }

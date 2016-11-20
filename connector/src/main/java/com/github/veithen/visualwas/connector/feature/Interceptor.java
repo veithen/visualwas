@@ -21,9 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
+import com.google.common.util.concurrent.ListenableFuture;
 
-public interface Interceptor<S,T,F> {
-    void invoke(InvocationContext context, S request, Callback<T,F> callback, Handler<S,T,F> nextHandler);
+public interface Interceptor<S,T> {
+    ListenableFuture<? extends T> invoke(InvocationContext context, S request, Handler<S,T> nextHandler);
 }

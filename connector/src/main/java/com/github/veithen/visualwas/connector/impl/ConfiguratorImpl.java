@@ -34,18 +34,19 @@ import com.github.veithen.visualwas.connector.description.AdminServiceDescriptio
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
     private Set<Class<?>> adminServiceInterfaces;
     private Map<Method,OperationHandler> operationHandlers;
-    private InterceptorChainBuilder<Invocation,Object,Throwable> invocationInterceptors;
-    private InterceptorChainBuilder<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapInterceptors;
+    private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
+    private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, InterceptorChainBuilder<Invocation,Object,Throwable> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.operationHandlers = operationHandlers;
         this.invocationInterceptors = invocationInterceptors;
@@ -78,12 +79,12 @@ final class ConfiguratorImpl implements Configurator {
     }
 
     @Override
-    public void addInvocationInterceptor(Interceptor<Invocation,Object,Throwable> interceptor) {
+    public void addInvocationInterceptor(Interceptor<Invocation,Object> interceptor) {
         invocationInterceptors.add(interceptor);
     }
     
     @Override
-    public void addSOAPInterceptor(Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> interceptor) {
+    public void addSOAPInterceptor(Interceptor<SOAPEnvelope,SOAPResponse> interceptor) {
         soapInterceptors.add(interceptor);
     }
 

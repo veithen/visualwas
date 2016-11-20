@@ -41,6 +41,7 @@ import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.factory.DependencyUtil;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
@@ -57,8 +58,8 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
         Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getOperationHandlers());
         adminServiceInterfaces.add(AdminService.class);
-        InterceptorChainBuilder<Invocation,Object,Throwable> invocationInterceptors = new InterceptorChainBuilder<>();
-        InterceptorChainBuilder<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapInterceptors = new InterceptorChainBuilder<>();
+        InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
+        InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
         ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, invocationInterceptors, soapInterceptors, adaptableDelegate);
         for (Feature feature : features) {

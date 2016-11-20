@@ -29,24 +29,27 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
-final class MarshallingHandler implements Handler<Invocation,Object,Throwable> {
+final class MarshallingHandler implements Handler<Invocation,Object> {
     private static final OMMetaFactory metaFactory = OMAbstractFactory.getMetaFactory();
     
     // TODO: this will eventually depend on the class loader
     private final TypeHandler faultReasonHandler = new ObjectHandler(Throwable.class);
-    private final Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler;
+    private final Handler<SOAPEnvelope,SOAPResponse> soapHandler;
 
-    public MarshallingHandler(Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> soapHandler) {
+    public MarshallingHandler(Handler<SOAPEnvelope,SOAPResponse> soapHandler) {
         this.soapHandler = soapHandler;
     }
 
     @Override
-    public void invoke(InvocationContext context, Invocation invocation, Callback<Object,Throwable> callback) {
+    public ListenableFuture<Object> invoke(InvocationContext context, Invocation invocation) {
         InvocationContextImpl contextImpl = (InvocationContextImpl)context;
         OperationHandler operationHandler = (OperationHandler)invocation.getOperation();
         SOAPFactory factory = metaFactory.getSOAP11Factory();
@@ -61,6 +64,11 @@ final class MarshallingHandler implements Handler<Invocation,Object,Throwable> {
         }
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, invocation.getArgs(), contextImpl);
-        soapHandler.invoke(context, request, new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl, callback));
+        SettableFuture<Object> result = SettableFuture.create();
+        Futures.addCallback(
+                soapHandler.invoke(context, request),
+                new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl, result),
+                context.getExecutor());
+        return result;
     }
 }

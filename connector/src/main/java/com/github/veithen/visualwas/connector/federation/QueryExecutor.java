@@ -21,12 +21,13 @@
  */
 package com.github.veithen.visualwas.connector.federation;
 
-import java.io.IOException;
 import java.util.Set;
 
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
+import com.google.common.util.concurrent.ListenableFuture;
+
 interface QueryExecutor<T> {
-    Set<T> execute(ObjectName objectName, QueryExp queryExp) throws IOException;
+    ListenableFuture<Set<T>> execute(ObjectName objectName, QueryExp queryExp);
 }

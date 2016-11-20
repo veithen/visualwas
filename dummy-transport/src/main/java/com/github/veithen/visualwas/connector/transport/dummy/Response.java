@@ -21,10 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.transport.dummy;
 
-import org.apache.axiom.soap.SOAPEnvelope;
-
-import com.github.veithen.visualwas.connector.Callback;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 public abstract class Response {
-    abstract void produce(Callback<SOAPEnvelope,SOAPEnvelope> callback);
+    abstract ListenableFuture<SOAPResponse> produce(ListeningExecutorService executor);
 }

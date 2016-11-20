@@ -26,18 +26,19 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.ListenableFuture;
 
-final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
+final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPResponse> {
     static final SecurityInterceptor INSTANCE = new SecurityInterceptor();
     
     private SecurityInterceptor() {}
 
     @Override
-    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback, Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> nextHandler) {
+    public ListenableFuture<? extends SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request, Handler<SOAPEnvelope,SOAPResponse> nextHandler) {
         Credentials credentials = context.getAttribute(Credentials.class);
         if (credentials != null) {
             OMFactory factory = request.getOMFactory();
@@ -54,6 +55,6 @@ final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPEnvelope
                 throw new UnsupportedOperationException();
             }
         }
-        nextHandler.invoke(context, request, callback);
+        return nextHandler.invoke(context, request);
     }
 }

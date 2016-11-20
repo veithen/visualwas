@@ -24,13 +24,16 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.Callable;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.Callback;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 public final class CannedResponse extends Response {
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
@@ -42,16 +45,29 @@ public final class CannedResponse extends Response {
     }
 
     @Override
-    void produce(Callback<SOAPEnvelope, SOAPEnvelope> callback) {
-        try {
-            InputStream in = url.openStream();
-            try {
-                callback.onResponse(OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope());
-            } finally {
-                in.close();
+    ListenableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
+        return executor.submit(new Callable<SOAPResponse>() {
+            @Override
+            public SOAPResponse call() throws Exception {
+                final InputStream in = url.openStream();
+                final SOAPEnvelope envelope = OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope();
+                return new SOAPResponse() {
+                    @Override
+                    public boolean isFault() {
+                        return false;
+                    }
+                    
+                    @Override
+                    public SOAPEnvelope getEnvelope() {
+                        return envelope;
+                    }
+                    
+                    @Override
+                    public void discard() throws IOException {
+                        in.close();
+                    }
+                };
             }
-        } catch (IOException ex) {
-            callback.onTransportError(ex);
-        }
+        });
     }
 }
