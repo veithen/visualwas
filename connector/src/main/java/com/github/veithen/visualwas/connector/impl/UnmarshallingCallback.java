@@ -21,50 +21,49 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 
-import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPBody;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.ConnectorException;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.base.Function;
 
-final class UnmarshallingCallback implements Callback<SOAPEnvelope,SOAPEnvelope> {
+final class UnmarshallingCallback implements Function<SOAPResponse,Object> {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
     private final InvocationContextImpl context;
-    private final Callback<Object,Throwable> callback;
     
-    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context, Callback<Object,Throwable> callback) {
+    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
-        this.callback = callback;
     }
 
     @Override
-    public void onResponse(SOAPEnvelope envelope) {
+    public Object apply(SOAPResponse response) {
         try {
-            callback.onResponse(operationHandler.processResponse(envelope.getBody().getFirstElement(), context));
-        } catch (ClassNotFoundException ex) {
-            callback.onFault(ex);
-        } catch (OperationHandlerException ex) {
-            callback.onFault(new ConnectorException("Invocation failed", ex));
+            try {
+                SOAPBody body = response.getEnvelope().getBody();
+                if (response.isFault()) {
+                    try {
+                        throw (Throwable)faultReasonHandler.extractValue(body.getFault().getReason(), context);
+                    } catch (TypeHandlerException ex) {
+                        throw new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
+                    }
+                } else {
+                    try {
+                        return operationHandler.processResponse(body.getFirstElement(), context);
+                    } catch (OperationHandlerException ex) {
+                        throw new ConnectorException("Invocation failed", ex);
+                    }
+                }
+            } finally {
+                // TODO: also need to guarantee this is called if an error occurs elsewhere
+                response.discard();
+            }
+        } catch (Throwable ex) {
+            throw new UndeclaredThrowableException(ex);
         }
-    }
-
-    @Override
-    public void onFault(SOAPEnvelope envelope) {
-        try {
-            callback.onFault((Throwable)faultReasonHandler.extractValue(envelope.getBody().getFault().getReason(), context));
-        } catch (ClassNotFoundException ex) {
-            callback.onFault(ex);
-        } catch (TypeHandlerException ex) {
-            callback.onFault(new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex));
-        }
-    }
-
-    @Override
-    public void onTransportError(IOException ex) {
-        callback.onTransportError(ex);
     }
 }

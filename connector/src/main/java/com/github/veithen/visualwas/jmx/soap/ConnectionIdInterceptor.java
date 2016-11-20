@@ -25,12 +25,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.ListenableFuture;
 
-final class ConnectionIdInterceptor implements Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
+final class ConnectionIdInterceptor implements Interceptor<SOAPEnvelope,SOAPResponse> {
     private static final QName HEADER_NAME = new QName("http://github.com/veithen/visualwas", "ConnectionId", "v");
     
     private final String connectionId;
@@ -40,8 +41,8 @@ final class ConnectionIdInterceptor implements Interceptor<SOAPEnvelope,SOAPEnve
     }
 
     @Override
-    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback, Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> nextHandler) {
+    public ListenableFuture<? extends SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request, Handler<SOAPEnvelope,SOAPResponse> nextHandler) {
         request.getOrCreateHeader().addHeaderBlock(HEADER_NAME).setText(connectionId);
-        nextHandler.invoke(context, request, callback);
+        return nextHandler.invoke(context, request);
     }
 }

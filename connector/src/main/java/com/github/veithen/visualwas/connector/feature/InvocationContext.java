@@ -22,12 +22,15 @@
 package com.github.veithen.visualwas.connector.feature;
 
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 public interface InvocationContext {
 
     ClassLoader getClassLoader();
 
     TransportConfiguration getTransportConfiguration();
+
+    ListeningExecutorService getExecutor();
 
     <T> T getAttribute(Class<T> key);
 

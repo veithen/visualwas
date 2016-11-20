@@ -19,36 +19,16 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.connector.feature;
 
 import java.io.IOException;
 
-import com.github.veithen.visualwas.connector.Callback;
+import org.apache.axiom.soap.SOAPEnvelope;
 
-public class SynchronousInvocationCallback implements Callback<Object,Throwable> {
-    private Throwable throwable;
-    private Object result;
+public interface SOAPResponse {
+    boolean isFault();
 
-    @Override
-    public void onResponse(Object response) {
-        result = response;
-    }
+    SOAPEnvelope getEnvelope();
 
-    @Override
-    public void onFault(Throwable fault) {
-        throwable = fault;
-    }
-
-    @Override
-    public void onTransportError(IOException ex) {
-        throwable = ex;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
-    }
-
-    public Object getResult() {
-        return result;
-    }
+    void discard() throws IOException;
 }

@@ -59,9 +59,9 @@ public interface Configurator extends Adaptable {
      */
     void addAdminServiceDescription(AdminServiceDescription description);
     
-    void addInvocationInterceptor(Interceptor<Invocation,Object,Throwable> interceptor);
+    void addInvocationInterceptor(Interceptor<Invocation,Object> interceptor);
     
-    void addSOAPInterceptor(Interceptor<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> interceptor);
+    void addSOAPInterceptor(Interceptor<SOAPEnvelope,SOAPResponse> interceptor);
     
     <T> void registerConfiguratorAdapter(Class<T> iface, T adapter);
     

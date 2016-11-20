@@ -21,87 +21,74 @@
  */
 package com.github.veithen.visualwas.connector.federation;
 
-import java.io.IOException;
 import java.util.Set;
 
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.google.common.base.Function;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
-final class InvocationInterceptor implements Interceptor<Invocation,Object,Throwable> {
-    static class CallbackImpl implements Callback<Object,Throwable> {
-        private Object response;
-
-        @Override
-        public void onResponse(Object response) {
-            this.response = response;
-        }
-
-        @Override
-        public void onFault(Throwable fault) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void onTransportError(IOException ex) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        Object getResponse() {
-            return response;
-        }
-    }
-    
+final class InvocationInterceptor implements Interceptor<Invocation,Object> {
     private static final OperationDescription getServerMBeanOperation = AdminService.DESCRIPTION.getOperation("getServerMBean");
     private static final OperationDescription queryNamesOperation = AdminService.DESCRIPTION.getOperation("queryNames");
     
-    private ObjectNameMapper mapper;
+    private ListenableFuture<ObjectNameMapper> mapperFuture;
     
     @Override
-    public void invoke(final InvocationContext context, Invocation invocation, final Callback<Object,Throwable> callback, final Handler<Invocation,Object,Throwable> nextHandler) {
-        // TODO: this is not thread safe and only works with synchronous transports!
-        if (mapper == null) {
-            nextHandler.invoke(context, new Invocation(getServerMBeanOperation), new Callback<Object,Throwable>() {
-                @Override
-                public void onResponse(Object response) {
-                    ObjectName serverMBean = (ObjectName)response;
-                    mapper = new ObjectNameMapper(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
-                }
-                
-                @Override
-                public void onFault(Throwable fault) {
-                    callback.onFault(fault);
-                }
-
-                @Override
-                public void onTransportError(IOException ex) {
-                    callback.onTransportError(ex);
-                }
-            });
+    public ListenableFuture<?> invoke(final InvocationContext context, Invocation invocation, final Handler<Invocation,Object> nextHandler) {
+        final ListenableFuture<ObjectNameMapper> mapperFuture;
+        synchronized (this) {
+            if (this.mapperFuture == null) {
+                this.mapperFuture = Futures.transform(
+                        nextHandler.invoke(context, new Invocation(getServerMBeanOperation)),
+                        new Function<Object,ObjectNameMapper>() {
+                            @Override
+                            public ObjectNameMapper apply(Object response) {
+                                ObjectName serverMBean = (ObjectName)response;
+                                return new ObjectNameMapper(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
+                            }
+                        },
+                        context.getExecutor());
+            }
+            mapperFuture = this.mapperFuture;
         }
         if (invocation.getOperation() == queryNamesOperation) {
+            final SettableFuture<Object> result = SettableFuture.create();
             Object[] args = invocation.getArgs();
-            try {
-                callback.onResponse(mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
-                    @Override
-                    public Set<ObjectName> execute(ObjectName objectName, QueryExp queryExp) throws IOException {
-                        CallbackImpl callback = new CallbackImpl();
-                        nextHandler.invoke(context, new Invocation(queryNamesOperation, objectName, queryExp), callback);
-                        return (Set<ObjectName>)callback.getResponse();
-                    }
-                }));
-            } catch (IOException ex) {
-                callback.onTransportError(ex);
-            }
+            final ObjectName objectName = (ObjectName)args[0];
+            final QueryExp queryExp = (QueryExp)args[1];
+            return Futures.dereference(Futures.transform(
+                    mapperFuture,
+                    new Function<ObjectNameMapper,ListenableFuture<Set<ObjectName>>>() {
+                        @Override
+                        public ListenableFuture<Set<ObjectName>> apply(ObjectNameMapper mapper) {
+                            return mapper.query(objectName, queryExp, new QueryExecutor<ObjectName>() {
+                                @Override
+                                public ListenableFuture<Set<ObjectName>> execute(ObjectName objectName, QueryExp queryExp) {
+                                    return Futures.transform(
+                                            nextHandler.invoke(context, new Invocation(queryNamesOperation, objectName, queryExp)),
+                                            new Function<Object,Set<ObjectName>>() {
+                                                @Override
+                                                public Set<ObjectName> apply(Object input) {
+                                                    return (Set<ObjectName>)input;
+                                                }
+                                            });
+                                }
+                            });
+                        }
+                    },
+                    context.getExecutor()));
+        } else {
+            return nextHandler.invoke(context, invocation);
         }
     }
 }

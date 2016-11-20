@@ -22,10 +22,12 @@
 package com.github.veithen.visualwas.connector.federation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -33,6 +35,10 @@ import java.util.WeakHashMap;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
+
+import com.google.common.base.Function;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 final class ObjectNameMapper implements Mapper<ObjectName> {
     private static final Set<String> nonRoutableDomains = new HashSet<String>(Arrays.asList("JMImplementation", "java.lang"));
@@ -125,27 +131,47 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
         return result;
     }
     
-    Set<ObjectName> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<ObjectName> queryExecutor) throws IOException {
+    ListenableFuture<Set<ObjectName>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<ObjectName> queryExecutor) {
         return query(objectName, queryExp, queryExecutor, this);
     }
     
-    private <T> Set<T> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<T> queryExecutor, Mapper<T> mapper) throws IOException {
+    private <T> ListenableFuture<Set<T>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<T> queryExecutor, final Mapper<T> mapper) {
         if (queryExp != null) {
             // TODO
             throw new UnsupportedOperationException();
         }
         if (objectName == null) {
             try {
-                Set<T> results = new HashSet<T>();
-                for (T result : queryExecutor.execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp)) {
-                    results.add(mapper.remoteToLocal(result));
-                }
+                List<ListenableFuture<Set<T>>> futures = new ArrayList<>();
+                futures.add(Futures.transform(
+                        queryExecutor.execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp),
+                        new Function<Set<T>,Set<T>>() {
+                            @Override
+                            public Set<T> apply(Set<T> input) {
+                                Set<T> output = new HashSet<>();
+                                for (T result : input) {
+                                    output.add(mapper.remoteToLocal(result));
+                                }
+                                return output;
+                            }
+                        }));
                 for (String domain : nonRoutableDomains) {
-                    results.addAll(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
+                    futures.add(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
                 }
-                return results;
+                return Futures.transform(
+                        Futures.allAsList(futures),
+                        new Function<List<Set<T>>,Set<T>>() {
+                            @Override
+                            public Set<T> apply(List<Set<T>> input) {
+                                Set<T> output = new HashSet<>();
+                                for (Set<T> results : input) {
+                                    output.addAll(results);
+                                }
+                                return output;
+                            }
+                        });
             } catch (MalformedObjectNameException ex) {
-                throw new IOException(ex);
+                throw new Error(ex);
             }
         } else {
             // TODO

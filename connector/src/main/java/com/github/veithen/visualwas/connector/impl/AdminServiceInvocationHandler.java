@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
@@ -33,13 +34,13 @@ import com.github.veithen.visualwas.connector.feature.Serializer;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,OperationHandler> operationHandlers;
-    private final Handler<Invocation,Object,Throwable> handler;
+    private final Handler<Invocation,Object> handler;
     private final ConnectorConfiguration config;
     private final Serializer serializer;
     private final Attributes attributes;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers,
-            Handler<Invocation,Object,Throwable> handler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
+            Handler<Invocation,Object> handler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
         this.operationHandlers = operationHandlers;
         this.handler = handler;
         this.config = config;
@@ -67,13 +68,10 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
         InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
-        SynchronousInvocationCallback callback = new SynchronousInvocationCallback();
-        handler.invoke(context, new Invocation(operationHandlers.get(method), args), callback);
-        Throwable throwable = callback.getThrowable();
-        if (throwable != null) {
-            throw throwable;
-        } else {
-            return callback.getResult();
+        try {
+            return handler.invoke(context, new Invocation(operationHandlers.get(method), args)).get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
         }
     }
 }

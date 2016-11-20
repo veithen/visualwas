@@ -23,9 +23,10 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 
 import java.io.IOException;
 
-import org.apache.axiom.soap.SOAPEnvelope;
-
-import com.github.veithen.visualwas.connector.Callback;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 public final class TransportErrorResponse extends Response {
     private final IOException exception;
@@ -35,7 +36,7 @@ public final class TransportErrorResponse extends Response {
     }
 
     @Override
-    void produce(Callback<SOAPEnvelope, SOAPEnvelope> callback) {
-        callback.onTransportError(exception);
+    ListenableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
+        return Futures.immediateFailedFuture(exception);
     }
 }

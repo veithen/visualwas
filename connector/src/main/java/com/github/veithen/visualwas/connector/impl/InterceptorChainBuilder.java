@@ -27,16 +27,16 @@ import java.util.List;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 
-final class InterceptorChainBuilder<S,T,F> {
-    private final List<Interceptor<S,T,F>> interceptors = new ArrayList<>();
+final class InterceptorChainBuilder<S,T> {
+    private final List<Interceptor<S,T>> interceptors = new ArrayList<>();
     
-    void add(Interceptor<S,T,F> interceptor) {
+    void add(Interceptor<S,T> interceptor) {
         interceptors.add(interceptor);
     }
     
-    Handler<S,T,F> buildHandler(Handler<S,T,F> targetHandler) {
-        Handler<S,T,F> handler = targetHandler;
-        for (Interceptor<S,T,F> interceptor : interceptors) {
+    Handler<S,T> buildHandler(Handler<S,T> targetHandler) {
+        Handler<S,T> handler = targetHandler;
+        for (Interceptor<S,T> interceptor : interceptors) {
             handler = new InterceptorHandler<>(interceptor, handler);
         }
         return handler;

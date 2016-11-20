@@ -26,7 +26,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
@@ -36,6 +35,8 @@ import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class FeatureTest {
     @Test
@@ -46,12 +47,12 @@ public class FeatureTest {
                 AdminServiceDescription desc = AdminServiceDescriptionFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
                 configurator.addAdminServiceDescription(desc);
                 final OperationDescription operation = desc.getOperation("echo");
-                configurator.addInvocationInterceptor(new Interceptor<Invocation,Object,Throwable>() {
-                    public void invoke(InvocationContext context, Invocation invocation, Callback<Object,Throwable> callback, Handler<Invocation,Object,Throwable> nextHandler) {
+                configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {
+                    public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
                         if (invocation.getOperation() == operation) {
-                            callback.onResponse(invocation.getArgs()[0]);
+                            return Futures.immediateFuture(invocation.getArgs()[0]);
                         } else {
-                            nextHandler.invoke(context, invocation, callback);
+                            return nextHandler.invoke(context, invocation);
                         }
                     }
                 });

@@ -26,18 +26,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import javax.xml.stream.XMLStreamException;
+import java.util.concurrent.Callable;
 
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.Callback;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.google.common.util.concurrent.ListenableFuture;
 
-final class DefaultTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEnvelope> {
+final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
     private final URL endpointUrl;
     private final TransportConfiguration config;
     
@@ -47,35 +47,40 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPEnvelope,SOAPEn
     }
 
     @Override
-    public void invoke(InvocationContext context, SOAPEnvelope request, Callback<SOAPEnvelope,SOAPEnvelope> callback) {
-        try {
-            HttpURLConnection conn = config.createURLConnection(endpointUrl);
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
-            conn.connect();
-            OutputStream out = conn.getOutputStream();
-            OMOutputFormat format = new OMOutputFormat();
-            format.setCharSetEncoding("UTF-8");
-            // TODO: this should actually throw IOException
-            request.serialize(out);
-            out.close();
-            boolean isOK = conn.getResponseCode() == 200;
-            InputStream in = isOK ? conn.getInputStream() : conn.getErrorStream();
-            try {
-                SOAPEnvelope response = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
-                if (isOK) {
-                    callback.onResponse(response);
-                } else {
-                    callback.onFault(response);
-                }
-            } finally {
-                in.close();
+    public ListenableFuture<SOAPResponse> invoke(InvocationContext context, final SOAPEnvelope request) {
+        return context.getExecutor().submit(new Callable<SOAPResponse>() {
+            @Override
+            public SOAPResponse call() throws Exception {
+                HttpURLConnection conn = config.createURLConnection(endpointUrl);
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
+                conn.connect();
+                OutputStream out = conn.getOutputStream();
+                OMOutputFormat format = new OMOutputFormat();
+                format.setCharSetEncoding("UTF-8");
+                // TODO: this should actually throw IOException
+                request.serialize(out);
+                out.close();
+                final boolean isFault = conn.getResponseCode() != 200;
+                final InputStream in = isFault ? conn.getErrorStream() : conn.getInputStream();
+                final SOAPEnvelope responseEnvelope = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
+                return new SOAPResponse() {
+                    @Override
+                    public boolean isFault() {
+                        return isFault;
+                    }
+                    
+                    @Override
+                    public SOAPEnvelope getEnvelope() {
+                        return responseEnvelope;
+                    }
+                    
+                    @Override
+                    public void discard() throws IOException {
+                        in.close();
+                    }
+                };
             }
-        } catch (XMLStreamException ex) {
-            // TODO: attempt to unwrap the exception first
-            callback.onTransportError(new IOException(ex));
-        } catch (IOException ex) {
-            callback.onTransportError(ex);
-        }
+        });
     }
 }
