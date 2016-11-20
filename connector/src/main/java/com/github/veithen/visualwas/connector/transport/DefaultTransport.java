@@ -63,23 +63,32 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
                 out.close();
                 final boolean isFault = conn.getResponseCode() != 200;
                 final InputStream in = isFault ? conn.getErrorStream() : conn.getInputStream();
-                final SOAPEnvelope responseEnvelope = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
-                return new SOAPResponse() {
-                    @Override
-                    public boolean isFault() {
-                        return isFault;
-                    }
-                    
-                    @Override
-                    public SOAPEnvelope getEnvelope() {
-                        return responseEnvelope;
-                    }
-                    
-                    @Override
-                    public void discard() throws IOException {
+                try {
+                    final SOAPEnvelope responseEnvelope = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!
+                    return new SOAPResponse() {
+                        @Override
+                        public boolean isFault() {
+                            return isFault;
+                        }
+                        
+                        @Override
+                        public SOAPEnvelope getEnvelope() {
+                            return responseEnvelope;
+                        }
+                        
+                        @Override
+                        public void discard() throws IOException {
+                            in.close();
+                        }
+                    };
+                } catch (Exception ex) {
+                    try {
                         in.close();
+                    } catch (Exception ex2) {
+                        // Ignore
                     }
-                };
+                    throw ex;
+                }
             }
         });
     }

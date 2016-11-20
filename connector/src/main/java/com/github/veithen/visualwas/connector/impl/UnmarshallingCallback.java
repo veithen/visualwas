@@ -21,49 +21,64 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 import org.apache.axiom.soap.SOAPBody;
 
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.google.common.base.Function;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.SettableFuture;
 
-final class UnmarshallingCallback implements Function<SOAPResponse,Object> {
+final class UnmarshallingCallback implements FutureCallback<SOAPResponse> {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
     private final InvocationContextImpl context;
+    private final SettableFuture<Object> future;
     
-    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context) {
+    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context, SettableFuture<Object> future) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
+        this.future = future;
     }
 
     @Override
-    public Object apply(SOAPResponse response) {
+    public void onSuccess(SOAPResponse response) {
+        Object result = null;
+        Throwable exception = null;
         try {
-            try {
-                SOAPBody body = response.getEnvelope().getBody();
-                if (response.isFault()) {
-                    try {
-                        throw (Throwable)faultReasonHandler.extractValue(body.getFault().getReason(), context);
-                    } catch (TypeHandlerException ex) {
-                        throw new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
-                    }
-                } else {
-                    try {
-                        return operationHandler.processResponse(body.getFirstElement(), context);
-                    } catch (OperationHandlerException ex) {
-                        throw new ConnectorException("Invocation failed", ex);
-                    }
+            SOAPBody body = response.getEnvelope().getBody();
+            if (response.isFault()) {
+                try {
+                    exception = (Throwable)faultReasonHandler.extractValue(body.getFault().getReason(), context);
+                } catch (TypeHandlerException ex) {
+                    exception = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
                 }
-            } finally {
-                // TODO: also need to guarantee this is called if an error occurs elsewhere
-                response.discard();
+            } else {
+                try {
+                    result = operationHandler.processResponse(body.getFirstElement(), context);
+                } catch (OperationHandlerException ex) {
+                    exception = new ConnectorException("Invocation failed", ex);
+                }
             }
         } catch (Throwable ex) {
-            throw new UndeclaredThrowableException(ex);
+            exception = ex;
         }
+        try {
+            response.discard();
+        } catch (Throwable ex) {
+            if (exception == null) {
+                exception = ex;
+            }
+        }
+        if (exception != null) {
+            future.setException(exception);
+        } else {
+            future.set(result);
+        }
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+        future.setException(t);
     }
 }

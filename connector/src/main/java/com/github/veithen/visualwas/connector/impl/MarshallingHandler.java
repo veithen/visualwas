@@ -35,6 +35,7 @@ import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
 final class MarshallingHandler implements Handler<Invocation,Object> {
     private static final OMMetaFactory metaFactory = OMAbstractFactory.getMetaFactory();
@@ -63,9 +64,11 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
         }
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, invocation.getArgs(), contextImpl);
-        return Futures.transform(
+        SettableFuture<Object> result = SettableFuture.create();
+        Futures.addCallback(
                 soapHandler.invoke(context, request),
-                new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl),
+                new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl, result),
                 context.getExecutor());
+        return result;
     }
 }
