@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.federation;
 
 import com.github.veithen.visualwas.connector.feature.Configurator;
+import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
 /**
@@ -51,6 +52,7 @@ import com.github.veithen.visualwas.connector.feature.Feature;
  * <tt>JMImplementation</tt> and <tt>java.lang</tt> to cover the first and last cases identified
  * above. The second case is thus not covered.
  */
+@Dependencies(ServerIdentityFeature.class)
 public final class DisableFederationFeature implements Feature {
     public static final DisableFederationFeature INSTANCE = new DisableFederationFeature();
 
@@ -58,6 +60,6 @@ public final class DisableFederationFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addInvocationInterceptor(new InvocationInterceptor());
+        configurator.addInvocationInterceptor(new DisableFederationInterceptor());
     }
 }

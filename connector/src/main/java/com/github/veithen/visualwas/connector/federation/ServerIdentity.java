@@ -19,26 +19,28 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.connector.federation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.github.veithen.visualwas.connector.Handler;
-import com.github.veithen.visualwas.connector.feature.Interceptor;
-
-final class InterceptorChainBuilder<S,T> {
-    private final List<Interceptor<S,T>> interceptors = new ArrayList<>();
+public final class ServerIdentity {
+    private final String cell;
+    private final String node;
+    private final String process;
     
-    void add(Interceptor<S,T> interceptor) {
-        interceptors.add(0, interceptor);
+    ServerIdentity(String cell, String node, String process) {
+        this.cell = cell;
+        this.node = node;
+        this.process = process;
     }
-    
-    Handler<S,T> buildHandler(Handler<S,T> targetHandler) {
-        Handler<S,T> handler = targetHandler;
-        for (Interceptor<S,T> interceptor : interceptors) {
-            handler = new InterceptorHandler<>(interceptor, handler);
-        }
-        return handler;
+
+    public String getCell() {
+        return cell;
+    }
+
+    public String getNode() {
+        return node;
+    }
+
+    public String getProcess() {
+        return process;
     }
 }

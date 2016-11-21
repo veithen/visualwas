@@ -173,6 +173,8 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
             } catch (MalformedObjectNameException ex) {
                 throw new Error(ex);
             }
+        } else if (nonRoutableDomains.contains(objectName.getDomain())) {
+            return queryExecutor.execute(objectName, queryExp);
         } else {
             // TODO
             throw new UnsupportedOperationException();
