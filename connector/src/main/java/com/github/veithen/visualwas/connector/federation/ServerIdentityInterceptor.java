@@ -27,65 +27,30 @@ import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
-import com.github.veithen.visualwas.connector.feature.Interceptor;
+import com.github.veithen.visualwas.connector.feature.ContextPopulatingInterceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.base.Function;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
-final class ServerIdentityInterceptor implements Interceptor<Invocation,Object> {
+final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<ServerIdentity> {
     private static final OperationDescription getServerMBeanOperation = AdminService.DESCRIPTION.getOperation("getServerMBean");
 
-    private ListenableFuture<ServerIdentity> futureIdentity;
+    ServerIdentityInterceptor() {
+        super(ServerIdentity.class);
+    }
 
     @Override
-    public ListenableFuture<?> invoke(final InvocationContext context, final Invocation request,
-            final Handler<Invocation, Object> nextHandler) {
-        ListenableFuture<ServerIdentity> futureIdentity;
-        synchronized (this) {
-            futureIdentity = this.futureIdentity;
-            if (futureIdentity == null) {
-                futureIdentity = Futures.transform(
-                        nextHandler.invoke(context, new Invocation(getServerMBeanOperation)),
-                        new Function<Object, ServerIdentity>() {
-                            @Override
-                            public ServerIdentity apply(Object response) {
-                                ObjectName serverMBean = (ObjectName)response;
-                                return new ServerIdentity(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
-                            }
-                        });
-                this.futureIdentity = futureIdentity;
-                Futures.addCallback(futureIdentity, new FutureCallback<ServerIdentity>() {
+    protected ListenableFuture<ServerIdentity> produceValue(InvocationContext context,
+            Handler<Invocation, Object> nextHandler) {
+        return Futures.transform(
+                nextHandler.invoke(context, new Invocation(getServerMBeanOperation)),
+                new Function<Object, ServerIdentity>() {
                     @Override
-                    public void onSuccess(ServerIdentity result) {
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        // Remove the future so that subsequent invocations will retry
-                        synchronized (ServerIdentityInterceptor.this) {
-                            ServerIdentityInterceptor.this.futureIdentity = null;
-                        }
+                    public ServerIdentity apply(Object response) {
+                        ObjectName serverMBean = (ObjectName)response;
+                        return new ServerIdentity(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
                     }
                 });
-            }
-        }
-        final SettableFuture<Object> futureResult = SettableFuture.create();
-        Futures.addCallback(futureIdentity, new FutureCallback<ServerIdentity>() {
-            @Override
-            public void onSuccess(ServerIdentity identity) {
-                // TODO: should the context really be mutable?
-                context.setAttribute(ServerIdentity.class, identity);
-                futureResult.setFuture(nextHandler.invoke(context, request));
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                futureResult.setException(t);
-            }
-        });
-        return futureResult;
     }
 }
