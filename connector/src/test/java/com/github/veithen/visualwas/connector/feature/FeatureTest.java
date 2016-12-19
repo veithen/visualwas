@@ -61,6 +61,6 @@ public class FeatureTest {
         Connector connector = ConnectorFactory.getInstance().createConnector(new Endpoint("localhost", 8880, false), config, null);
         DummyAdminServiceExtension extension = connector.getAdapter(DummyAdminServiceExtension.class);
         assertNotNull(extension);
-        assertEquals("test", extension.echo("test"));
+        assertEquals("test", extension.echo("test").get());
     }
 }

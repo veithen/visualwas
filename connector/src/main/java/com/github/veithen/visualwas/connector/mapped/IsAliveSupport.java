@@ -21,15 +21,14 @@
  */
 package com.github.veithen.visualwas.connector.mapped;
 
-import java.io.IOException;
-
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public interface IsAliveSupport {
     AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(IsAliveSupport.class);
     
     @Operation(suppressHeader=true)
-    Session isAlive() throws IOException;
+    ListenableFuture<Session> isAlive();
 }

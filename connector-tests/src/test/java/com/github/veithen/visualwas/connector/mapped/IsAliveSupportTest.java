@@ -23,8 +23,6 @@ package com.github.veithen.visualwas.connector.mapped;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
@@ -33,13 +31,13 @@ import com.github.veithen.visualwas.connector.transport.dummy.SequencedRequestMa
 
 public class IsAliveSupportTest {
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchanges(IsAliveSupportTest.class, "isAlive");
         Connector connector = transport.createConnector(ClassMappingFeature.INSTANCE);
         IsAliveSupport ias = connector.getAdapter(IsAliveSupport.class);
         assertNotNull(ias);
-        Session session = ias.isAlive();
+        Session session = ias.isAlive().get();
         assertNotNull(session);
     }
 }

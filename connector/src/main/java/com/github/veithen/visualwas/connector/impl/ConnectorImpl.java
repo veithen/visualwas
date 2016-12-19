@@ -21,24 +21,18 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.io.IOException;
 import java.util.Set;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
-import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
+import com.google.common.util.concurrent.ListenableFuture;
 
 final class ConnectorImpl implements Connector {
     private final AdminService adminService;
@@ -50,55 +44,55 @@ final class ConnectorImpl implements Connector {
         this.adminService = adminService;
     }
     
-    public String getDefaultDomain() throws IOException {
+    public ListenableFuture<String> getDefaultDomain() {
         return adminService.getDefaultDomain();
     }
 
-    public ObjectName getServerMBean() throws IOException {
+    public ListenableFuture<ObjectName> getServerMBean() {
         return adminService.getServerMBean();
     }
 
-    public Integer getMBeanCount() throws IOException {
+    public ListenableFuture<Integer> getMBeanCount() {
         return adminService.getMBeanCount();
     }
 
-    public Set<ObjectName> queryNames(ObjectName objectName, QueryExp queryExp) throws IOException {
+    public ListenableFuture<Set<ObjectName>> queryNames(ObjectName objectName, QueryExp queryExp) {
         return adminService.queryNames(objectName, queryExp);
     }
 
-    public Set<ObjectInstance> queryMBeans(ObjectName objectName, QueryExp queryExp) throws IOException {
+    public ListenableFuture<Set<ObjectInstance>> queryMBeans(ObjectName objectName, QueryExp queryExp) {
         return adminService.queryMBeans(objectName, queryExp);
     }
 
-    public boolean isRegistered(ObjectName objectName) throws IOException {
+    public ListenableFuture<Boolean> isRegistered(ObjectName objectName) {
         return adminService.isRegistered(objectName);
     }
 
-    public MBeanInfo getMBeanInfo(ObjectName objectName) throws InstanceNotFoundException, IntrospectionException, ReflectionException, IOException {
+    public ListenableFuture<MBeanInfo> getMBeanInfo(ObjectName objectName) {
         return adminService.getMBeanInfo(objectName);
     }
 
-    public boolean isInstanceOf(ObjectName objectName, String className) throws InstanceNotFoundException, IOException {
+    public ListenableFuture<Boolean> isInstanceOf(ObjectName objectName, String className) {
         return adminService.isInstanceOf(objectName, className);
     }
 
-    public Object invoke(ObjectName objectName, String operationName, Object[] params, String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException, IOException, ClassNotFoundException {
+    public ListenableFuture<Object> invoke(ObjectName objectName, String operationName, Object[] params, String[] signature) {
         return adminService.invoke(objectName, operationName, params, signature);
     }
 
-    public Object getAttribute(ObjectName objectName, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, IOException, ClassNotFoundException {
+    public ListenableFuture<Object> getAttribute(ObjectName objectName, String attribute) {
         return adminService.getAttribute(objectName, attribute);
     }
 
-    public AttributeList getAttributes(ObjectName objectName, String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException, ClassNotFoundException {
+    public ListenableFuture<AttributeList> getAttributes(ObjectName objectName, String[] attributes) {
         return adminService.getAttributes(objectName, attributes);
     }
 
-    public void setAttribute(ObjectName objectName, Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException {
-        adminService.setAttribute(objectName, attribute);
+    public ListenableFuture<Void> setAttribute(ObjectName objectName, Attribute attribute) {
+        return adminService.setAttribute(objectName, attribute);
     }
 
-    public AttributeList setAttributes(ObjectName objectName, AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException {
+    public ListenableFuture<AttributeList> setAttributes(ObjectName objectName, AttributeList attributes) {
         return adminService.setAttributes(objectName, attributes);
     }
 

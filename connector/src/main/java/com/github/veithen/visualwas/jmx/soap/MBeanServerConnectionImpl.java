@@ -35,7 +35,6 @@ import javax.management.ListenerNotFoundException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServerConnection;
 import javax.management.NotCompliantMBeanException;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
@@ -44,16 +43,15 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
-import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.notification.NotificationDispatcher;
 import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 
 final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection {
-    private final AdminService adminService;
+    private final AdminServiceSync adminService;
     private final NotificationDispatcher notificationDispatcher;
     private final ExceptionTransformer exceptionTransformer;
     
-    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
+    MBeanServerConnectionImpl(AdminServiceSync adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
         this.adminService = adminService;
         this.notificationDispatcher = notificationDispatcher;
         this.exceptionTransformer = exceptionTransformer;

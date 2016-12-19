@@ -41,7 +41,7 @@ public class DisableFederationFeatureTest {
         DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
         transport.addExchanges(DisableFederationFeatureTest.class, "getServerMBean", "queryNames-allRoutable", "queryNames-java-lang", "queryNames-JMImplementation");
         Connector connector = transport.createConnector(DisableFederationFeature.INSTANCE);
-        Set<ObjectName> names = connector.queryNames(null, null);
+        Set<ObjectName> names = connector.queryNames(null, null).get();
         assertTrue(names.contains(new ObjectName("java.lang:type=Runtime")));
         assertTrue(names.contains(new ObjectName("JMImplementation:type=MBeanServerDelegate")));
         boolean serverMBeanSeen = false;

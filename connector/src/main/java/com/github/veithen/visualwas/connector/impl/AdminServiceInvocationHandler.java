@@ -24,7 +24,6 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
@@ -68,10 +67,6 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
         InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
-        try {
-            return handler.invoke(context, new Invocation(operationHandlers.get(method), args)).get();
-        } catch (ExecutionException ex) {
-            throw ex.getCause();
-        }
+        return handler.invoke(context, new Invocation(operationHandlers.get(method), args));
     }
 }

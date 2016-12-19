@@ -41,7 +41,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
     private static final int MIN_DELAY = 2000;
     private static final int MAX_DELAY = 30000;
     
-    private final RemoteNotificationService service;
+    private final RemoteNotificationServiceSync service;
     private final boolean autoReregister;
     private final List<NotificationListenerRegistration> registrations = new LinkedList<NotificationListenerRegistration>();
     // We use a single subscription for all listeners (to avoid blocking multiple threads on the server side)
@@ -49,7 +49,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
     private SubscriptionHandle subscriptionHandle;
     private int delay = MIN_DELAY;
 
-    NotificationDispatcherImpl(RemoteNotificationService service, boolean autoReregister) {
+    NotificationDispatcherImpl(RemoteNotificationServiceSync service, boolean autoReregister) {
         this.service = service;
         this.autoReregister = autoReregister;
     }

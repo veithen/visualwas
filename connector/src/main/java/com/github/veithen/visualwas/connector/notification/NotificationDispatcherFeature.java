@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.notification;
 
+import java.lang.reflect.Proxy;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
@@ -40,7 +42,12 @@ public class NotificationDispatcherFeature implements Feature {
         configurator.registerAdminServiceAdapter(NotificationDispatcher.class, new AdapterFactory<NotificationDispatcher>() {
             @Override
             public NotificationDispatcher createAdapter(AdminService adminService) {
-                return new NotificationDispatcherImpl((RemoteNotificationService)adminService, autoReregister);
+                return new NotificationDispatcherImpl(
+                        (RemoteNotificationServiceSync)Proxy.newProxyInstance(
+                                NotificationDispatcherFeature.class.getClassLoader(),
+                                new Class<?>[] { RemoteNotificationServiceSync.class },
+                                new RemoteNotificationServiceInvocationHandler((RemoteNotificationService)adminService)),
+                        autoReregister);
             }
         });
     }

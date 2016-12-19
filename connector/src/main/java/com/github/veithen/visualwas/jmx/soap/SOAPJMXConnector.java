@@ -150,8 +150,11 @@ public class SOAPJMXConnector implements JMXConnector {
         }
         try {
             // TODO: we should call isAlive here and save the session ID (so that we can detect server restarts)
-            connector.getServerMBean();
-        } catch (IOException ex) {
+            connector.getServerMBean().get();
+        } catch (Exception ex) {
+            if (ex.getCause() instanceof IOException) {
+                ex = (IOException)ex.getCause();
+            }
             connectionBroadcaster.sendNotification(new JMXConnectionNotification(
                     JMXConnectionNotification.FAILED,
                     this,
@@ -159,7 +162,11 @@ public class SOAPJMXConnector implements JMXConnector {
                     connectionNotificationSequence++,
                     "Connection failure",
                     ex));
-            throw ex;
+            if (ex instanceof IOException) {
+                throw (IOException)ex;
+            } else {
+                throw new IOException(ex);
+            }
         }
         connectionBroadcaster.sendNotification(new JMXConnectionNotification(
                 JMXConnectionNotification.OPENED,
@@ -172,7 +179,13 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized MBeanServerConnection getMBeanServerConnection() throws IOException {
-        return new MBeanServerConnectionImpl(connector, connector.getAdapter(NotificationDispatcher.class), exceptionTransformer);
+        return new MBeanServerConnectionImpl(
+                (AdminServiceSync)java.lang.reflect.Proxy.newProxyInstance(
+                        SOAPJMXConnector.class.getClassLoader(),
+                        new Class<?>[] { AdminServiceSync.class },
+                        new AdminServiceInvocationHandler(connector)),
+                connector.getAdapter(NotificationDispatcher.class),
+                exceptionTransformer);
     }
 
     @Override

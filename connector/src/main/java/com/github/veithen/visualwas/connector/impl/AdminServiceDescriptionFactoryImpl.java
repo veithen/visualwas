@@ -21,9 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import com.github.veithen.visualwas.connector.Param;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescriptionFactory {
     @Override
@@ -39,16 +41,6 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
         Map<String,OperationHandler> operationNameToOperationHandler = new HashMap<>();
         Map<Method,OperationHandler> methodToOperationHandler = new HashMap<>();
         for (Method method : iface.getDeclaredMethods()) {
-            boolean hasConnectorException = false;
-            for (Class<?> exceptionType : method.getExceptionTypes()) {
-                if (exceptionType == IOException.class) {
-                    hasConnectorException = true;
-                    break;
-                }
-            }
-            if (!hasConnectorException) {
-                throw new AdminServiceDescriptionFactoryException("Method " + method.getName() + " doesn't declare IOException");
-            }
             Class<?>[] parameterTypes = method.getParameterTypes();
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             int paramCount = parameterTypes.length;
@@ -71,13 +63,24 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
             }
             Operation operationAnnotation = method.getAnnotation(Operation.class);
             String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : method.getName();
-            Class<?> returnType = method.getReturnType();
+            if (method.getReturnType() != ListenableFuture.class) {
+                throw new AdminServiceDescriptionFactoryException("Method " + method.getName() + " doesn't return ListenableFuture");
+            }
+            Class<?> returnType = getRawType(((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0]);
             OperationHandler operationHandler = new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                    returnType == Void.TYPE ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader());
+                    returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader());
             operationNameToOperationHandler.put(operationName, operationHandler);
             methodToOperationHandler.put(method, operationHandler);
         }
         return new AdminServiceDescriptionImpl(iface, operationNameToOperationHandler, methodToOperationHandler);
+    }
+    
+    private static Class<?> getRawType(Type type) {
+        if (type instanceof ParameterizedType) {
+            return (Class<?>)((ParameterizedType)type).getRawType();
+        } else {
+            return (Class<?>)type;
+        }
     }
     
     private static TypeHandler getTypeHandler(Class<?> javaType) {
