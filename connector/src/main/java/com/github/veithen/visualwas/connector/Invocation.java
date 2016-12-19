@@ -27,6 +27,7 @@ public final class Invocation {
     private final OperationDescription operation;
     private final Object[] args;
     
+    // TODO: this should probably not be public
     public Invocation(OperationDescription operation, Object... args) {
         this.operation = operation;
         this.args = args;

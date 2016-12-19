@@ -21,6 +21,7 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
@@ -43,7 +44,7 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
         synchronized (this) {
             future = this.future;
             if (future == null) {
-                this.future = future = produceValue(context, nextHandler);
+                this.future = future = produceValue(context.getAdminService(nextHandler));
                 Futures.addCallback(future, new FutureCallback<T>() {
                     @Override
                     public void onSuccess(T result) {
@@ -76,6 +77,5 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
         return futureResult;
     }
 
-    protected abstract ListenableFuture<T> produceValue(InvocationContext context,
-            Handler<Invocation, Object> nextHandler);
+    protected abstract ListenableFuture<T> produceValue(AdminService adminService);
 }

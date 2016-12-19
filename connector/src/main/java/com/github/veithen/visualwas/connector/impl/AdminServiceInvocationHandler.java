@@ -27,24 +27,18 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.factory.Attributes;
-import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
-import com.github.veithen.visualwas.connector.feature.Serializer;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,OperationHandler> operationHandlers;
+    private final InvocationContextProvider invocationContextProvider;
     private final Handler<Invocation,Object> handler;
-    private final ConnectorConfiguration config;
-    private final Serializer serializer;
-    private final Attributes attributes;
 
     public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers,
-            Handler<Invocation,Object> handler, ConnectorConfiguration config, Serializer serializer, Attributes attributes) {
+            InvocationContextProvider invocationContextProvider,
+            Handler<Invocation,Object> handler) {
         this.operationHandlers = operationHandlers;
+        this.invocationContextProvider = invocationContextProvider;
         this.handler = handler;
-        this.config = config;
-        this.serializer = serializer;
-        this.attributes = attributes;
     }
 
     @Override
@@ -66,7 +60,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     }
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
-        InvocationContextImpl context = new InvocationContextImpl(config, serializer, attributes);
+        InvocationContextImpl context = invocationContextProvider.get();
         return handler.invoke(context, new Invocation(operationHandlers.get(method), args));
     }
 }

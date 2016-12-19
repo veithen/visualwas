@@ -21,6 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
@@ -31,13 +34,16 @@ import com.google.common.util.concurrent.MoreExecutors;
 
 final class InvocationContextImpl implements InvocationContext {
     private final ConnectorConfiguration connectorConfiguration;
+    private final AdminServiceFactory adminServiceFactory;
     private final ClassLoader classLoader;
     private final ListeningExecutorService executor;
     private final Serializer serializer;
     private final Attributes attributes;
     
-    InvocationContextImpl(ConnectorConfiguration connectorConfiguration, Serializer serializer, Attributes initialAttributes) {
+    InvocationContextImpl(ConnectorConfiguration connectorConfiguration, AdminServiceFactory adminServiceFactory,
+            Serializer serializer, Attributes initialAttributes) {
         this.connectorConfiguration = connectorConfiguration;
+        this.adminServiceFactory = adminServiceFactory;
         // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
         classLoader = connectorConfiguration.getClassLoaderProvider().getClassLoader();
         executor = MoreExecutors.newDirectExecutorService();
@@ -72,5 +78,17 @@ final class InvocationContextImpl implements InvocationContext {
     @Override
     public <T> void setAttribute(Class<T> key, T value) {
         attributes.set(key, value);
+    }
+
+    @Override
+    public AdminService getAdminService(Handler<Invocation, Object> handler) {
+        return adminServiceFactory.create(
+                new InvocationContextProvider() {
+                    @Override
+                    public InvocationContextImpl get() {
+                        return InvocationContextImpl.this;
+                    }
+                },
+                handler);
     }
 }

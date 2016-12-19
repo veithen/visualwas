@@ -32,8 +32,6 @@ import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class DisableFederationInterceptor implements Interceptor<Invocation,Object> {
@@ -57,17 +55,11 @@ final class DisableFederationInterceptor implements Interceptor<Invocation,Objec
             }
             if (invocation.getOperation() == queryNamesOperation) {
                 Object[] args = invocation.getArgs();
+                final AdminService adminService = context.getAdminService(nextHandler);
                 return mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
                     @Override
                     public ListenableFuture<Set<ObjectName>> execute(ObjectName objectName, QueryExp queryExp) {
-                        return Futures.transform(
-                                nextHandler.invoke(context, new Invocation(queryNamesOperation, objectName, queryExp)),
-                                new Function<Object,Set<ObjectName>>() {
-                                    @Override
-                                    public Set<ObjectName> apply(Object input) {
-                                        return (Set<ObjectName>)input;
-                                    }
-                                });
+                        return adminService.queryNames(objectName, queryExp);
                     }
                 });
             } else {

@@ -19,25 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Handler;
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
-import com.google.common.util.concurrent.ListeningExecutorService;
-
-public interface InvocationContext {
-
-    ClassLoader getClassLoader();
-
-    TransportConfiguration getTransportConfiguration();
-
-    ListeningExecutorService getExecutor();
-
-    <T> T getAttribute(Class<T> key);
-
-    <T> void setAttribute(Class<T> key, T value);
-
-    AdminService getAdminService(Handler<Invocation,Object> handler);
+interface InvocationContextProvider {
+    InvocationContextImpl get();
 }

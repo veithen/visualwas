@@ -19,25 +19,31 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.feature;
+package com.github.veithen.visualwas.connector.impl;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Map;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
-public interface InvocationContext {
+final class AdminServiceFactory {
+    private final Class<?>[] ifaces;
+    private final Map<Method,OperationHandler> operationHandlers;
 
-    ClassLoader getClassLoader();
+    AdminServiceFactory(Class<?>[] ifaces, Map<Method,OperationHandler> operationHandlers) {
+        this.ifaces = ifaces;
+        this.operationHandlers = operationHandlers;
+    }
 
-    TransportConfiguration getTransportConfiguration();
-
-    ListeningExecutorService getExecutor();
-
-    <T> T getAttribute(Class<T> key);
-
-    <T> void setAttribute(Class<T> key, T value);
-
-    AdminService getAdminService(Handler<Invocation,Object> handler);
+    AdminService create(InvocationContextProvider invocationContextProvider,
+            Handler<Invocation,Object> handler) {
+        return (AdminService)Proxy.newProxyInstance(
+                AdminServiceFactory.class.getClassLoader(),
+                ifaces,
+                new AdminServiceInvocationHandler(operationHandlers, invocationContextProvider, handler));
+        
+    }
 }

@@ -24,31 +24,23 @@ package com.github.veithen.visualwas.connector.federation;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Handler;
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.feature.ContextPopulatingInterceptor;
-import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<ServerIdentity> {
-    private static final OperationDescription getServerMBeanOperation = AdminService.DESCRIPTION.getOperation("getServerMBean");
-
     ServerIdentityInterceptor() {
         super(ServerIdentity.class);
     }
 
     @Override
-    protected ListenableFuture<ServerIdentity> produceValue(InvocationContext context,
-            Handler<Invocation, Object> nextHandler) {
+    protected ListenableFuture<ServerIdentity> produceValue(AdminService adminService) {
         return Futures.transform(
-                nextHandler.invoke(context, new Invocation(getServerMBeanOperation)),
-                new Function<Object, ServerIdentity>() {
+                adminService.getServerMBean(),
+                new Function<ObjectName, ServerIdentity>() {
                     @Override
-                    public ServerIdentity apply(Object response) {
-                        ObjectName serverMBean = (ObjectName)response;
+                    public ServerIdentity apply(ObjectName serverMBean) {
                         return new ServerIdentity(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
                     }
                 });
