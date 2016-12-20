@@ -33,4 +33,11 @@ public class CountStatistic extends Statistic {
     public long getCount() {
         return count;
     }
+
+    @Override
+    void format(StringBuilder buffer) {
+        super.format(buffer);
+        buffer.append(", count=");
+        buffer.append(count);
+    }
 }

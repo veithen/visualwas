@@ -19,36 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.client.pmi;
+package com.github.veithen.visualwas.client.jsr77;
+
+import javax.management.j2ee.statistics.JDBCConnectionPoolStats;
+import javax.management.j2ee.statistics.JDBCConnectionStats;
+import javax.management.j2ee.statistics.JDBCStats;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.RangeStatisticImpl")
-public class RangeStatistic extends Statistic {
-    private static final long serialVersionUID = -855214334683355657L;
+@MappedClass("com.ibm.ws.pmi.j2ee.JDBCStatsImpl")
+final class JDBCStatsImpl extends StatsImpl implements JDBCStats {
+    private static final long serialVersionUID = -5724372259382479729L;
 
-    protected long highWaterMark;
-    
-    private long lowWaterMark;
-    private long current;
-    private double integral;
-    private boolean initWaterMark;
-    private RangeStatistic baseValue;
-    
-    public long getCurrent() {
-        return current;
+    @Override
+    public JDBCConnectionStats[] getConnections() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowWaterMark=");
-        buffer.append(lowWaterMark);
-        buffer.append(", highWaterMark=");
-        buffer.append(highWaterMark);
-        buffer.append(", current=");
-        buffer.append(current);
-        buffer.append(", integral=");
-        buffer.append(integral);
+    public JDBCConnectionPoolStats[] getConnectionPools() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }

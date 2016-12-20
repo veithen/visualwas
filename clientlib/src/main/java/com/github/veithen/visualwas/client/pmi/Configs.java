@@ -21,21 +21,27 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-import com.github.veithen.visualwas.connector.mapped.MappedClass;
+import java.util.HashMap;
+import java.util.Map;
 
-@MappedClass("com.ibm.ws.pmi.stat.BoundedRangeStatisticImpl")
-public class BoundedRangeStatistic extends RangeStatistic {
-    private static final long serialVersionUID = -6143293937412368962L;
+import com.google.common.base.Strings;
 
-    private long upperBound;
-    private long lowerBound;
+final class Configs {
+    private final Map<String,PmiModuleConfig> configs = new HashMap<>();
 
-    @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowerBound=");
-        buffer.append(lowerBound);
-        buffer.append(", upperBound=");
-        buffer.append(upperBound);
+    Configs(PmiModuleConfig[] configs) {
+        for (PmiModuleConfig config : configs) {
+            this.configs.put(config.getUID(), config);
+        }
+    }
+    
+    PmiModuleConfig getConfig(String statsType) {
+        if (Strings.isNullOrEmpty(statsType)) {
+            return null;
+        }
+        if (statsType.endsWith("#")) {
+            statsType = statsType.substring(0, statsType.length()-1);
+        }
+        return configs.get(statsType);
     }
 }

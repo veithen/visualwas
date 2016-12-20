@@ -19,38 +19,28 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.client.pmi;
+package com.github.veithen.visualwas.client.jsr77;
 
+import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingConfigurator;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
-import com.github.veithen.visualwas.connector.proxy.ProxyConfigurator;
-import com.github.veithen.visualwas.connector.proxy.ProxyFeature;
-import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
 
-@Dependencies({ClassMappingFeature.class, ProxyFeature.class})
-public final class PmiClientFeature implements Feature {
-    public static final PmiClientFeature INSTANCE = new PmiClientFeature();
+@Dependencies({ClassMappingFeature.class, PmiClientFeature.class})
+public final class JSR77ClientFeature implements Feature {
+    public static final JSR77ClientFeature INSTANCE = new JSR77ClientFeature();
     
-    private PmiClientFeature() {}
+    private JSR77ClientFeature() {}
 
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
-                BoundedRangeStatistic.class,
-                CountStatistic.class,
-                JDBCConnectionPoolStats.class,
-                JDBCConnectionStats.class,
-                JDBCStats.class,
-                PmiDataInfo.class,
-                PmiModuleConfig.class,
-                StatDescriptor.class,
-                StatLevelSpec.class,
-                Stats.class,
-                TimeStatistic.class);
-        configurator.getAdapter(ProxyConfigurator.class).registerProxy(Perf.class, new SingletonMBeanLocator("Perf"));
-        configurator.addInvocationInterceptor(new ConfigsLoaderInterceptor());
+                JDBCStatsImpl.class,
+                JTAStatsImpl.class,
+                JVMStatsImpl.class,
+                ServletStatsImpl.class,
+                StatsImpl.class);
     }
 }

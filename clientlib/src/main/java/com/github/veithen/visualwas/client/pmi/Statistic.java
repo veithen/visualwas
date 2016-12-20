@@ -32,6 +32,7 @@ public abstract class Statistic implements Serializable {
     private int id;
     private long startTime;
     private long lastSampleTime;
+    private transient PmiDataInfo dataInfo;
     
     public int getId() {
         return id;
@@ -43,5 +44,41 @@ public abstract class Statistic implements Serializable {
 
     public long getLastSampleTime() {
         return lastSampleTime;
+    }
+
+    void setDataInfo(PmiDataInfo dataInfo) {
+        this.dataInfo = dataInfo;
+    }
+    
+    public String getName() {
+        return dataInfo == null ? null : dataInfo.getName();
+    }
+
+    public String getDescription() {
+        return dataInfo == null ? null : dataInfo.getDescription();
+    }
+    
+    public String getUnit() {
+        return dataInfo == null ? null : dataInfo.getUnit();
+    }
+    
+    @Override
+    public final String toString() {
+        StringBuilder buffer = new StringBuilder();
+        format(buffer);
+        return buffer.toString();
+    }
+
+    void format(StringBuilder buffer) {
+        buffer.append("name=");
+        buffer.append(getName());
+        buffer.append(", ID=");
+        buffer.append(id);
+        buffer.append(", description=");
+        buffer.append(getDescription());
+        buffer.append(", unit=");
+        buffer.append(getUnit());
+        buffer.append(", type=");
+        buffer.append(getClass().getSimpleName());
     }
 }

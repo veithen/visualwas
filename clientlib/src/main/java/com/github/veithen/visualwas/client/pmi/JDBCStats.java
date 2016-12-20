@@ -23,32 +23,7 @@ package com.github.veithen.visualwas.client.pmi;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.RangeStatisticImpl")
-public class RangeStatistic extends Statistic {
-    private static final long serialVersionUID = -855214334683355657L;
-
-    protected long highWaterMark;
-    
-    private long lowWaterMark;
-    private long current;
-    private double integral;
-    private boolean initWaterMark;
-    private RangeStatistic baseValue;
-    
-    public long getCurrent() {
-        return current;
-    }
-
-    @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowWaterMark=");
-        buffer.append(lowWaterMark);
-        buffer.append(", highWaterMark=");
-        buffer.append(highWaterMark);
-        buffer.append(", current=");
-        buffer.append(current);
-        buffer.append(", integral=");
-        buffer.append(integral);
-    }
+@MappedClass("com.ibm.ws.pmi.stat.JDBCStatsImpl")
+public final class JDBCStats extends Stats {
+    private static final long serialVersionUID = -9149090804582062659L;
 }

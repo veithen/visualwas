@@ -75,6 +75,9 @@ public class SOAPJMXConnector implements JMXConnector {
      */
     public static final String CLASS_LOADER_PROVIDER = ENV_PROP_PREFIX + "classLoaderProvider";
     
+    /**
+     * An array of {@link Feature features} to install.
+     */
     public static final String FEATURES = ENV_PROP_PREFIX + "features";
     
     /**

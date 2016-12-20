@@ -56,4 +56,8 @@ public final class PmiModuleConfig implements Serializable {
     public PmiDataInfo[] listAllData() {
         return perfData.values().toArray(new PmiDataInfo[perfData.size()]);
     }
+
+    public PmiDataInfo getDataInfo(int dataId) {
+      return perfData.get(dataId);
+    }
 }

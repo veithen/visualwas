@@ -53,4 +53,25 @@ public class AverageStatistic extends Statistic {
     public double getSumOfSquares() {
         return sumOfSquares;
     }
+
+    public double getMean() {
+        return count == 0 ? 0 : (double)total / (double)count;
+    }
+
+    @Override
+    void format(StringBuilder buffer) {
+        super.format(buffer);
+        buffer.append(", avg=");
+        buffer.append(getMean());
+        buffer.append(", min=");
+        buffer.append(min);
+        buffer.append(", max=");
+        buffer.append(max);
+        buffer.append(", total=");
+        buffer.append(total);
+        buffer.append(", count=");
+        buffer.append(count);
+        buffer.append(", sumSq=");
+        buffer.append(sumOfSquares);
+    }
 }

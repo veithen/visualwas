@@ -21,21 +21,13 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
+import javax.management.ObjectName;
+
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.BoundedRangeStatisticImpl")
-public class BoundedRangeStatistic extends RangeStatistic {
-    private static final long serialVersionUID = -6143293937412368962L;
-
-    private long upperBound;
-    private long lowerBound;
-
-    @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowerBound=");
-        buffer.append(lowerBound);
-        buffer.append(", upperBound=");
-        buffer.append(upperBound);
-    }
+@MappedClass("com.ibm.ws.pmi.stat.JDBCConnectionStatsImpl")
+public class JDBCConnectionStats extends Stats {
+    private static final long serialVersionUID = 7463345579629774369L;
+    
+    private ObjectName dsOName;
 }

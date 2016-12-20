@@ -21,14 +21,17 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
+import com.github.veithen.visualwas.connector.mapped.MappedObjectInputStream;
 
 @MappedClass("com.ibm.ws.pmi.stat.StatsImpl")
-public final class Stats implements Serializable {
+public class Stats implements Serializable {
     private static final long serialVersionUID = -5812710047173154854L;
 
     private String statsType;
@@ -39,15 +42,25 @@ public final class Stats implements Serializable {
     private ArrayList<Stats> subCollections;
     private long time;
     
-    public String getStatsType() {
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        PmiModuleConfig config = (((MappedObjectInputStream)stream).getInvocationContext()).getAttribute(Configs.class).getConfig(statsType);
+        if (config != null) {
+            for (Statistic stat : dataMembers) {
+                stat.setDataInfo(config.getDataInfo(stat.getId()));
+            }
+        }
+    }
+
+    public final String getStatsType() {
         return statsType;
     }
     
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public Statistic getStatistic(int dataId) {
+    public final Statistic getStatistic(int dataId) {
         for (Statistic s : dataMembers) {
             if (s.getId() == dataId) {
                 return s;
@@ -56,12 +69,51 @@ public final class Stats implements Serializable {
         return null;
     }
     
-    public Stats getSubStats(String name) {
+    public final Stats getSubStats(String name) {
         for (Stats stats : subCollections) {
             if (stats.getName().equals(name)) {
                 return stats;
             }
         }
         return null;
+    }
+    
+    @Override
+    public final String toString() {
+        StringBuilder buffer = new StringBuilder();
+        format(buffer, 0);
+        return buffer.toString();
+    }
+    
+    private static void indent(StringBuilder buffer, int amount) {
+        for (int i=0; i<amount; i++) {
+            buffer.append("  ");
+        }
+    }
+    
+    private final void format(StringBuilder buffer, int indent) {
+        indent(buffer, indent);
+        buffer.append("Stats name=");
+        buffer.append(name);
+        buffer.append(", type=");
+        buffer.append(statsType);
+        buffer.append('\n');
+        indent(buffer, indent);
+        buffer.append("{\n");
+        if (dataMembers != null) {
+            for (Statistic stat : dataMembers) {
+                indent(buffer, indent+1);
+                buffer.append(stat);
+                buffer.append('\n');
+            }
+        }
+        if (subCollections != null) {
+            for (Stats stats : subCollections) {
+                stats.format(buffer, indent+1);
+                buffer.append('\n');
+            }
+        }
+        indent(buffer, indent);
+        buffer.append("}");
     }
 }

@@ -55,4 +55,12 @@ public final class PmiDataInfo implements Serializable {
     public String getName() {
         return name;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
 }

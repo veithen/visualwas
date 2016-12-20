@@ -19,36 +19,32 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.client.pmi;
+package com.github.veithen.visualwas.client.jsr77;
+
+import javax.management.j2ee.statistics.CountStatistic;
+import javax.management.j2ee.statistics.JTAStats;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.RangeStatisticImpl")
-public class RangeStatistic extends Statistic {
-    private static final long serialVersionUID = -855214334683355657L;
+@MappedClass("com.ibm.ws.pmi.j2ee.JTAStatsImpl")
+final class JTAStatsImpl extends StatsImpl implements JTAStats {
+    private static final long serialVersionUID = -3454705613246927618L;
 
-    protected long highWaterMark;
-    
-    private long lowWaterMark;
-    private long current;
-    private double integral;
-    private boolean initWaterMark;
-    private RangeStatistic baseValue;
-    
-    public long getCurrent() {
-        return current;
+    @Override
+    public CountStatistic getActiveCount() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowWaterMark=");
-        buffer.append(lowWaterMark);
-        buffer.append(", highWaterMark=");
-        buffer.append(highWaterMark);
-        buffer.append(", current=");
-        buffer.append(current);
-        buffer.append(", integral=");
-        buffer.append(integral);
+    public CountStatistic getCommittedCount() {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CountStatistic getRolledbackCount() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }

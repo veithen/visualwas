@@ -19,23 +19,20 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.client.pmi;
+package com.github.veithen.visualwas.client.jsr77;
+
+import javax.management.j2ee.statistics.ServletStats;
+import javax.management.j2ee.statistics.TimeStatistic;
 
 import com.github.veithen.visualwas.connector.mapped.MappedClass;
 
-@MappedClass("com.ibm.ws.pmi.stat.BoundedRangeStatisticImpl")
-public class BoundedRangeStatistic extends RangeStatistic {
-    private static final long serialVersionUID = -6143293937412368962L;
-
-    private long upperBound;
-    private long lowerBound;
+@MappedClass("com.ibm.ws.pmi.j2ee.ServletStatsImpl")
+final class ServletStatsImpl extends StatsImpl implements ServletStats {
+    private static final long serialVersionUID = -6485690873879657664L;
 
     @Override
-    void format(StringBuilder buffer) {
-        super.format(buffer);
-        buffer.append(", lowerBound=");
-        buffer.append(lowerBound);
-        buffer.append(", upperBound=");
-        buffer.append(upperBound);
+    public TimeStatistic getServiceTime() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
 }

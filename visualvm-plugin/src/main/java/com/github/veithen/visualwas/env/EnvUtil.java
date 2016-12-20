@@ -22,11 +22,18 @@
 package com.github.veithen.visualwas.env;
 
 import java.net.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.management.remote.JMXConnectorFactory;
 
+import com.github.veithen.visualwas.client.config.ConfigClientFeature;
+import com.github.veithen.visualwas.client.jsr77.JSR77ClientFeature;
+import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
+import com.github.veithen.visualwas.client.repository.RepositoryClientFeature;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.federation.DisableFederationFeature;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
@@ -45,10 +52,18 @@ public final class EnvUtil {
         if (securityEnabled) {
             env.put(SOAPJMXConnector.TRUST_MANAGER, TrustStore.getInstance().createTrustManager());
         }
-        env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, WebSphereClassLoaderProvider.getInstance());
+        WebSphereClassLoaderProvider classLoaderProvider = WebSphereClassLoaderProvider.getInstance();
+        env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, classLoaderProvider);
+        List<Feature> features = new ArrayList<>();
         if (federationDisabled) {
-            env.put(SOAPJMXConnector.FEATURES, new Feature[] { DisableFederationFeature.INSTANCE });
+            features.add(DisableFederationFeature.INSTANCE);
         }
+        features.addAll(Arrays.asList(
+                ConfigClientFeature.INSTANCE,
+                JSR77ClientFeature.INSTANCE,
+                PmiClientFeature.INSTANCE,
+                RepositoryClientFeature.INSTANCE));
+        env.put(SOAPJMXConnector.FEATURES, features.toArray(new Feature[features.size()]));
         return env;
     }
 }
