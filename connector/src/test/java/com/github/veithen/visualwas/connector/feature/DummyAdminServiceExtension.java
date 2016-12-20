@@ -21,9 +21,13 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import java.io.IOException;
+
 import com.github.veithen.visualwas.connector.Param;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface DummyAdminServiceExtension {
-    ListenableFuture<String> echo(@Param(name="in") String in);
+    String echo(@Param(name="in") String in) throws IOException;
+
+    ListenableFuture<String> echoAsync(String in);
 }

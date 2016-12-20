@@ -21,7 +21,6 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -33,46 +32,54 @@ import com.github.veithen.visualwas.connector.Param;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescriptionFactory {
     @Override
     public AdminServiceDescription createDescription(Class<?> iface) throws AdminServiceDescriptionFactoryException {
-        Map<String,OperationHandler> operationNameToOperationHandler = new HashMap<>();
-        Map<Method,OperationHandler> methodToOperationHandler = new HashMap<>();
-        for (Method method : iface.getDeclaredMethods()) {
-            Class<?>[] parameterTypes = method.getParameterTypes();
-            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            int paramCount = parameterTypes.length;
+        Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
+        outer: for (Method method : iface.getDeclaredMethods()) {
+            for (InvocationStyle invocationStyle : InvocationStyle.INSTANCES) {
+                MethodInfo methodInfo = invocationStyle.getMethodInfo(method);
+                if (methodInfo != null) {
+                    MethodGroupKey key = new MethodGroupKey(methodInfo.getDefaultOperationName(), methodInfo.getSignature());
+                    MethodGroup methodGroup = methodGroups.get(key);
+                    if (methodGroup == null) {
+                        methodGroup = new MethodGroup();
+                        methodGroups.put(key, methodGroup);
+                    }
+                    methodGroup.add(invocationStyle, methodInfo);
+                    continue outer;
+                }
+            }
+            throw new AdminServiceDescriptionFactoryException("Don't know what to do with method " + method.getName());
+        }
+        Map<String,OperationHandler> operationHandlers = new HashMap<>();
+        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
+        for (MethodGroup methodGroup : methodGroups.values()) {
+            Operation operationAnnotation = methodGroup.getAnnotation(Operation.class);
+            String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : methodGroup.getDefaultOperationName();
+            Class<?>[] signature = methodGroup.getSignature();
+            int paramCount = signature.length;
             ParamHandler[] paramHandlers = new ParamHandler[paramCount];
             for (int i=0; i<paramCount; i++) {
-                Class<?> type = parameterTypes[i];
-                Annotation[] annotations = parameterAnnotations[i];
-                Param paramAnnotation = null;
-                for (Annotation annotation : annotations) {
-                    if (annotation instanceof Param) {
-                        paramAnnotation = (Param)annotation;
-                        break;
-                    }
-                }
+                Class<?> type = signature[i];
+                Param paramAnnotation = methodGroup.getParameterAnnotations(Param.class, i);
                 if (paramAnnotation == null) {
-                    throw new AdminServiceDescriptionFactoryException("Missing @Param annotation in method " + method.getName());
+                    throw new AdminServiceDescriptionFactoryException("Missing @Param annotation for operation " + operationName);
                 }
                 String name = paramAnnotation.name();
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
-            Operation operationAnnotation = method.getAnnotation(Operation.class);
-            String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : method.getName();
-            if (method.getReturnType() != ListenableFuture.class) {
-                throw new AdminServiceDescriptionFactoryException("Method " + method.getName() + " doesn't return ListenableFuture");
-            }
-            Class<?> returnType = getRawType(((ParameterizedType)method.getGenericReturnType()).getActualTypeArguments()[0]);
+            Class<?> returnType = getRawType(methodGroup.getResponseType());
             OperationHandler operationHandler = new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
                     returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader());
-            operationNameToOperationHandler.put(operationName, operationHandler);
-            methodToOperationHandler.put(method, operationHandler);
+            operationHandlers.put(operationName, operationHandler);
+            for (MethodInfo methodInfo : methodGroup.getMembers()) {
+                invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operationHandler));
+            }
+            // TODO: check exception list; should contain IOException
         }
-        return new AdminServiceDescriptionImpl(iface, operationNameToOperationHandler, methodToOperationHandler);
+        return new AdminServiceDescriptionImpl(iface, operationHandlers, invocationHandlerDelegates);
     }
     
     private static Class<?> getRawType(Type type) {

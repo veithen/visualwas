@@ -45,7 +45,7 @@ public class ConnectorTest {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchange(ConnectorTest.class, "getMBeanCount");
         Connector connector = transport.createConnector();
-        assertEquals(Integer.valueOf(146), connector.getMBeanCount().get());
+        assertEquals(Integer.valueOf(146), connector.getMBeanCount());
     }
     
     @Test
@@ -53,7 +53,7 @@ public class ConnectorTest {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchange(ConnectorTest.class, "queryNames");
         Connector connector = transport.createConnector();
-        Iterator<ObjectName> names = connector.queryNames(new ObjectName("WebSphere:type=Server,*"), null).get().iterator();
+        Iterator<ObjectName> names = connector.queryNames(new ObjectName("WebSphere:type=Server,*"), null).iterator();
         assertTrue(names.hasNext());
         ObjectName name = names.next();
         assertEquals("WebSphere", name.getDomain());
@@ -66,7 +66,7 @@ public class ConnectorTest {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchange(ConnectorTest.class, "queryMBeans");
         Connector connector = transport.createConnector();
-        Iterator<ObjectInstance> mbeans = connector.queryMBeans(new ObjectName("WebSphere:type=Server,*"), null).get().iterator();
+        Iterator<ObjectInstance> mbeans = connector.queryMBeans(new ObjectName("WebSphere:type=Server,*"), null).iterator();
         assertTrue(mbeans.hasNext());
         ObjectInstance mbean = mbeans.next();
         assertEquals(RequiredModelMBean.class.getName(), mbean.getClassName());
@@ -81,12 +81,12 @@ public class ConnectorTest {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchanges(ConnectorTest.class, "getServerMBean", "setAttributes");
         Connector connector = transport.createConnector();
-        ObjectName server = connector.getServerMBean().get();
+        ObjectName server = connector.getServerMBean();
         AttributeList attributes = new AttributeList();
         attributes.add(new Attribute("threadMonitorAdjustmentThreshold", Integer.valueOf(100)));
         attributes.add(new Attribute("threadMonitorInterval", Integer.valueOf(180)));
         attributes.add(new Attribute("threadMonitorThreshold", Integer.valueOf(600)));
-        AttributeList ret = connector.setAttributes(server, attributes).get();
+        AttributeList ret = connector.setAttributes(server, attributes);
         assertNotNull(ret);
     }
 }

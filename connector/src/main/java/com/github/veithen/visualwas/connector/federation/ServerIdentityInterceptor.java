@@ -37,7 +37,7 @@ final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<Serve
     @Override
     protected ListenableFuture<ServerIdentity> produceValue(AdminService adminService) {
         return Futures.transform(
-                adminService.getServerMBean(),
+                adminService.getServerMBeanAsync(),
                 new Function<ObjectName, ServerIdentity>() {
                     @Override
                     public ServerIdentity apply(ObjectName serverMBean) {

@@ -59,7 +59,7 @@ final class DisableFederationInterceptor implements Interceptor<Invocation,Objec
                 return mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
                     @Override
                     public ListenableFuture<Set<ObjectName>> execute(ObjectName objectName, QueryExp queryExp) {
-                        return adminService.queryNames(objectName, queryExp);
+                        return adminService.queryNamesAsync(objectName, queryExp);
                     }
                 });
             } else {

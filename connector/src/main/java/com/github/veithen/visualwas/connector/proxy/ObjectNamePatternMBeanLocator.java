@@ -49,7 +49,7 @@ public class ObjectNamePatternMBeanLocator implements MBeanLocator {
     public ListenableFuture<ObjectName> locateMBean(AdminService adminService) {
         final SettableFuture<ObjectName> result = SettableFuture.create();
         Futures.addCallback(
-                adminService.queryNames(pattern, null),
+                adminService.queryNamesAsync(pattern, null),
                 new FutureCallback<Set<ObjectName>>() {
                     @Override
                     public void onSuccess(Set<ObjectName> names) {

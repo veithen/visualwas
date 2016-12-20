@@ -37,7 +37,7 @@ public class IsAliveSupportTest {
         Connector connector = transport.createConnector(ClassMappingFeature.INSTANCE);
         IsAliveSupport ias = connector.getAdapter(IsAliveSupport.class);
         assertNotNull(ias);
-        Session session = ias.isAlive().get();
+        Session session = ias.isAlive();
         assertNotNull(session);
     }
 }

@@ -23,9 +23,8 @@ package com.github.veithen.visualwas.client.jsr77;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import java.util.concurrent.ExecutionException;
-
 import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import org.junit.Test;
@@ -42,18 +41,18 @@ public class JSR77ClientFeatureITCase extends WebSphereITCase {
     @Test
     public void testGetStatsAttributeFromAllMBeans() throws Exception {
         int count = 0;
-        for (ObjectName mbean : connector.queryNames(new ObjectName("WebSphere:*"), null).get()) {
-            for (MBeanAttributeInfo attrInfo : connector.getMBeanInfo(mbean).get().getAttributes()) {
+        for (ObjectName mbean : connector.queryNames(new ObjectName("WebSphere:*"), null)) {
+            for (MBeanAttributeInfo attrInfo : connector.getMBeanInfo(mbean).getAttributes()) {
                 if (attrInfo.getName().equals("stats")) {
                     try {
-                        Object stats = connector.getAttribute(mbean, "stats").get();
+                        Object stats = connector.getAttribute(mbean, "stats");
                         if (stats != null) {
                             assertThat(stats).isInstanceOf(Class.forName(attrInfo.getType()));
                             stats.toString();
                             count++;
                         }
-                    } catch (ExecutionException ex) {
-                        if (!ex.getCause().getMessage().contains("Target method not found")) {
+                    } catch (MBeanException ex) {
+                        if (!ex.getMessage().contains("Target method not found")) {
                             throw ex;
                         }
                     }

@@ -43,7 +43,7 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
                     @Override
                     public ListenableFuture<Configs> apply(ObjectName perfMBean) {
                         return Futures.transform(
-                                adminService.invoke(perfMBean, "getConfigs", null, null),
+                                adminService.invokeAsync(perfMBean, "getConfigs", null, null),
                                 new Function<Object,Configs>() {
                                     @Override
                                     public Configs apply(Object input) {

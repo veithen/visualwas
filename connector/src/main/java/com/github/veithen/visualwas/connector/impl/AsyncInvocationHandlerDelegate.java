@@ -19,20 +19,19 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.mapped;
+package com.github.veithen.visualwas.connector.impl;
 
-import java.io.IOException;
+import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-import com.github.veithen.visualwas.connector.Operation;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
-import com.google.common.util.concurrent.ListenableFuture;
+final class AsyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
+    AsyncInvocationHandlerDelegate(OperationHandler operationHandler) {
+        super(operationHandler);
+    }
 
-public interface IsAliveSupport {
-    AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(IsAliveSupport.class);
-    
-    @Operation(suppressHeader=true)
-    Session isAlive() throws IOException;
-
-    ListenableFuture<Session> isAliveAsync();
+    @Override
+    Object invoke(Object[] args, Handler<Invocation, Object> handler, InvocationContext context) throws Throwable {
+        return handler.invoke(context, new Invocation(operationHandler, args));
+    }
 }

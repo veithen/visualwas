@@ -45,7 +45,7 @@ public class SingletonMBeanLocator implements MBeanLocator {
     public ListenableFuture<ObjectName> locateMBean(final AdminService adminService) {
         final SettableFuture<ObjectName> result = SettableFuture.create();
         Futures.addCallback(
-                adminService.getServerMBean(),
+                adminService.getServerMBeanAsync(),
                 new FutureCallback<ObjectName>() {
                     @Override
                     public void onSuccess(ObjectName serverMBean) {
@@ -57,7 +57,7 @@ public class SingletonMBeanLocator implements MBeanLocator {
                             return;
                         }
                         Futures.addCallback(
-                                adminService.queryNames(pattern, null),
+                                adminService.queryNamesAsync(pattern, null),
                                 new FutureCallback<Set<ObjectName>>() {
                                     @Override
                                     public void onSuccess(Set<ObjectName> names) {

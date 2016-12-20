@@ -28,7 +28,7 @@ import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 /**
  * Feature that retrieves the server identity (as determined by
- * {@link AdminService#getServerMBean()}) and places a {@link ServerIdentity} object into the
+ * {@link AdminService#getServerMBeanAsync()}) and places a {@link ServerIdentity} object into the
  * {@link InvocationContext}.
  */
 public final class ServerIdentityFeature implements Feature {

@@ -142,7 +142,7 @@ public class Main {
     }
 
     private static void scanAll(Connector connector) throws Exception {
-        String cell = connector.getServerMBean().get().getKeyProperty("cell");
+        String cell = connector.getServerMBean().getKeyProperty("cell");
         ConfigRepository configRepository = connector.getAdapter(ConfigRepository.class);
         for (String appResource : configRepository.listResourceNames("cells/" + cell + "/applications", 2, 1)) {
             String appName = appResource.substring(appResource.lastIndexOf('/')+1, appResource.length()-4);

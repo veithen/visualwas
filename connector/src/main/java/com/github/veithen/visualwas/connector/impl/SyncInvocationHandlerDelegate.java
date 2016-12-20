@@ -21,29 +21,23 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
-final class AdminServiceFactory {
-    private final Class<?>[] ifaces;
-    private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
-
-    AdminServiceFactory(Class<?>[] ifaces, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
-        this.ifaces = ifaces;
-        this.invocationHandlerDelegates = invocationHandlerDelegates;
+final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
+    SyncInvocationHandlerDelegate(OperationHandler operationHandler) {
+        super(operationHandler);
     }
 
-    AdminService create(InvocationContextProvider invocationContextProvider,
-            Handler<Invocation,Object> handler) {
-        return (AdminService)Proxy.newProxyInstance(
-                AdminServiceFactory.class.getClassLoader(),
-                ifaces,
-                new AdminServiceInvocationHandler(invocationHandlerDelegates, invocationContextProvider, handler));
-        
+    @Override
+    Object invoke(Object[] args, Handler<Invocation, Object> handler, InvocationContext context) throws Throwable {
+        try {
+            return handler.invoke(context, new Invocation(operationHandler, args)).get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
     }
 }

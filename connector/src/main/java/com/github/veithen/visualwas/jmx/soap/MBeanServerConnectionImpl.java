@@ -43,15 +43,16 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
+import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.notification.NotificationDispatcher;
 import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 
 final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection {
-    private final AdminServiceSync adminService;
+    private final AdminService adminService;
     private final NotificationDispatcher notificationDispatcher;
     private final ExceptionTransformer exceptionTransformer;
     
-    MBeanServerConnectionImpl(AdminServiceSync adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
+    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
         this.adminService = adminService;
         this.notificationDispatcher = notificationDispatcher;
         this.exceptionTransformer = exceptionTransformer;

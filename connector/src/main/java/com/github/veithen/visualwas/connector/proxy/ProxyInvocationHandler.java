@@ -85,7 +85,7 @@ final class ProxyInvocationHandler implements InvocationHandler {
             @Override
             public void onSuccess(ObjectName mbean) {
                 Futures.addCallback(
-                        adminService.invoke(mbean, operationName, params, signature),
+                        adminService.invokeAsync(mbean, operationName, params, signature),
                         new FutureCallback<Object>() {
                             @Override
                             public void onSuccess(Object result) {

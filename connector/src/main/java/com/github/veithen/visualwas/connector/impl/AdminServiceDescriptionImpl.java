@@ -29,13 +29,13 @@ import com.github.veithen.visualwas.connector.description.OperationDescription;
 
 final class AdminServiceDescriptionImpl implements AdminServiceDescription {
     private final Class<?> iface;
-    private final Map<String,OperationHandler> operationNameToOperationHandler;
-    private final Map<Method,OperationHandler> methodToOperationHandler;
+    private final Map<String,OperationHandler> operationHandlers;
+    private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
 
-    AdminServiceDescriptionImpl(Class<?> iface, Map<String,OperationHandler> operationNameToOperationHandler, Map<Method,OperationHandler> methodToOperationHandler) {
+    AdminServiceDescriptionImpl(Class<?> iface, Map<String,OperationHandler> operationHandlers, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
         this.iface = iface;
-        this.operationNameToOperationHandler = operationNameToOperationHandler;
-        this.methodToOperationHandler = methodToOperationHandler;
+        this.operationHandlers = operationHandlers;
+        this.invocationHandlerDelegates = invocationHandlerDelegates;
     }
 
     @Override
@@ -45,10 +45,10 @@ final class AdminServiceDescriptionImpl implements AdminServiceDescription {
 
     @Override
     public OperationDescription getOperation(String name) {
-        return operationNameToOperationHandler.get(name);
+        return operationHandlers.get(name);
     }
 
-    Map<Method,OperationHandler> getOperationHandlers() {
-        return methodToOperationHandler;
+    Map<Method,InvocationHandlerDelegate> getInvocationHandlerDelegates() {
+        return invocationHandlerDelegates;
     }
 }

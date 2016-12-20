@@ -55,19 +55,19 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
             }
         }
         Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
-        Map<Method,OperationHandler> operationHandlers = new HashMap<Method,OperationHandler>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getOperationHandlers());
+        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<Method,InvocationHandlerDelegate>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getInvocationHandlerDelegates());
         adminServiceInterfaces.add(AdminService.class);
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        final ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, operationHandlers, invocationInterceptors, soapInterceptors, adaptableDelegate);
+        final ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, invocationHandlerDelegates, invocationInterceptors, soapInterceptors, adaptableDelegate);
         for (Feature feature : features) {
             feature.configureConnector(configurator);
         }
         configurator.release();
         final AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
                 adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
-                operationHandlers);
+                invocationHandlerDelegates);
         AdminService adminService = adminServiceFactory.create(
                 new InvocationContextProvider() {
                     @Override

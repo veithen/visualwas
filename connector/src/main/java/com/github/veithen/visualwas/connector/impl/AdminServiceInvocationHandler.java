@@ -29,14 +29,14 @@ import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
-    private final Map<Method,OperationHandler> operationHandlers;
+    private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
     private final InvocationContextProvider invocationContextProvider;
     private final Handler<Invocation,Object> handler;
 
-    public AdminServiceInvocationHandler(Map<Method,OperationHandler> operationHandlers,
+    public AdminServiceInvocationHandler(Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates,
             InvocationContextProvider invocationContextProvider,
             Handler<Invocation,Object> handler) {
-        this.operationHandlers = operationHandlers;
+        this.invocationHandlerDelegates = invocationHandlerDelegates;
         this.invocationContextProvider = invocationContextProvider;
         this.handler = handler;
     }
@@ -60,7 +60,6 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     }
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
-        InvocationContextImpl context = invocationContextProvider.get();
-        return handler.invoke(context, new Invocation(operationHandlers.get(method), args));
+        return invocationHandlerDelegates.get(method).invoke(args, handler, invocationContextProvider.get());
     }
 }

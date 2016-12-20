@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.notification;
 
+import java.io.IOException;
+
 import javax.management.Notification;
 
 import com.github.veithen.visualwas.connector.Operation;
@@ -33,17 +35,21 @@ public interface RemoteNotificationService {
     AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(RemoteNotificationService.class);
     
     @Operation(name="addNotificationListener")
-    ListenableFuture<SubscriptionHandle> addSubscription(
-            @Param(name="filter") SubscriptionInfo subscriptionInfo,
-            @Param(name="listener") PushNotificationListener listener);
+    SubscriptionHandle addSubscription(@Param(name="filter") SubscriptionInfo subscriptionInfo,
+                                       @Param(name="listener") PushNotificationListener listener) throws IOException;
+
+    ListenableFuture<SubscriptionHandle> addSubscriptionAsync(SubscriptionInfo subscriptionInfo, PushNotificationListener listener);
 
     @Operation(name="removeNotificationListener")
-    ListenableFuture<Void> removeSubscription(@Param(name="listenerId") SubscriptionHandle handle);
+    void removeSubscription(@Param(name="listenerId") SubscriptionHandle handle) throws SubscriptionNotFoundException, IOException;
+
+    ListenableFuture<Void> removeSubscriptionAsync(SubscriptionHandle handle);
 
     @Operation(name="resetFilter")
-    ListenableFuture<Void> updateSubscription(
-            @Param(name="listenerId") SubscriptionHandle handle,
-            @Param(name="filter") SubscriptionInfo subscriptionInfo);
+    void updateSubscription(@Param(name="listenerId") SubscriptionHandle handle,
+                            @Param(name="filter") SubscriptionInfo subscriptionInfo) throws SubscriptionNotFoundException, IOException;
+
+    ListenableFuture<Void> updateSubscriptionAsync(SubscriptionHandle handle, SubscriptionInfo subscriptionInfo);
 
     /**
      * Poll the server for notifications for a given subscription. This call will block until at
@@ -57,10 +63,14 @@ public interface RemoteNotificationService {
      * @param batchSize
      *            the maximum number of notifications to return
      * @return an array with notifications for the given subscription
+     * @throws SubscriptionNotFoundException
+     *             if the subscription with the given handle is not known by the server
+     * @throws IOException
      */
     // TODO: this method assumes that there is no read timeout; if we make the read timeout configurable, then we should add an interceptor that overrides the read timeout for invocations of this method
     // TODO: can we get a ClassNotFoundException here?
-    ListenableFuture<Notification[]> pullNotifications(
-            @Param(name="id") SubscriptionHandle handle,
-            @Param(name="batchSize") Integer batchSize);
+    Notification[] pullNotifications(@Param(name="id") SubscriptionHandle handle,
+                                     @Param(name="batchSize") Integer batchSize) throws SubscriptionNotFoundException, IOException;
+
+    ListenableFuture<Notification[]> pullNotificationsAsync(SubscriptionHandle handle, Integer batchSize);
 }

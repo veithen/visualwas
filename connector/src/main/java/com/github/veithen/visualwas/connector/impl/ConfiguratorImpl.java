@@ -40,15 +40,15 @@ import com.github.veithen.visualwas.connector.feature.Serializer;
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
     private Set<Class<?>> adminServiceInterfaces;
-    private Map<Method,OperationHandler> operationHandlers;
+    private Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
     private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
     private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,OperationHandler> operationHandlers, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
-        this.operationHandlers = operationHandlers;
+        this.invocationHandlerDelegates = invocationHandlerDelegates;
         this.invocationInterceptors = invocationInterceptors;
         this.soapInterceptors = soapInterceptors;
         this.adaptableDelegate = adaptableDelegate;
@@ -65,7 +65,7 @@ final class ConfiguratorImpl implements Configurator {
     @Override
     public void addAdminServiceDescription(AdminServiceDescription description) {
         adminServiceInterfaces.add(description.getInterface());
-        operationHandlers.putAll(((AdminServiceDescriptionImpl)description).getOperationHandlers());
+        invocationHandlerDelegates.putAll(((AdminServiceDescriptionImpl)description).getInvocationHandlerDelegates());
         registerAdminServerAdapterForExtension(description.getInterface());
     }
     
@@ -109,7 +109,7 @@ final class ConfiguratorImpl implements Configurator {
 
     void release() {
         adminServiceInterfaces = null;
-        operationHandlers = null;
+        invocationHandlerDelegates = null;
         invocationInterceptors = null;
         soapInterceptors = null;
         adaptableDelegate = null;
