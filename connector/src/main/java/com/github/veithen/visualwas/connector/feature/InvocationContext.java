@@ -22,7 +22,6 @@
 package com.github.veithen.visualwas.connector.feature;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.google.common.util.concurrent.ListeningExecutorService;

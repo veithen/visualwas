@@ -23,8 +23,8 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.concurrent.ExecutionException;
 
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {

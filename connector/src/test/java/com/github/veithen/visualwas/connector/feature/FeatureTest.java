@@ -27,7 +27,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;

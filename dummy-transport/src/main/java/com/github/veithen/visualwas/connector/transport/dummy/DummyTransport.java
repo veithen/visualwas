@@ -35,10 +35,10 @@ import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;

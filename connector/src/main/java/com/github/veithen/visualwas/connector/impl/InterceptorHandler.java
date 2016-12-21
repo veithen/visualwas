@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.util.concurrent.ListenableFuture;

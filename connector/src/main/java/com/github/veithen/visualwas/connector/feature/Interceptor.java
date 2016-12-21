@@ -21,7 +21,6 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
-import com.github.veithen.visualwas.connector.Handler;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface Interceptor<S,T> {

@@ -23,7 +23,7 @@ package com.github.veithen.visualwas.connector.transport;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 
 public interface TransportFactory {

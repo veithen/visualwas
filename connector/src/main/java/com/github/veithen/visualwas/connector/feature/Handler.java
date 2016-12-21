@@ -19,9 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.feature;
 
-import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface Handler<S,T> {

@@ -27,9 +27,9 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.google.common.util.concurrent.ListenableFuture;

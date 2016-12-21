@@ -24,7 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.veithen.visualwas.connector.Handler;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 
 final class InterceptorChainBuilder<S,T> {

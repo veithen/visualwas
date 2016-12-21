@@ -26,8 +26,8 @@ import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.Handler;
 
 final class AdminServiceFactory {
     private final Class<?>[] ifaces;

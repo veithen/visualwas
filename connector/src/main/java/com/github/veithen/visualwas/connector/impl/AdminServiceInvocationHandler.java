@@ -25,8 +25,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.Handler;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;

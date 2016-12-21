@@ -21,8 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.Handler;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 abstract class InvocationHandlerDelegate {
