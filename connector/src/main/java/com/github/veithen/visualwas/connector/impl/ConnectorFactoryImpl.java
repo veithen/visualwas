@@ -42,9 +42,10 @@ import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
+import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
-    public Connector createConnector(Endpoint endpoint, final ConnectorConfiguration config, final Attributes attributes) {
+    public Connector createConnector(Endpoint endpoint, final ConnectorConfiguration config, Attributes attributes) {
         List<Feature> features = new ArrayList<Feature>(config.getFeatures());
         if (attributes != null) {
             for (Class<?> key : attributes.keySet()) {
@@ -68,11 +69,13 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         final AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
                 adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
                 invocationHandlerDelegates);
+        final Attributes initialAttributes = new Attributes(attributes);
+        initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
         AdminService adminService = adminServiceFactory.create(
                 new InvocationContextProvider() {
                     @Override
                     public InvocationContextImpl get() {
-                        return new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), new Attributes(attributes));
+                        return new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), initialAttributes);
                     }
                 },
                 invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))));
