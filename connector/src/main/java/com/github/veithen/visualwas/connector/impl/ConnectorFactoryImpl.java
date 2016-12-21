@@ -56,7 +56,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
             }
         }
         Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
-        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<Method,InvocationHandlerDelegate>(((AdminServiceDescriptionImpl)AdminService.DESCRIPTION).getInvocationHandlerDelegates());
+        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<Method,InvocationHandlerDelegate>(((InterfaceImpl)AdminService.DESCRIPTION).getInvocationHandlerDelegates());
         adminServiceInterfaces.add(AdminService.class);
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();

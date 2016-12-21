@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
+import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
 import com.github.veithen.visualwas.connector.description.OperationAnnotation;
 import com.github.veithen.visualwas.connector.description.ParamAnnotation;
 
@@ -59,7 +59,7 @@ final class MethodGroup {
 
     void add(InvocationStyle invocationStyle, MethodInfo methodInfo) {
         if (methods.containsKey(invocationStyle)) {
-            throw new AdminServiceDescriptionFactoryException("Can't have multiple methods with the same invocation style in the same method group");
+            throw new InterfaceFactoryException("Can't have multiple methods with the same invocation style in the same method group");
         }
         if (methods.isEmpty()) {
             defaultOperationName = methodInfo.getDefaultOperationName();
@@ -71,17 +71,17 @@ final class MethodGroup {
             }
         } else {
             if (!defaultOperationName.equals(methodInfo.getDefaultOperationName())) {
-                throw new AdminServiceDescriptionFactoryException("Inconsistent default operation names in method group");
+                throw new InterfaceFactoryException("Inconsistent default operation names in method group");
             }
             if (!Arrays.equals(signature, methodInfo.getSignature())) {
-                throw new AdminServiceDescriptionFactoryException("Inconsistent method signatures in method group");
+                throw new InterfaceFactoryException("Inconsistent method signatures in method group");
             }
             Type newResponseType = methodInfo.getResponseType();
             if (!responseType.equals(newResponseType)) {
                 if (responseType.equals(wrapperTypeMap.get(newResponseType))) {
                     responseType = newResponseType;
                 } else if (!(newResponseType.equals(wrapperTypeMap.get(responseType)))) {
-                    throw new AdminServiceDescriptionFactoryException("Inconsistent response types in method group: " + responseType + ", " + newResponseType);
+                    throw new InterfaceFactoryException("Inconsistent response types in method group: " + responseType + ", " + newResponseType);
                 }
             }
         }
@@ -90,7 +90,7 @@ final class MethodGroup {
             Class<?> annotationType = annotation.annotationType();
             if (annotationType.getAnnotation(OperationAnnotation.class) != null) {
                 if (annotations.containsKey(annotationType)) {
-                    throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationType.getName() + " annotation for operation "
+                    throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for operation "
                             + methodInfo.getDefaultOperationName());
                 }
                 annotations.put(annotationType, annotation);
@@ -103,7 +103,7 @@ final class MethodGroup {
                 Class<?> annotationType = annotation.annotationType();
                 if (annotationType.getAnnotation(ParamAnnotation.class) != null) {
                     if (annotations.containsKey(annotationType)) {
-                        throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationType.getName() + " annotation for parameter " 
+                        throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for parameter " 
                                 + i + " of operation " + methodInfo.getDefaultOperationName());
                     }
                     annotations.put(annotationType, annotation);

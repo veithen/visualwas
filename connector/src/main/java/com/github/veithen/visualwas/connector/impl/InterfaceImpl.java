@@ -24,15 +24,15 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
 
-final class AdminServiceDescriptionImpl implements AdminServiceDescription {
+final class InterfaceImpl implements Interface {
     private final Class<?> iface;
     private final Map<String,OperationDescription> operations;
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
 
-    AdminServiceDescriptionImpl(Class<?> iface, Map<String,OperationDescription> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
+    InterfaceImpl(Class<?> iface, Map<String,OperationDescription> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
         this.iface = iface;
         this.operations = operations;
         this.invocationHandlerDelegates = invocationHandlerDelegates;

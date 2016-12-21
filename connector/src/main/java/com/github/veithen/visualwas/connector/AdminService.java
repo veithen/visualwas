@@ -37,13 +37,13 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+import com.github.veithen.visualwas.connector.description.Interface;
+import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface AdminService {
-    AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(AdminService.class);
+    Interface DESCRIPTION = InterfaceFactory.getInstance().createDescription(AdminService.class);
     
     String getDefaultDomain() throws IOException;
 

@@ -26,7 +26,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.framework.Adaptable;
 
 /**
@@ -48,7 +48,7 @@ public interface Configurator extends Adaptable {
     
     /**
      * Add support for additional admin service operations. The corresponding Java interface (as
-     * returned by {@link AdminServiceDescription#getInterface()} will be registered as an adapter
+     * returned by {@link Interface#getInterface()} will be registered as an adapter
      * and the corresponding adapter instance can be retrieved by invoking
      * {@link Adaptable#getAdapter(Class)} on the {@link Connector} instance. The
      * {@link AdminService} instance passed to {@link AdapterFactory#createAdapter(AdminService)}
@@ -57,7 +57,7 @@ public interface Configurator extends Adaptable {
      * @param description
      *            the description of the operations to add
      */
-    void addAdminServiceDescription(AdminServiceDescription description);
+    void addAdminServiceDescription(Interface description);
     
     void addInvocationInterceptor(Interceptor<Invocation,Object> interceptor);
     

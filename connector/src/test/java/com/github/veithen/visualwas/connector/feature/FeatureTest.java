@@ -28,8 +28,8 @@ import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+import com.github.veithen.visualwas.connector.description.Interface;
+import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
@@ -43,7 +43,7 @@ public class FeatureTest {
         ConnectorConfiguration config = ConnectorConfiguration.custom().addFeatures(new Feature() {
             @Override
             public void configureConnector(Configurator configurator) {
-                AdminServiceDescription desc = AdminServiceDescriptionFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
+                Interface desc = InterfaceFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
                 configurator.addAdminServiceDescription(desc);
                 final OperationDescription operation = desc.getOperation("echo");
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {

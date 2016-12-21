@@ -30,7 +30,7 @@ import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
@@ -63,9 +63,9 @@ final class ConfiguratorImpl implements Configurator {
     }
 
     @Override
-    public void addAdminServiceDescription(AdminServiceDescription description) {
+    public void addAdminServiceDescription(Interface description) {
         adminServiceInterfaces.add(description.getInterface());
-        invocationHandlerDelegates.putAll(((AdminServiceDescriptionImpl)description).getInvocationHandlerDelegates());
+        invocationHandlerDelegates.putAll(((InterfaceImpl)description).getInvocationHandlerDelegates());
         registerAdminServerAdapterForExtension(description.getInterface());
     }
     

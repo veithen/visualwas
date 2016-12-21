@@ -29,14 +29,14 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
+import com.github.veithen.visualwas.connector.description.Interface;
+import com.github.veithen.visualwas.connector.description.InterfaceFactory;
+import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
 import com.github.veithen.visualwas.connector.description.OperationDescription;
 
-public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescriptionFactory {
+public final class InterfaceFactoryImpl extends InterfaceFactory {
     @Override
-    public AdminServiceDescription createDescription(Class<?> iface) throws AdminServiceDescriptionFactoryException {
+    public Interface createDescription(Class<?> iface) throws InterfaceFactoryException {
         Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
         outer: for (Method method : iface.getDeclaredMethods()) {
             for (InvocationStyle invocationStyle : InvocationStyle.INSTANCES) {
@@ -52,7 +52,7 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
                     continue outer;
                 }
             }
-            throw new AdminServiceDescriptionFactoryException("Don't know what to do with method " + method.getName());
+            throw new InterfaceFactoryException("Don't know what to do with method " + method.getName());
         }
         Map<String,OperationDescription> operations = new HashMap<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
@@ -67,7 +67,7 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
                 Class<?> type = signature[i];
                 Param paramAnnotation = methodGroup.getParameterAnnotations(Param.class, i);
                 if (paramAnnotation == null) {
-                    throw new AdminServiceDescriptionFactoryException("Missing @Param annotation for operation " + operationName);
+                    throw new InterfaceFactoryException("Missing @Param annotation for operation " + operationName);
                 }
                 String name = paramAnnotation.name();
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
@@ -82,7 +82,7 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
             }
             // TODO: check exception list; should contain IOException
         }
-        return new AdminServiceDescriptionImpl(iface, operations, invocationHandlerDelegates);
+        return new InterfaceImpl(iface, operations, invocationHandlerDelegates);
     }
     
     private static Class<?> getRawType(Type type) {

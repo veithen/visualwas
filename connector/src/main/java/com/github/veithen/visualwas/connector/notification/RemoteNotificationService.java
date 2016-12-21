@@ -27,12 +27,12 @@ import javax.management.Notification;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
-import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
+import com.github.veithen.visualwas.connector.description.Interface;
+import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface RemoteNotificationService {
-    AdminServiceDescription DESCRIPTION = AdminServiceDescriptionFactory.getInstance().createDescription(RemoteNotificationService.class);
+    Interface DESCRIPTION = InterfaceFactory.getInstance().createDescription(RemoteNotificationService.class);
     
     @Operation(name="addNotificationListener")
     SubscriptionHandle addSubscription(@Param(name="filter") SubscriptionInfo subscriptionInfo,

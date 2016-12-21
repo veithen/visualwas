@@ -21,10 +21,21 @@
  */
 package com.github.veithen.visualwas.connector.description;
 
-public class AdminServiceDescriptionFactoryException extends RuntimeException {
-    private static final long serialVersionUID = -634017525740483622L;
 
-    public AdminServiceDescriptionFactoryException(String message) {
-        super(message);
+public abstract class InterfaceFactory {
+    private static InterfaceFactory instance;
+    
+    public synchronized static InterfaceFactory getInstance() {
+        if (instance == null) {
+            try {
+                instance = (InterfaceFactory)Class.forName("com.github.veithen.visualwas.connector.impl.InterfaceFactoryImpl").newInstance();
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new Error("Failed to create connector factory");
+            }
+        }
+        return instance;
     }
+    public abstract Interface createDescription(Class<?> iface) throws InterfaceFactoryException;
 }

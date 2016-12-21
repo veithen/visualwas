@@ -54,11 +54,11 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
  * isolated into distinct {@link Feature features} because it requires {@link ClassMappingFeature
  * class mapping}. This only works if a feature is allowed to contribute admin service descriptions.
  * 
- * @see AdminServiceDescriptionFactory#createDescription(Class)
+ * @see InterfaceFactory#createDescription(Class)
  * @see Configurator#addAdminServiceDescription(AdminServiceDescription)
  * @see AdminService#DESCRIPTION
  */
-public interface AdminServiceDescription {
+public interface Interface {
     Class<?> getInterface();
     OperationDescription getOperation(String name);
 }
