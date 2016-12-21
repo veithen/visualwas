@@ -19,19 +19,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.description;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.github.veithen.visualwas.connector.description.OperationAnnotation;
-
-@OperationAnnotation
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Operation {
-    String name() default "";
-    boolean suppressHeader() default false;
+public @interface OperationAnnotation {
+
 }

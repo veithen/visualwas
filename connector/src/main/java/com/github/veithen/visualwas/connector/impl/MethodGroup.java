@@ -22,13 +22,18 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
+import com.github.veithen.visualwas.connector.description.OperationAnnotation;
+import com.github.veithen.visualwas.connector.description.ParamAnnotation;
 
 final class MethodGroup {
     private static final Map<Class<?>,Class<?>> wrapperTypeMap;
@@ -49,6 +54,8 @@ final class MethodGroup {
     private String defaultOperationName;
     private Class<?>[] signature;
     private Type responseType;
+    private Map<Class<?>,Annotation> annotations = new HashMap<>();
+    private List<Map<Class<?>,Annotation>> paramAnnotations;
 
     void add(InvocationStyle invocationStyle, MethodInfo methodInfo) {
         if (methods.containsKey(invocationStyle)) {
@@ -58,6 +65,10 @@ final class MethodGroup {
             defaultOperationName = methodInfo.getDefaultOperationName();
             signature = methodInfo.getSignature();
             responseType = methodInfo.getResponseType();
+            paramAnnotations = new ArrayList<>(signature.length);
+            for (int i=0; i<signature.length; i++) {
+                paramAnnotations.add(new HashMap<Class<?>,Annotation>());
+            }
         } else {
             if (!defaultOperationName.equals(methodInfo.getDefaultOperationName())) {
                 throw new AdminServiceDescriptionFactoryException("Inconsistent default operation names in method group");
@@ -71,6 +82,31 @@ final class MethodGroup {
                     responseType = newResponseType;
                 } else if (!(newResponseType.equals(wrapperTypeMap.get(responseType)))) {
                     throw new AdminServiceDescriptionFactoryException("Inconsistent response types in method group: " + responseType + ", " + newResponseType);
+                }
+            }
+        }
+        Method method = methodInfo.getMethod();
+        for (Annotation annotation : method.getAnnotations()) {
+            Class<?> annotationType = annotation.annotationType();
+            if (annotationType.getAnnotation(OperationAnnotation.class) != null) {
+                if (annotations.containsKey(annotationType)) {
+                    throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationType.getName() + " annotation for operation "
+                            + methodInfo.getDefaultOperationName());
+                }
+                annotations.put(annotationType, annotation);
+            }
+        }
+        Annotation[][] methodParamAnnotations = method.getParameterAnnotations();
+        for (int i=0; i<signature.length; i++) {
+            Map<Class<?>,Annotation> annotations = paramAnnotations.get(i);
+            for (Annotation annotation : methodParamAnnotations[i]) {
+                Class<?> annotationType = annotation.annotationType();
+                if (annotationType.getAnnotation(ParamAnnotation.class) != null) {
+                    if (annotations.containsKey(annotationType)) {
+                        throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationType.getName() + " annotation for parameter " 
+                                + i + " of operation " + methodInfo.getDefaultOperationName());
+                    }
+                    annotations.put(annotationType, annotation);
                 }
             }
         }
@@ -94,36 +130,10 @@ final class MethodGroup {
     }
 
     <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        T result = null;
-        for (MethodInfo methodInfo : methods.values()) {
-            T annotation = methodInfo.getMethod().getAnnotation(annotationClass);
-            if (annotation != null) {
-                if (result != null) {
-                    throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationClass.getName() + " annotation for method " + methodInfo.getDefaultOperationName());
-                }
-                result = annotation;
-            }
-        }
-        return result;
+        return annotationClass.cast(annotations.get(annotationClass));
     }
 
     <T extends Annotation> T getParameterAnnotations(Class<T> annotationClass, int index) {
-        T result = null;
-        for (MethodInfo methodInfo : methods.values()) {
-            T annotation = null;
-            for (Annotation candidate : methodInfo.getMethod().getParameterAnnotations()[index]) {
-                if (annotationClass.isInstance(candidate)) {
-                    annotation = annotationClass.cast(candidate);
-                    break;
-                }
-            }
-            if (annotation != null) {
-                if (result != null) {
-                    throw new AdminServiceDescriptionFactoryException("Duplicate " + annotationClass.getName() + " annotation for parameter " + index + " of method " + methodInfo.getDefaultOperationName());
-                }
-                result = annotation;
-            }
-        }
-        return result;
+        return annotationClass.cast(paramAnnotations.get(index).get(annotationClass));
     }
 }
