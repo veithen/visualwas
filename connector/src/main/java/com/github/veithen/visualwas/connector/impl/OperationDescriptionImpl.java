@@ -19,8 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.impl;
 
-public interface Adaptable {
-    <T> T getAdapter(Class<T> clazz);
+import java.util.Map;
+
+import com.github.veithen.visualwas.connector.description.OperationDescription;
+
+final class OperationDescriptionImpl implements OperationDescription {
+    private final Map<Class<?>,Object> adapters;
+
+    OperationDescriptionImpl(Map<Class<?>, Object> adapters) {
+        this.adapters = adapters;
+    }
+
+    @Override
+    public <T> T getAdapter(Class<T> clazz) {
+        return clazz.cast(adapters.get(clazz));
+    }
 }

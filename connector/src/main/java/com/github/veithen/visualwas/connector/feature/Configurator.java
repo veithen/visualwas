@@ -23,11 +23,11 @@ package com.github.veithen.visualwas.connector.feature;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.Adaptable;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
+import com.github.veithen.visualwas.framework.Adaptable;
 
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of

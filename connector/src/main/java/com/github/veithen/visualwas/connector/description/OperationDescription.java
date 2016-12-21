@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.description;
 
-public interface OperationDescription {
+import com.github.veithen.visualwas.framework.Adaptable;
+
+public interface OperationDescription extends Adaptable {
 
 }

@@ -24,9 +24,9 @@ package com.github.veithen.visualwas.connector.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.Adaptable;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
+import com.github.veithen.visualwas.framework.Adaptable;
 
 final class AdaptableDelegate implements Adaptable {
     private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<Class<?>,AdapterHolder<?>>();

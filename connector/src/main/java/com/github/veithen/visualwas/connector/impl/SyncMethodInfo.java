@@ -24,6 +24,8 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import com.github.veithen.visualwas.connector.description.OperationDescription;
+
 final class SyncMethodInfo extends MethodInfo {
     SyncMethodInfo(Method method) {
         super(method);
@@ -40,7 +42,7 @@ final class SyncMethodInfo extends MethodInfo {
     }
 
     @Override
-    InvocationHandlerDelegate createInvocationHandlerDelegate(OperationHandler operationHandler) {
-        return new SyncInvocationHandlerDelegate(operationHandler);
+    InvocationHandlerDelegate createInvocationHandlerDelegate(OperationDescription operation) {
+        return new SyncInvocationHandlerDelegate(operation);
     }
 }

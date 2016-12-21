@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.connector;
 
 import com.github.veithen.visualwas.connector.feature.CloseListener;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.framework.Adaptable;
 
 public interface Connector extends AdminService, Adaptable {
     /**

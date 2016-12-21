@@ -22,14 +22,15 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 abstract class InvocationHandlerDelegate {
-    final OperationHandler operationHandler;
+    final OperationDescription operation;
 
-    InvocationHandlerDelegate(OperationHandler operationHandler) {
-        this.operationHandler = operationHandler;
+    InvocationHandlerDelegate(OperationDescription operation) {
+        this.operation = operation;
     }
 
     abstract Object invoke(Object[] args, Handler<Invocation,Object> handler, InvocationContext context) throws Throwable;

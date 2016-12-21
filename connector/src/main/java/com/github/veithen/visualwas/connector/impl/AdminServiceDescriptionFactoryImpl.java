@@ -32,6 +32,7 @@ import com.github.veithen.visualwas.connector.Param;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescription;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactory;
 import com.github.veithen.visualwas.connector.description.AdminServiceDescriptionFactoryException;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 
 public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescriptionFactory {
     @Override
@@ -53,9 +54,10 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
             }
             throw new AdminServiceDescriptionFactoryException("Don't know what to do with method " + method.getName());
         }
-        Map<String,OperationHandler> operationHandlers = new HashMap<>();
+        Map<String,OperationDescription> operations = new HashMap<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
         for (MethodGroup methodGroup : methodGroups.values()) {
+            Map<Class<?>, Object> adapters = new HashMap<>();
             Operation operationAnnotation = methodGroup.getAnnotation(Operation.class);
             String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : methodGroup.getDefaultOperationName();
             Class<?>[] signature = methodGroup.getSignature();
@@ -71,15 +73,16 @@ public final class AdminServiceDescriptionFactoryImpl extends AdminServiceDescri
                 paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
             }
             Class<?> returnType = getRawType(methodGroup.getResponseType());
-            OperationHandler operationHandler = new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                    returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader());
-            operationHandlers.put(operationName, operationHandler);
+            adapters.put(OperationHandler.class, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
+                    returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader()));
+            OperationDescription operation = new OperationDescriptionImpl(adapters);
+            operations.put(operationName, operation);
             for (MethodInfo methodInfo : methodGroup.getMembers()) {
-                invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operationHandler));
+                invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
             }
             // TODO: check exception list; should contain IOException
         }
-        return new AdminServiceDescriptionImpl(iface, operationHandlers, invocationHandlerDelegates);
+        return new AdminServiceDescriptionImpl(iface, operations, invocationHandlerDelegates);
     }
     
     private static Class<?> getRawType(Type type) {

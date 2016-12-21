@@ -25,6 +25,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.github.veithen.visualwas.connector.description.OperationDescription;
+
 final class AsyncMethodInfo extends MethodInfo {
     AsyncMethodInfo(Method method) {
         super(method);
@@ -43,7 +45,7 @@ final class AsyncMethodInfo extends MethodInfo {
     }
 
     @Override
-    InvocationHandlerDelegate createInvocationHandlerDelegate(OperationHandler operationHandler) {
-        return new AsyncInvocationHandlerDelegate(operationHandler);
+    InvocationHandlerDelegate createInvocationHandlerDelegate(OperationDescription operation) {
+        return new AsyncInvocationHandlerDelegate(operation);
     }
 }

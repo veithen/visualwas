@@ -19,20 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework;
 
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
-import com.github.veithen.visualwas.connector.feature.Handler;
-import com.github.veithen.visualwas.connector.feature.InvocationContext;
-
-final class AsyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
-    AsyncInvocationHandlerDelegate(OperationDescription operation) {
-        super(operation);
-    }
-
-    @Override
-    Object invoke(Object[] args, Handler<Invocation, Object> handler, InvocationContext context) throws Throwable {
-        return handler.invoke(context, new Invocation(operation, args));
-    }
+public interface Adaptable {
+    <T> T getAdapter(Class<T> clazz);
 }

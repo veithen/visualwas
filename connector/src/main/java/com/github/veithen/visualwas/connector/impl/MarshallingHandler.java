@@ -51,7 +51,7 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
     @Override
     public ListenableFuture<Object> invoke(InvocationContext context, Invocation invocation) {
         InvocationContextImpl contextImpl = (InvocationContextImpl)context;
-        OperationHandler operationHandler = (OperationHandler)invocation.getOperation();
+        OperationHandler operationHandler = invocation.getOperation().getAdapter(OperationHandler.class);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
         SOAPEnvelope request = factory.createSOAPEnvelope();
         if (!operationHandler.isSuppressSOAPHeader()) {
