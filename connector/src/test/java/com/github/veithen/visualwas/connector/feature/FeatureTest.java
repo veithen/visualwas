@@ -30,7 +30,7 @@ import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.InterfaceFactory;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
@@ -45,7 +45,7 @@ public class FeatureTest {
             public void configureConnector(Configurator configurator) {
                 Interface desc = InterfaceFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
                 configurator.addAdminServiceDescription(desc);
-                final OperationDescription operation = desc.getOperation("echo");
+                final Operation operation = desc.getOperation("echo");
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {
                     public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
                         if (invocation.getOperation() == operation) {

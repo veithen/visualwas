@@ -35,5 +35,5 @@ package com.github.veithen.visualwas.connector.description;
  */
 public interface Interface {
     Class<?> getInterface();
-    OperationDescription getOperation(String name);
+    Operation getOperation(String name);
 }

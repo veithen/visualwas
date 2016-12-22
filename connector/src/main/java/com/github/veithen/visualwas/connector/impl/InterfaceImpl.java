@@ -25,14 +25,14 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.description.Interface;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 
 final class InterfaceImpl implements Interface {
     private final Class<?> iface;
-    private final Map<String,OperationDescription> operations;
+    private final Map<String,Operation> operations;
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
 
-    InterfaceImpl(Class<?> iface, Map<String,OperationDescription> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
+    InterfaceImpl(Class<?> iface, Map<String,Operation> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
         this.iface = iface;
         this.operations = operations;
         this.invocationHandlerDelegates = invocationHandlerDelegates;
@@ -44,7 +44,7 @@ final class InterfaceImpl implements Interface {
     }
 
     @Override
-    public OperationDescription getOperation(String name) {
+    public Operation getOperation(String name) {
         return operations.get(name);
     }
 

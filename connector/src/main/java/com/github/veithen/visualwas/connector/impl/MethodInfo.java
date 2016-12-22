@@ -24,7 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 
 abstract class MethodInfo {
     private final Method method;
@@ -43,5 +43,5 @@ abstract class MethodInfo {
 
     abstract String getDefaultOperationName();
     abstract Type getResponseType();
-    abstract InvocationHandlerDelegate createInvocationHandlerDelegate(OperationDescription operation);
+    abstract InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation);
 }

@@ -21,19 +21,19 @@
  */
 package com.github.veithen.visualwas.connector;
 
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 
 public final class Invocation {
-    private final OperationDescription operation;
+    private final Operation operation;
     private final Object[] args;
     
     // TODO: this should probably not be public
-    public Invocation(OperationDescription operation, Object... args) {
+    public Invocation(Operation operation, Object... args) {
         this.operation = operation;
         this.args = args;
     }
 
-    public OperationDescription getOperation() {
+    public Operation getOperation() {
         return operation;
     }
 

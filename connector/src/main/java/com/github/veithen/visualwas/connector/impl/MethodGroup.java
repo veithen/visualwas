@@ -36,7 +36,7 @@ import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
 import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
 import com.github.veithen.visualwas.connector.description.OperationAnnotation;
 import com.github.veithen.visualwas.connector.description.OperationBuilder;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.description.ParamAnnotation;
 
 final class MethodGroup implements OperationBuilder {
@@ -151,7 +151,7 @@ final class MethodGroup implements OperationBuilder {
         adapters.put(type, instance);
     }
 
-    OperationDescription build() {
+    Operation build() {
         return new OperationDescriptionImpl(adapters);
     }
 }

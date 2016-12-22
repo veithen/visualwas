@@ -22,14 +22,14 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 abstract class InvocationHandlerDelegate {
-    final OperationDescription operation;
+    final Operation operation;
 
-    InvocationHandlerDelegate(OperationDescription operation) {
+    InvocationHandlerDelegate(Operation operation) {
         this.operation = operation;
     }
 

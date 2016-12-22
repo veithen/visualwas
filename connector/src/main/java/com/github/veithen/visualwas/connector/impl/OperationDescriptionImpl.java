@@ -23,9 +23,9 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 
-final class OperationDescriptionImpl implements OperationDescription {
+final class OperationDescriptionImpl implements Operation {
     private final Map<Class<?>,Object> adapters;
 
     OperationDescriptionImpl(Map<Class<?>, Object> adapters) {

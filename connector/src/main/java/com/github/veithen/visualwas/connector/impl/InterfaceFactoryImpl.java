@@ -33,7 +33,7 @@ import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
 import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 
 public final class InterfaceFactoryImpl extends InterfaceFactory {
     @Override
@@ -64,13 +64,13 @@ public final class InterfaceFactoryImpl extends InterfaceFactory {
                 throw new InterfaceFactoryException("Could not instantiate annotation processor " + annotationProcessorClass.getName());
             }
         }
-        Map<String,OperationDescription> operations = new HashMap<>();
+        Map<String,Operation> operations = new HashMap<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
         for (MethodGroup methodGroup : methodGroups.values()) {
             for (AnnotationProcessor annotationProcessor : annotationProcessors) {
                 annotationProcessor.processOperation(methodGroup);
             }
-            OperationDescription operation = methodGroup.build();
+            Operation operation = methodGroup.build();
             operations.put(methodGroup.getOperationName(), operation);
             for (MethodInfo methodInfo : methodGroup.getMembers()) {
                 invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));

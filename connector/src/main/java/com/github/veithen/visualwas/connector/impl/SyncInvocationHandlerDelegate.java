@@ -24,12 +24,12 @@ package com.github.veithen.visualwas.connector.impl;
 import java.util.concurrent.ExecutionException;
 
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.OperationDescription;
+import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 
 final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
-    SyncInvocationHandlerDelegate(OperationDescription operation) {
+    SyncInvocationHandlerDelegate(Operation operation) {
         super(operation);
     }
 
