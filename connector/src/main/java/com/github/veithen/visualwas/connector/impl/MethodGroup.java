@@ -152,6 +152,6 @@ final class MethodGroup implements OperationBuilder {
     }
 
     Operation build() {
-        return new OperationDescriptionImpl(adapters);
+        return new OperationImpl(adapters);
     }
 }

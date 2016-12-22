@@ -25,10 +25,10 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.framework.proxy.Operation;
 
-final class OperationDescriptionImpl implements Operation {
+final class OperationImpl implements Operation {
     private final Map<Class<?>,Object> adapters;
 
-    OperationDescriptionImpl(Map<Class<?>, Object> adapters) {
+    OperationImpl(Map<Class<?>, Object> adapters) {
         this.adapters = adapters;
     }
 
