@@ -22,13 +22,14 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.github.veithen.visualwas.connector.Operation;
-import com.github.veithen.visualwas.connector.Param;
+import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
 import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
@@ -37,6 +38,7 @@ import com.github.veithen.visualwas.connector.description.OperationDescription;
 public final class InterfaceFactoryImpl extends InterfaceFactory {
     @Override
     public Interface createDescription(Class<?> iface) throws InterfaceFactoryException {
+        Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses = new HashSet<>();
         Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
         outer: for (Method method : iface.getDeclaredMethods()) {
             for (InvocationStyle invocationStyle : InvocationStyle.INSTANCES) {
@@ -48,61 +50,32 @@ public final class InterfaceFactoryImpl extends InterfaceFactory {
                         methodGroup = new MethodGroup();
                         methodGroups.put(key, methodGroup);
                     }
-                    methodGroup.add(invocationStyle, methodInfo);
+                    methodGroup.add(invocationStyle, methodInfo, annotationProcessorClasses);
                     continue outer;
                 }
             }
             throw new InterfaceFactoryException("Don't know what to do with method " + method.getName());
         }
+        List<AnnotationProcessor> annotationProcessors = new ArrayList<>(annotationProcessorClasses.size());
+        for (Class<? extends AnnotationProcessor> annotationProcessorClass : annotationProcessorClasses) {
+            try {
+                annotationProcessors.add(annotationProcessorClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException ex) {
+                throw new InterfaceFactoryException("Could not instantiate annotation processor " + annotationProcessorClass.getName());
+            }
+        }
         Map<String,OperationDescription> operations = new HashMap<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
         for (MethodGroup methodGroup : methodGroups.values()) {
-            Map<Class<?>, Object> adapters = new HashMap<>();
-            Operation operationAnnotation = methodGroup.getAnnotation(Operation.class);
-            String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : methodGroup.getDefaultOperationName();
-            Class<?>[] signature = methodGroup.getSignature();
-            int paramCount = signature.length;
-            ParamHandler[] paramHandlers = new ParamHandler[paramCount];
-            for (int i=0; i<paramCount; i++) {
-                Class<?> type = signature[i];
-                Param paramAnnotation = methodGroup.getParameterAnnotations(Param.class, i);
-                if (paramAnnotation == null) {
-                    throw new InterfaceFactoryException("Missing @Param annotation for operation " + operationName);
-                }
-                String name = paramAnnotation.name();
-                paramHandlers[i] = new ParamHandler(name, getTypeHandler(type));
+            for (AnnotationProcessor annotationProcessor : annotationProcessors) {
+                annotationProcessor.processOperation(methodGroup);
             }
-            Class<?> returnType = getRawType(methodGroup.getResponseType());
-            adapters.put(OperationHandler.class, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                    returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader()));
-            OperationDescription operation = new OperationDescriptionImpl(adapters);
-            operations.put(operationName, operation);
+            OperationDescription operation = methodGroup.build();
+            operations.put(methodGroup.getOperationName(), operation);
             for (MethodInfo methodInfo : methodGroup.getMembers()) {
                 invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
             }
-            // TODO: check exception list; should contain IOException
         }
         return new InterfaceImpl(iface, operations, invocationHandlerDelegates);
-    }
-    
-    private static Class<?> getRawType(Type type) {
-        if (type instanceof ParameterizedType) {
-            return (Class<?>)((ParameterizedType)type).getRawType();
-        } else {
-            return (Class<?>)type;
-        }
-    }
-    
-    private static TypeHandler getTypeHandler(Class<?> javaType) {
-        if (javaType == Object.class) {
-            return new AnyTypeHandler();
-        } else {
-            SimpleTypeHandler simpleTypeHandler = SimpleTypeHandler.getByJavaType(javaType);
-            if (simpleTypeHandler != null) {
-                return simpleTypeHandler;
-            } else {
-                return new ObjectHandler(javaType);
-            }
-        }
     }
 }

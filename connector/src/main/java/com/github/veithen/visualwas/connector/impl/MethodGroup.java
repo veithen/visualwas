@@ -30,12 +30,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
 import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
 import com.github.veithen.visualwas.connector.description.OperationAnnotation;
+import com.github.veithen.visualwas.connector.description.OperationBuilder;
+import com.github.veithen.visualwas.connector.description.OperationDescription;
 import com.github.veithen.visualwas.connector.description.ParamAnnotation;
 
-final class MethodGroup {
+final class MethodGroup implements OperationBuilder {
     private static final Map<Class<?>,Class<?>> wrapperTypeMap;
     
     static {
@@ -56,8 +60,9 @@ final class MethodGroup {
     private Type responseType;
     private Map<Class<?>,Annotation> annotations = new HashMap<>();
     private List<Map<Class<?>,Annotation>> paramAnnotations;
+    private final Map<Class<?>, Object> adapters = new HashMap<>();
 
-    void add(InvocationStyle invocationStyle, MethodInfo methodInfo) {
+    void add(InvocationStyle invocationStyle, MethodInfo methodInfo, Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses) {
         if (methods.containsKey(invocationStyle)) {
             throw new InterfaceFactoryException("Can't have multiple methods with the same invocation style in the same method group");
         }
@@ -88,7 +93,9 @@ final class MethodGroup {
         Method method = methodInfo.getMethod();
         for (Annotation annotation : method.getAnnotations()) {
             Class<?> annotationType = annotation.annotationType();
-            if (annotationType.getAnnotation(OperationAnnotation.class) != null) {
+            OperationAnnotation metaAnnotation = annotationType.getAnnotation(OperationAnnotation.class);
+            if (metaAnnotation != null) {
+                annotationProcessorClasses.add(((OperationAnnotation)metaAnnotation).annotationProcessor());
                 if (annotations.containsKey(annotationType)) {
                     throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for operation "
                             + methodInfo.getDefaultOperationName());
@@ -101,7 +108,9 @@ final class MethodGroup {
             Map<Class<?>,Annotation> annotations = paramAnnotations.get(i);
             for (Annotation annotation : methodParamAnnotations[i]) {
                 Class<?> annotationType = annotation.annotationType();
-                if (annotationType.getAnnotation(ParamAnnotation.class) != null) {
+                ParamAnnotation metaAnnotation = annotationType.getAnnotation(ParamAnnotation.class);
+                if (metaAnnotation != null) {
+                    annotationProcessorClasses.add(((ParamAnnotation)metaAnnotation).annotationProcessor());
                     if (annotations.containsKey(annotationType)) {
                         throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for parameter " 
                                 + i + " of operation " + methodInfo.getDefaultOperationName());
@@ -117,23 +126,32 @@ final class MethodGroup {
         return methods.values();
     }
 
-    String getDefaultOperationName() {
+    public String getOperationName() {
         return defaultOperationName;
     }
 
-    Class<?>[] getSignature() {
+    public Class<?>[] getSignature() {
         return signature;
     }
 
-    Type getResponseType() {
+    public Type getResponseType() {
         return responseType;
     }
 
-    <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+    public <T extends Annotation> T getOperationAnnotation(Class<T> annotationClass) {
         return annotationClass.cast(annotations.get(annotationClass));
     }
 
-    <T extends Annotation> T getParameterAnnotations(Class<T> annotationClass, int index) {
+    public <T extends Annotation> T getParameterAnnotation(Class<T> annotationClass, int index) {
         return annotationClass.cast(paramAnnotations.get(index).get(annotationClass));
+    }
+
+    @Override
+    public <T> void addAdapter(Class<T> type, T instance) {
+        adapters.put(type, instance);
+    }
+
+    OperationDescription build() {
+        return new OperationDescriptionImpl(adapters);
     }
 }

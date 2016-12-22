@@ -19,19 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
+package com.github.veithen.visualwas.connector.description;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import com.github.veithen.visualwas.connector.description.ParamAnnotation;
-import com.github.veithen.visualwas.connector.impl.AdminServiceAnnotationProcessor;
-
-@ParamAnnotation(annotationProcessor=AdminServiceAnnotationProcessor.class)
-@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Param {
-    String name();
+public interface AnnotationProcessor {
+    void processOperation(OperationBuilder operationBuilder);
 }
