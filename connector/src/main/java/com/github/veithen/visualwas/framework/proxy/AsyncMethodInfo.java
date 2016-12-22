@@ -19,29 +19,31 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.github.veithen.visualwas.framework.proxy.Operation;
-
-abstract class MethodInfo {
-    private final Method method;
-
-    MethodInfo(Method method) {
-        this.method = method;
+final class AsyncMethodInfo extends MethodInfo {
+    AsyncMethodInfo(Method method) {
+        super(method);
     }
 
-    final Method getMethod() {
-        return method;
+    @Override
+    String getDefaultOperationName() {
+        String methodName = getMethod().getName();
+        return methodName.substring(0, methodName.length()-5);
     }
 
-    final Class<?>[] getSignature() {
-        return method.getParameterTypes();
+    @Override
+    Type getResponseType() {
+        Type responseType = ((ParameterizedType)getMethod().getGenericReturnType()).getActualTypeArguments()[0];
+        return responseType == Void.class ? Void.TYPE : responseType;
     }
 
-    abstract String getDefaultOperationName();
-    abstract Type getResponseType();
-    abstract InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation);
+    @Override
+    InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation) {
+        return new AsyncInvocationHandlerDelegate(operation);
+    }
 }

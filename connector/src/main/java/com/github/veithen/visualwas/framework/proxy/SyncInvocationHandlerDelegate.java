@@ -19,21 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
-import com.github.veithen.visualwas.framework.proxy.Operation;
-
-final class OperationImpl implements Operation {
-    private final Map<Class<?>,Object> adapters;
-
-    OperationImpl(Map<Class<?>, Object> adapters) {
-        this.adapters = adapters;
+final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
+    SyncInvocationHandlerDelegate(Operation operation) {
+        super(operation);
     }
 
     @Override
-    public <T> T getAdapter(Class<T> clazz) {
-        return clazz.cast(adapters.get(clazz));
+    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
+        try {
+            return target.invoke(operation, args).get();
+        } catch (ExecutionException ex) {
+            throw ex.getCause();
+        }
     }
 }

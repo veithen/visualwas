@@ -27,8 +27,8 @@ import javax.management.Notification;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.github.veithen.visualwas.connector.description.Interface;
-import com.github.veithen.visualwas.connector.description.InterfaceFactory;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface RemoteNotificationService {

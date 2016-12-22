@@ -19,24 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
-import java.util.concurrent.ExecutionException;
 
-import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
-import com.github.veithen.visualwas.framework.proxy.Operation;
-
-final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
-    SyncInvocationHandlerDelegate(Operation operation) {
-        super(operation);
-    }
-
-    @Override
-    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
-        try {
-            return target.invoke(operation, args).get();
-        } catch (ExecutionException ex) {
-            throw ex.getCause();
+public abstract class InterfaceFactory {
+    private static InterfaceFactory instance;
+    
+    public synchronized static InterfaceFactory getInstance() {
+        if (instance == null) {
+            try {
+                instance = (InterfaceFactory)Class.forName("com.github.veithen.visualwas.framework.proxy.InterfaceFactoryImpl").newInstance();
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new Error("Failed to create connector factory");
+            }
         }
+        return instance;
     }
+    public abstract Interface createDescription(Class<?> iface) throws InterfaceFactoryException;
 }

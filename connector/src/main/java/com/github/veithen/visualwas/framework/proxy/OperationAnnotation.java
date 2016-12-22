@@ -19,17 +19,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
-import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
-import com.github.veithen.visualwas.framework.proxy.Operation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-abstract class InvocationHandlerDelegate {
-    final Operation operation;
-
-    InvocationHandlerDelegate(Operation operation) {
-        this.operation = operation;
-    }
-
-    abstract Object invoke(InvocationTarget target, Object[] args) throws Throwable;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OperationAnnotation {
+    Class<? extends AnnotationProcessor> annotationProcessor();
 }

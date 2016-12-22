@@ -29,7 +29,6 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
@@ -39,6 +38,7 @@ import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
     public Connector createConnector(Endpoint endpoint, final ConnectorConfiguration config, Attributes attributes) {

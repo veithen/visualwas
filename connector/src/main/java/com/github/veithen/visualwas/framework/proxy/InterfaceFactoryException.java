@@ -19,8 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.description;
+package com.github.veithen.visualwas.framework.proxy;
 
-public interface AnnotationProcessor {
-    void processOperation(OperationBuilder operationBuilder);
+public class InterfaceFactoryException extends RuntimeException {
+    private static final long serialVersionUID = -634017525740483622L;
+
+    public InterfaceFactoryException(String message) {
+        super(message);
+    }
 }

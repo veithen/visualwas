@@ -19,23 +19,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.description;
+package com.github.veithen.visualwas.framework.proxy;
 
-import com.github.veithen.visualwas.framework.proxy.Operation;
+final class AsyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
+    AsyncInvocationHandlerDelegate(Operation operation) {
+        super(operation);
+    }
 
-/**
- * Describes an interface.
- * <p>
- * An interface is defined as a set of operations, each of which has:
- * <ol>
- * <li>A name.
- * <li>A signature, i.e. a list of parameters, described by their types.
- * <li>A response type.
- * </ol>
- * When mapped to a Java interface, each operation may be represented by more than one method,
- * in which case these methods realize different invocation styles.
- */
-public interface Interface {
-    Class<?> getInterface();
-    Operation getOperation(String name);
+    @Override
+    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
+        return target.invoke(operation, args);
+    }
 }

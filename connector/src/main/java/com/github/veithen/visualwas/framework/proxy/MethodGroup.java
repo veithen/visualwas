@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -31,13 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
-import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
-import com.github.veithen.visualwas.connector.description.OperationAnnotation;
-import com.github.veithen.visualwas.connector.description.OperationBuilder;
-import com.github.veithen.visualwas.connector.description.ParamAnnotation;
-import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class MethodGroup implements OperationBuilder {
     private static final Map<Class<?>,Class<?>> wrapperTypeMap;

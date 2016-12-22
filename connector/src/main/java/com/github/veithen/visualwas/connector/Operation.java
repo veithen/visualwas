@@ -26,8 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.github.veithen.visualwas.connector.description.OperationAnnotation;
 import com.github.veithen.visualwas.connector.impl.AdminServiceAnnotationProcessor;
+import com.github.veithen.visualwas.framework.proxy.OperationAnnotation;
 
 @OperationAnnotation(annotationProcessor=AdminServiceAnnotationProcessor.class)
 @Target(ElementType.METHOD)

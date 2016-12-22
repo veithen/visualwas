@@ -23,10 +23,11 @@ package com.github.veithen.visualwas.connector.impl;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.feature.Handler;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.Operation;
+import com.github.veithen.visualwas.framework.proxy.ProxyFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class AdminServiceFactory {

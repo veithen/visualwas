@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.github.veithen.visualwas.connector.description.Interface;
-import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 
 public final class ProxyFactory {
     private ProxyFactory() {}

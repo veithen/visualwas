@@ -26,8 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.github.veithen.visualwas.connector.description.ParamAnnotation;
 import com.github.veithen.visualwas.connector.impl.AdminServiceAnnotationProcessor;
+import com.github.veithen.visualwas.framework.proxy.ParamAnnotation;
 
 @ParamAnnotation(annotationProcessor=AdminServiceAnnotationProcessor.class)
 @Target(ElementType.PARAMETER)

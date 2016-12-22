@@ -26,8 +26,8 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.framework.Adaptable;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of

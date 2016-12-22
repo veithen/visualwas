@@ -19,16 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.description;
+package com.github.veithen.visualwas.framework.proxy;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+abstract class InvocationHandlerDelegate {
+    final Operation operation;
 
-public interface OperationBuilder {
-    String getOperationName();
-    Class<?>[] getSignature();
-    Type getResponseType();
-    <T extends Annotation> T getOperationAnnotation(Class<T> annotationClass);
-    <T extends Annotation> T getParameterAnnotation(Class<T> annotationClass, int index);
-    <T> void addAdapter(Class<T> type, T instance);
+    InvocationHandlerDelegate(Operation operation) {
+        this.operation = operation;
+    }
+
+    abstract Object invoke(InvocationTarget target, Object[] args) throws Throwable;
 }

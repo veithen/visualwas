@@ -26,9 +26,9 @@ import java.lang.reflect.Type;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
-import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
-import com.github.veithen.visualwas.connector.description.OperationBuilder;
+import com.github.veithen.visualwas.framework.proxy.AnnotationProcessor;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactoryException;
+import com.github.veithen.visualwas.framework.proxy.OperationBuilder;
 
 public class AdminServiceAnnotationProcessor implements AnnotationProcessor {
     @Override

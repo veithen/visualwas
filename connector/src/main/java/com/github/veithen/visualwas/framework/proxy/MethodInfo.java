@@ -19,23 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.description;
+package com.github.veithen.visualwas.framework.proxy;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
-public abstract class InterfaceFactory {
-    private static InterfaceFactory instance;
-    
-    public synchronized static InterfaceFactory getInstance() {
-        if (instance == null) {
-            try {
-                instance = (InterfaceFactory)Class.forName("com.github.veithen.visualwas.connector.impl.InterfaceFactoryImpl").newInstance();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new Error("Failed to create connector factory");
-            }
-        }
-        return instance;
+abstract class MethodInfo {
+    private final Method method;
+
+    MethodInfo(Method method) {
+        this.method = method;
     }
-    public abstract Interface createDescription(Class<?> iface) throws InterfaceFactoryException;
+
+    final Method getMethod() {
+        return method;
+    }
+
+    final Class<?>[] getSignature() {
+        return method.getParameterTypes();
+    }
+
+    abstract String getDefaultOperationName();
+    abstract Type getResponseType();
+    abstract InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation);
 }

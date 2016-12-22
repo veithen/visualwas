@@ -19,30 +19,19 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.util.Map;
 
-import com.github.veithen.visualwas.framework.proxy.Operation;
+final class OperationImpl implements Operation {
+    private final Map<Class<?>,Object> adapters;
 
-final class SyncMethodInfo extends MethodInfo {
-    SyncMethodInfo(Method method) {
-        super(method);
+    OperationImpl(Map<Class<?>, Object> adapters) {
+        this.adapters = adapters;
     }
 
     @Override
-    String getDefaultOperationName() {
-        return getMethod().getName();
-    }
-
-    @Override
-    Type getResponseType() {
-        return getMethod().getGenericReturnType();
-    }
-
-    @Override
-    InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation) {
-        return new SyncInvocationHandlerDelegate(operation);
+    public <T> T getAdapter(Class<T> clazz) {
+        return clazz.cast(adapters.get(clazz));
     }
 }

@@ -19,13 +19,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-
-import com.github.veithen.visualwas.connector.description.Interface;
-import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class InterfaceImpl implements Interface {
     private final Class<?> iface;
