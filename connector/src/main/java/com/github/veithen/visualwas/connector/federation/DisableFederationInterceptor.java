@@ -28,10 +28,10 @@ import javax.management.QueryExp;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class DisableFederationInterceptor implements Interceptor<Invocation,Object> {

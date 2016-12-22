@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.connector;
 
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 public final class Invocation {
     private final Operation operation;

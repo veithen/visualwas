@@ -23,10 +23,10 @@ package com.github.veithen.visualwas.connector.mapped;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class InvocationInterceptor implements Interceptor<Invocation,Object> {

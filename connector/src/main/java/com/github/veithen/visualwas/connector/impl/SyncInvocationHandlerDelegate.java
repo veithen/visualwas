@@ -23,10 +23,8 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.concurrent.ExecutionException;
 
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Operation;
-import com.github.veithen.visualwas.connector.feature.Handler;
-import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
     SyncInvocationHandlerDelegate(Operation operation) {
@@ -34,9 +32,9 @@ final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
     }
 
     @Override
-    Object invoke(Object[] args, Handler<Invocation, Object> handler, InvocationContext context) throws Throwable {
+    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
         try {
-            return handler.invoke(context, new Invocation(operation, args)).get();
+            return target.invoke(operation, args).get();
         } catch (ExecutionException ex) {
             throw ex.getCause();
         }

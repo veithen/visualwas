@@ -25,20 +25,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.feature.Handler;
+import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 
 public class AdminServiceInvocationHandler implements InvocationHandler {
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
-    private final InvocationContextProvider invocationContextProvider;
-    private final Handler<Invocation,Object> handler;
+    private final InvocationTarget invocationTarget;
 
     public AdminServiceInvocationHandler(Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates,
-            InvocationContextProvider invocationContextProvider,
-            Handler<Invocation,Object> handler) {
+            InvocationTarget invocationTarget) {
         this.invocationHandlerDelegates = invocationHandlerDelegates;
-        this.invocationContextProvider = invocationContextProvider;
-        this.handler = handler;
+        this.invocationTarget = invocationTarget;
     }
 
     @Override
@@ -60,6 +56,6 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
     }
     
     private Object internalInvoke(Method method, Object[] args) throws Throwable {
-        return invocationHandlerDelegates.get(method).invoke(args, handler, invocationContextProvider.get());
+        return invocationHandlerDelegates.get(method).invoke(invocationTarget, args);
     }
 }

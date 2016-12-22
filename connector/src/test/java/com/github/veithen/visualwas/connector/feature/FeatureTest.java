@@ -30,10 +30,10 @@ import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.InterfaceFactory;
-import com.github.veithen.visualwas.connector.description.Operation;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 

@@ -23,7 +23,7 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.Map;
 
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class OperationDescriptionImpl implements Operation {
     private final Map<Class<?>,Object> adapters;

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class AsyncMethodInfo extends MethodInfo {
     AsyncMethodInfo(Method method) {

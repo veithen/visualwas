@@ -24,7 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class SyncMethodInfo extends MethodInfo {
     SyncMethodInfo(Method method) {

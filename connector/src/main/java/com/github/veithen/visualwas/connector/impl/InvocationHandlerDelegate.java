@@ -21,10 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import com.github.veithen.visualwas.connector.Invocation;
-import com.github.veithen.visualwas.connector.description.Operation;
-import com.github.veithen.visualwas.connector.feature.Handler;
-import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 abstract class InvocationHandlerDelegate {
     final Operation operation;
@@ -33,5 +31,5 @@ abstract class InvocationHandlerDelegate {
         this.operation = operation;
     }
 
-    abstract Object invoke(Object[] args, Handler<Invocation,Object> handler, InvocationContext context) throws Throwable;
+    abstract Object invoke(InvocationTarget target, Object[] args) throws Throwable;
 }

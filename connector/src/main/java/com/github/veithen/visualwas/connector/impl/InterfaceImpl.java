@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.github.veithen.visualwas.connector.description.Interface;
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 final class InterfaceImpl implements Interface {
     private final Class<?> iface;

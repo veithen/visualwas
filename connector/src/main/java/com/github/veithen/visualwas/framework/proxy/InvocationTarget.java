@@ -19,10 +19,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.description;
+package com.github.veithen.visualwas.framework.proxy;
 
-import com.github.veithen.visualwas.framework.Adaptable;
+import com.google.common.util.concurrent.ListenableFuture;
 
-public interface Operation extends Adaptable {
-
+public interface InvocationTarget {
+    ListenableFuture<?> invoke(Operation operation, Object[] args);
 }

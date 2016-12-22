@@ -19,18 +19,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.impl;
+package com.github.veithen.visualwas.framework.proxy;
 
-import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
-import com.github.veithen.visualwas.framework.proxy.Operation;
+import com.github.veithen.visualwas.framework.Adaptable;
 
-final class AsyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
-    AsyncInvocationHandlerDelegate(Operation operation) {
-        super(operation);
-    }
+public interface Operation extends Adaptable {
 
-    @Override
-    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
-        return target.invoke(operation, args);
-    }
 }

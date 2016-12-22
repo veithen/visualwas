@@ -33,7 +33,7 @@ import com.github.veithen.visualwas.connector.description.AnnotationProcessor;
 import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.description.InterfaceFactory;
 import com.github.veithen.visualwas.connector.description.InterfaceFactoryException;
-import com.github.veithen.visualwas.connector.description.Operation;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 
 public final class InterfaceFactoryImpl extends InterfaceFactory {
     @Override

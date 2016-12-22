@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.description;
 
+import com.github.veithen.visualwas.framework.proxy.Operation;
+
 /**
  * Describes an interface.
  * <p>

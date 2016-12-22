@@ -28,6 +28,9 @@ import java.util.Map;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
+import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
+import com.github.veithen.visualwas.framework.proxy.Operation;
+import com.google.common.util.concurrent.ListenableFuture;
 
 final class AdminServiceFactory {
     private final Class<?>[] ifaces;
@@ -38,12 +41,19 @@ final class AdminServiceFactory {
         this.invocationHandlerDelegates = invocationHandlerDelegates;
     }
 
-    AdminService create(InvocationContextProvider invocationContextProvider,
-            Handler<Invocation,Object> handler) {
+    AdminService create(final InvocationContextProvider invocationContextProvider,
+            final Handler<Invocation,Object> handler) {
         return (AdminService)Proxy.newProxyInstance(
                 AdminServiceFactory.class.getClassLoader(),
                 ifaces,
-                new AdminServiceInvocationHandler(invocationHandlerDelegates, invocationContextProvider, handler));
+                new AdminServiceInvocationHandler(
+                        invocationHandlerDelegates,
+                        new InvocationTarget() {
+                            @Override
+                            public ListenableFuture<?> invoke(Operation operation, Object[] args) {
+                                return handler.invoke(invocationContextProvider.get(), new Invocation(operation, args));
+                            }
+                        }));
         
     }
 }
