@@ -27,11 +27,11 @@ import java.util.Map;
 
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 
-public class AdminServiceInvocationHandler implements InvocationHandler {
+final class ProxyInvocationHandler implements InvocationHandler {
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
     private final InvocationTarget invocationTarget;
 
-    public AdminServiceInvocationHandler(Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates,
+    public ProxyInvocationHandler(Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates,
             InvocationTarget invocationTarget) {
         this.invocationHandlerDelegates = invocationHandlerDelegates;
         this.invocationTarget = invocationTarget;
@@ -42,7 +42,7 @@ public class AdminServiceInvocationHandler implements InvocationHandler {
         if (method.getDeclaringClass() == Object.class) {
             String methodName = method.getName();
             if (methodName.equals("toString")) {
-                return "<AdminService proxy>@" + Integer.toHexString(System.identityHashCode(proxy));
+                return "<Proxy>@" + Integer.toHexString(System.identityHashCode(proxy));
             } else if (methodName.equals("equals")) {
                 return proxy == args[0];
             } else if (methodName.equals("hashCode")) {

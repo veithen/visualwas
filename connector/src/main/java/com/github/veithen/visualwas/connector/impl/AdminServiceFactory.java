@@ -21,39 +21,31 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Map;
-
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class AdminServiceFactory {
-    private final Class<?>[] ifaces;
-    private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
+    private final Interface[] ifaces;
 
-    AdminServiceFactory(Class<?>[] ifaces, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
+    AdminServiceFactory(Interface[] ifaces) {
         this.ifaces = ifaces;
-        this.invocationHandlerDelegates = invocationHandlerDelegates;
     }
 
     AdminService create(final InvocationContextProvider invocationContextProvider,
             final Handler<Invocation,Object> handler) {
-        return (AdminService)Proxy.newProxyInstance(
+        return (AdminService)ProxyFactory.createProxy(
                 AdminServiceFactory.class.getClassLoader(),
                 ifaces,
-                new AdminServiceInvocationHandler(
-                        invocationHandlerDelegates,
-                        new InvocationTarget() {
-                            @Override
-                            public ListenableFuture<?> invoke(Operation operation, Object[] args) {
-                                return handler.invoke(invocationContextProvider.get(), new Invocation(operation, args));
-                            }
-                        }));
-        
+                new InvocationTarget() {
+                    @Override
+                    public ListenableFuture<?> invoke(Operation operation, Object[] args) {
+                        return handler.invoke(invocationContextProvider.get(), new Invocation(operation, args));
+                    }
+                });
     }
 }

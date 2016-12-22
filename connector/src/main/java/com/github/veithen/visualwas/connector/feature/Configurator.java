@@ -57,7 +57,7 @@ public interface Configurator extends Adaptable {
      * @param description
      *            the description of the operations to add
      */
-    void addAdminServiceDescription(Interface description);
+    void addAdminServiceInterface(Interface description);
     
     void addInvocationInterceptor(Interceptor<Invocation,Object> interceptor);
     

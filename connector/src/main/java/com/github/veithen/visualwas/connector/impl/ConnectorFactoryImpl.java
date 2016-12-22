@@ -21,19 +21,15 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.Invocation;
+import com.github.veithen.visualwas.connector.description.Interface;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
@@ -55,20 +51,18 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 }
             }
         }
-        Set<Class<?>> adminServiceInterfaces = new HashSet<Class<?>>();
-        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<Method,InvocationHandlerDelegate>(((InterfaceImpl)AdminService.DESCRIPTION).getInvocationHandlerDelegates());
-        adminServiceInterfaces.add(AdminService.class);
+        List<Interface> adminServiceInterfaces = new ArrayList<>();
+        adminServiceInterfaces.add(AdminService.DESCRIPTION);
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        final ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, invocationHandlerDelegates, invocationInterceptors, soapInterceptors, adaptableDelegate);
+        final ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, invocationInterceptors, soapInterceptors, adaptableDelegate);
         for (Feature feature : features) {
             feature.configureConnector(configurator);
         }
         configurator.release();
         final AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
-                adminServiceInterfaces.toArray(new Class<?>[adminServiceInterfaces.size()]),
-                invocationHandlerDelegates);
+                adminServiceInterfaces.toArray(new Interface[adminServiceInterfaces.size()]));
         final Attributes initialAttributes = new Attributes(attributes);
         initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
         AdminService adminService = adminServiceFactory.create(

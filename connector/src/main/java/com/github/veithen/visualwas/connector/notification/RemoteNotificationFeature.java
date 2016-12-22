@@ -35,7 +35,7 @@ public final class RemoteNotificationFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addAdminServiceDescription(RemoteNotificationService.DESCRIPTION);
+        configurator.addAdminServiceInterface(RemoteNotificationService.DESCRIPTION);
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
                 SubscriptionInfo.class,
                 NotificationSelector.class,

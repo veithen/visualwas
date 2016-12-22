@@ -44,7 +44,7 @@ public class FeatureTest {
             @Override
             public void configureConnector(Configurator configurator) {
                 Interface desc = InterfaceFactory.getInstance().createDescription(DummyAdminServiceExtension.class);
-                configurator.addAdminServiceDescription(desc);
+                configurator.addAdminServiceInterface(desc);
                 final Operation operation = desc.getOperation("echo");
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {
                     public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {

@@ -21,10 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
@@ -39,16 +38,14 @@ import com.github.veithen.visualwas.connector.feature.Serializer;
 
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
-    private Set<Class<?>> adminServiceInterfaces;
-    private Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
+    private List<Interface> adminServiceInterfaces;
     private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
     private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(Set<Class<?>> adminServiceInterfaces, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(List<Interface> adminServiceInterfaces, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
-        this.invocationHandlerDelegates = invocationHandlerDelegates;
         this.invocationInterceptors = invocationInterceptors;
         this.soapInterceptors = soapInterceptors;
         this.adaptableDelegate = adaptableDelegate;
@@ -63,10 +60,9 @@ final class ConfiguratorImpl implements Configurator {
     }
 
     @Override
-    public void addAdminServiceDescription(Interface description) {
-        adminServiceInterfaces.add(description.getInterface());
-        invocationHandlerDelegates.putAll(((InterfaceImpl)description).getInvocationHandlerDelegates());
-        registerAdminServerAdapterForExtension(description.getInterface());
+    public void addAdminServiceInterface(Interface iface) {
+        adminServiceInterfaces.add(iface);
+        registerAdminServerAdapterForExtension(iface.getInterface());
     }
     
     private <T> void registerAdminServerAdapterForExtension(final Class<T> iface) {
@@ -109,7 +105,6 @@ final class ConfiguratorImpl implements Configurator {
 
     void release() {
         adminServiceInterfaces = null;
-        invocationHandlerDelegates = null;
         invocationInterceptors = null;
         soapInterceptors = null;
         adaptableDelegate = null;
