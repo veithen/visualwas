@@ -21,17 +21,20 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import com.github.veithen.visualwas.connector.feature.Configurator;
+import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 
-final class ProxyConfiguratorImpl implements ProxyConfigurator {
-    private final Configurator configurator;
+final class MBeanProxyAdapterFactory<T> implements AdapterFactory<T> {
+    private final Class<T> iface;
+    private final MBeanLocator locator;
 
-    ProxyConfiguratorImpl(Configurator configurator) {
-        this.configurator = configurator;
+    MBeanProxyAdapterFactory(Class<T> iface, MBeanLocator locator) {
+        this.iface = iface;
+        this.locator = locator;
     }
 
     @Override
-    public <T> void registerProxy(Class<T> iface, MBeanLocator locator) {
-        configurator.registerAdminServiceAdapter(iface, new ProxyAdapterFactory<T>(iface, locator));
+    public T createAdapter(AdminService adminService) {
+        return MBeanProxyHelper.createProxy(adminService, iface, locator);
     }
 }

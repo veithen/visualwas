@@ -26,11 +26,11 @@ import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingConfigurator;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
-import com.github.veithen.visualwas.connector.proxy.ProxyConfigurator;
-import com.github.veithen.visualwas.connector.proxy.ProxyFeature;
+import com.github.veithen.visualwas.connector.proxy.MBeanProxyConfigurator;
+import com.github.veithen.visualwas.connector.proxy.MBeanProxyFeature;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
 
-@Dependencies({ClassMappingFeature.class, ProxyFeature.class})
+@Dependencies({ClassMappingFeature.class, MBeanProxyFeature.class})
 public final class RepositoryClientFeature implements Feature {
     public static final RepositoryClientFeature INSTANCE = new RepositoryClientFeature();
     
@@ -43,6 +43,6 @@ public final class RepositoryClientFeature implements Feature {
                 DocumentContentSource.class,
                 DocumentNotFoundException.class,
                 RemoteSource.class);
-        configurator.getAdapter(ProxyConfigurator.class).registerProxy(ConfigRepository.class, new SingletonMBeanLocator("ConfigRepository"));
+        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(ConfigRepository.class, new SingletonMBeanLocator("ConfigRepository"));
     }
 }

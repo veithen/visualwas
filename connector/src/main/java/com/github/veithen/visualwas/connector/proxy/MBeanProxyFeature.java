@@ -31,26 +31,26 @@ import com.github.veithen.visualwas.connector.feature.Feature;
 /**
  * Feature that enables the creation of MBean proxies. Proxies can be created in two different ways:
  * <ol>
- * <li>A feature can use {@link ProxyConfigurator#registerProxy(Class, MBeanLocator)} to register a
+ * <li>A feature can use {@link MBeanProxyConfigurator#registerProxy(Class, MBeanLocator)} to register a
  * proxy. That proxy will be available through {@link Connector#getAdapter(Class)}. This will create
  * a single proxy instance per connection. This method is typically used for singleton MBeans.
- * <li>Application code can use {@link ProxyFactory} (obtained using
+ * <li>Application code can use {@link MBeanProxyFactory} (obtained using
  * {@link Connector#getAdapter(Class)} to create proxies. These proxies are not cached.
  * </ol>
  */
-@ConfiguratorAdapter(ProxyConfigurator.class)
-public final class ProxyFeature implements Feature {
-    public static final ProxyFeature INSTANCE = new ProxyFeature();
+@ConfiguratorAdapter(MBeanProxyConfigurator.class)
+public final class MBeanProxyFeature implements Feature {
+    public static final MBeanProxyFeature INSTANCE = new MBeanProxyFeature();
     
-    private ProxyFeature() {}
+    private MBeanProxyFeature() {}
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.registerConfiguratorAdapter(ProxyConfigurator.class, new ProxyConfiguratorImpl(configurator));
-        configurator.registerAdminServiceAdapter(ProxyFactory.class, new AdapterFactory<ProxyFactory>() {
+        configurator.registerConfiguratorAdapter(MBeanProxyConfigurator.class, new MBeanProxyConfiguratorImpl(configurator));
+        configurator.registerAdminServiceAdapter(MBeanProxyFactory.class, new AdapterFactory<MBeanProxyFactory>() {
             @Override
-            public ProxyFactory createAdapter(AdminService adminService) {
-                return new ProxyFactoryImpl(adminService);
+            public MBeanProxyFactory createAdapter(AdminService adminService) {
+                return new MBeanProxyFactoryImpl(adminService);
             }
         });
     }

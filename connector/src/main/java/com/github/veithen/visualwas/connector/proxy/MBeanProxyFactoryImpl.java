@@ -23,15 +23,15 @@ package com.github.veithen.visualwas.connector.proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
 
-final class ProxyFactoryImpl implements ProxyFactory {
+final class MBeanProxyFactoryImpl implements MBeanProxyFactory {
     private final AdminService adminService;
     
-    ProxyFactoryImpl(AdminService adminService) {
+    MBeanProxyFactoryImpl(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @Override
     public <T> T createProxy(Class<T> iface, MBeanLocator locator) {
-        return ProxyHelper.createProxy(adminService, iface, locator);
+        return MBeanProxyHelper.createProxy(adminService, iface, locator);
     }
 }

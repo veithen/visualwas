@@ -27,8 +27,8 @@ import java.lang.reflect.Proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
 
-final class ProxyHelper {
-    private ProxyHelper() {}
+final class MBeanProxyHelper {
+    private MBeanProxyHelper() {}
 
     static <T> T createProxy(AdminService adminService, Class<T> iface, MBeanLocator locator) {
         for (Method method : iface.getMethods()) {
@@ -44,6 +44,6 @@ final class ProxyHelper {
             }
         }
         // TODO: correct class loader?
-        return iface.cast(Proxy.newProxyInstance(ProxyAdapterFactory.class.getClassLoader(), new Class<?>[] { iface }, new ProxyInvocationHandler(adminService, locator)));
+        return iface.cast(Proxy.newProxyInstance(MBeanProxyAdapterFactory.class.getClassLoader(), new Class<?>[] { iface }, new MBeanProxyInvocationHandler(adminService, locator)));
     }
 }

@@ -27,7 +27,7 @@ import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 
-@Dependencies(ProxyFeature.class)
+@Dependencies(MBeanProxyFeature.class)
 public class ApplicationManagerFeature implements Feature {
     public static final ApplicationManagerFeature INSTANCE = new ApplicationManagerFeature();
     
@@ -36,7 +36,7 @@ public class ApplicationManagerFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         try {
-            configurator.getAdapter(ProxyConfigurator.class).registerProxy(ApplicationManager.class, new ObjectNamePatternMBeanLocator("WebSphere:type=ApplicationManager,*"));
+            configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(ApplicationManager.class, new ObjectNamePatternMBeanLocator("WebSphere:type=ApplicationManager,*"));
         } catch (MalformedObjectNameException ex) {
             // We should never get here
             throw new Error(ex);

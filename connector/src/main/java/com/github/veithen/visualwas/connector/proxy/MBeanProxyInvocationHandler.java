@@ -35,12 +35,12 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
-final class ProxyInvocationHandler implements InvocationHandler {
+final class MBeanProxyInvocationHandler implements InvocationHandler {
     private final AdminService adminService;
     private final MBeanLocator locator;
     private ListenableFuture<ObjectName> mbeanFuture;
     
-    ProxyInvocationHandler(AdminService adminService, MBeanLocator locator) {
+    MBeanProxyInvocationHandler(AdminService adminService, MBeanLocator locator) {
         this.adminService = adminService;
         this.locator = locator;
     }
@@ -95,9 +95,9 @@ final class ProxyInvocationHandler implements InvocationHandler {
                             @Override
                             public void onFailure(Throwable t) {
                                 if (!isRetry && t instanceof InstanceNotFoundException) {
-                                    synchronized (ProxyInvocationHandler.this) {
-                                        if (ProxyInvocationHandler.this.mbeanFuture == mbeanFuture) {
-                                            ProxyInvocationHandler.this.mbeanFuture = null;
+                                    synchronized (MBeanProxyInvocationHandler.this) {
+                                        if (MBeanProxyInvocationHandler.this.mbeanFuture == mbeanFuture) {
+                                            MBeanProxyInvocationHandler.this.mbeanFuture = null;
                                         }
                                     }
                                     futureResult.setFuture(doInvoke(operationName, params, signature, true));

@@ -26,11 +26,11 @@ import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingConfigurator;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
-import com.github.veithen.visualwas.connector.proxy.ProxyConfigurator;
-import com.github.veithen.visualwas.connector.proxy.ProxyFeature;
+import com.github.veithen.visualwas.connector.proxy.MBeanProxyConfigurator;
+import com.github.veithen.visualwas.connector.proxy.MBeanProxyFeature;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
 
-@Dependencies({ClassMappingFeature.class, ProxyFeature.class})
+@Dependencies({ClassMappingFeature.class, MBeanProxyFeature.class})
 public class ConfigClientFeature implements Feature {
     public static final ConfigClientFeature INSTANCE = new ConfigClientFeature();
     
@@ -39,6 +39,6 @@ public class ConfigClientFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(ConfigDataId.class);
-        configurator.getAdapter(ProxyConfigurator.class).registerProxy(ConfigService.class, new SingletonMBeanLocator("ConfigService"));
+        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(ConfigService.class, new SingletonMBeanLocator("ConfigService"));
     }
 }
