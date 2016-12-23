@@ -29,9 +29,13 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
 import com.github.veithen.visualwas.connector.proxy.MBeanProxyConfigurator;
 import com.github.veithen.visualwas.connector.proxy.MBeanProxyFeature;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 @Dependencies({ClassMappingFeature.class, MBeanProxyFeature.class})
 public class ConfigClientFeature implements Feature {
+    private static final Interface<ConfigService> CONFIG_SERVICE_INTERFACE = InterfaceFactory.createInterface(ConfigService.class);
+    
     public static final ConfigClientFeature INSTANCE = new ConfigClientFeature();
     
     private ConfigClientFeature() {}
@@ -39,6 +43,6 @@ public class ConfigClientFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(ConfigDataId.class);
-        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(ConfigService.class, new SingletonMBeanLocator("ConfigService"));
+        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(CONFIG_SERVICE_INTERFACE, new SingletonMBeanLocator("ConfigService"));
     }
 }

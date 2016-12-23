@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 final class InterfaceImpl<T> implements Interface<T> {
@@ -43,6 +44,12 @@ final class InterfaceImpl<T> implements Interface<T> {
     @Override
     public Operation getOperation(String name) {
         return operations.get(name);
+    }
+
+    @Override
+    public Operation[] getOperations() {
+        Collection<Operation> result = operations.values();
+        return result.toArray(new Operation[result.size()]);
     }
 
     Map<Method,InvocationHandlerDelegate> getInvocationHandlerDelegates() {

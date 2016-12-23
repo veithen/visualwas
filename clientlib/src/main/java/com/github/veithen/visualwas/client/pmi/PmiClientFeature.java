@@ -29,9 +29,13 @@ import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
 import com.github.veithen.visualwas.connector.proxy.MBeanProxyConfigurator;
 import com.github.veithen.visualwas.connector.proxy.MBeanProxyFeature;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 @Dependencies({ClassMappingFeature.class, MBeanProxyFeature.class})
 public final class PmiClientFeature implements Feature {
+    private static final Interface<Perf> PERF_INTERFACE = InterfaceFactory.createInterface(Perf.class);
+    
     public static final PmiClientFeature INSTANCE = new PmiClientFeature();
     
     private PmiClientFeature() {}
@@ -50,7 +54,7 @@ public final class PmiClientFeature implements Feature {
                 StatLevelSpec.class,
                 Stats.class,
                 TimeStatistic.class);
-        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(Perf.class, new SingletonMBeanLocator("Perf"));
+        configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(PERF_INTERFACE, new SingletonMBeanLocator("Perf"));
         configurator.addInvocationInterceptor(new ConfigsLoaderInterceptor());
     }
 }

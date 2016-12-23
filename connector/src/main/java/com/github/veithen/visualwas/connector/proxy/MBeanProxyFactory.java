@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import com.github.veithen.visualwas.framework.proxy.Interface;
+
 public interface MBeanProxyFactory {
-    <T> T createProxy(Class<T> iface, MBeanLocator locator);
+    <T> T createProxy(Interface<T> iface, MBeanLocator locator);
 }

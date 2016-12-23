@@ -31,6 +31,15 @@ import java.util.Set;
 public final class ProxyFactory {
     private ProxyFactory() {}
     
+    public static <T> T createProxy(ClassLoader classLoader, Interface<T> iface, InvocationTarget target) {
+        return iface.getInterface().cast(Proxy.newProxyInstance(
+                classLoader,
+                new Class<?>[] { iface.getInterface() },
+                new ProxyInvocationHandler(
+                        ((InterfaceImpl<?>)iface).getInvocationHandlerDelegates(),
+                        target)));
+    }
+    
     public static Object createProxy(ClassLoader classLoader, Interface<?>[] ifaces, InvocationTarget target) {
         Set<Class<?>> javaInterfaces = new HashSet<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();

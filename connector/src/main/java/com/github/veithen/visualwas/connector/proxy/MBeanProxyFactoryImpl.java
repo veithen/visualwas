@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 final class MBeanProxyFactoryImpl implements MBeanProxyFactory {
     private final AdminService adminService;
@@ -31,7 +32,7 @@ final class MBeanProxyFactoryImpl implements MBeanProxyFactory {
     }
 
     @Override
-    public <T> T createProxy(Class<T> iface, MBeanLocator locator) {
+    public <T> T createProxy(Interface<T> iface, MBeanLocator locator) {
         return MBeanProxyHelper.createProxy(adminService, iface, locator);
     }
 }

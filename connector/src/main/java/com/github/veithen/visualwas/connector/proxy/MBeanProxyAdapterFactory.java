@@ -23,12 +23,13 @@ package com.github.veithen.visualwas.connector.proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 final class MBeanProxyAdapterFactory<T> implements AdapterFactory<T> {
-    private final Class<T> iface;
+    private final Interface<T> iface;
     private final MBeanLocator locator;
 
-    MBeanProxyAdapterFactory(Class<T> iface, MBeanLocator locator) {
+    MBeanProxyAdapterFactory(Interface<T> iface, MBeanLocator locator) {
         this.iface = iface;
         this.locator = locator;
     }

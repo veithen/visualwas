@@ -22,18 +22,19 @@
 package com.github.veithen.visualwas.connector.proxy;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.Operation;
+import com.github.veithen.visualwas.framework.proxy.ProxyFactory;
 
 final class MBeanProxyHelper {
     private MBeanProxyHelper() {}
 
-    static <T> T createProxy(AdminService adminService, Class<T> iface, MBeanLocator locator) {
-        for (Method method : iface.getMethods()) {
+    static <T> T createProxy(AdminService adminService, Interface<T> iface, MBeanLocator locator) {
+        for (Operation operation : iface.getOperations()) {
             boolean throwsIOException = false;
-            for (Class<?> exceptionType : method.getExceptionTypes()) {
+            for (Class<?> exceptionType : operation.getExceptionTypes()) {
                 if (exceptionType.isAssignableFrom(IOException.class)) {
                     throwsIOException = true;
                     break;
@@ -44,6 +45,6 @@ final class MBeanProxyHelper {
             }
         }
         // TODO: correct class loader?
-        return iface.cast(Proxy.newProxyInstance(MBeanProxyAdapterFactory.class.getClassLoader(), new Class<?>[] { iface }, new MBeanProxyInvocationHandler(adminService, locator)));
+        return ProxyFactory.createProxy(MBeanProxyAdapterFactory.class.getClassLoader(), iface, new MBeanProxyInvocationHandler(adminService, locator));
     }
 }

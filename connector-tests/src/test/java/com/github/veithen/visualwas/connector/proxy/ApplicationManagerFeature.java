@@ -26,9 +26,13 @@ import javax.management.MalformedObjectNameException;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 @Dependencies(MBeanProxyFeature.class)
 public class ApplicationManagerFeature implements Feature {
+    private static final Interface<ApplicationManager> APPLICATION_MANAGER_INTERFACE = InterfaceFactory.createInterface(ApplicationManager.class);
+    
     public static final ApplicationManagerFeature INSTANCE = new ApplicationManagerFeature();
     
     private ApplicationManagerFeature() {}
@@ -36,7 +40,7 @@ public class ApplicationManagerFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         try {
-            configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(ApplicationManager.class, new ObjectNamePatternMBeanLocator("WebSphere:type=ApplicationManager,*"));
+            configurator.getAdapter(MBeanProxyConfigurator.class).registerProxy(APPLICATION_MANAGER_INTERFACE, new ObjectNamePatternMBeanLocator("WebSphere:type=ApplicationManager,*"));
         } catch (MalformedObjectNameException ex) {
             // We should never get here
             throw new Error(ex);

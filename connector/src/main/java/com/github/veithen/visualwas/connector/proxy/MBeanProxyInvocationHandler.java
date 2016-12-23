@@ -21,21 +21,19 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.concurrent.ExecutionException;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
+import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
-final class MBeanProxyInvocationHandler implements InvocationHandler {
+final class MBeanProxyInvocationHandler implements InvocationTarget {
     private final AdminService adminService;
     private final MBeanLocator locator;
     private ListenableFuture<ObjectName> mbeanFuture;
@@ -45,7 +43,8 @@ final class MBeanProxyInvocationHandler implements InvocationHandler {
         this.locator = locator;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
+    @Override
+    public ListenableFuture<?> invoke(Operation operation, Object[] params) {
         // Normalize the params argument
         if (params != null && params.length == 0) {
             params = null;
@@ -54,22 +53,13 @@ final class MBeanProxyInvocationHandler implements InvocationHandler {
         if (params == null) {
             signature = null;
         } else {
-            Class<?>[] paramTypes = method.getParameterTypes();
+            Class<?>[] paramTypes = operation.getSignature();
             signature = new String[paramTypes.length];
             for (int i=0; i<paramTypes.length; i++) {
                 signature[i] = paramTypes[i].getName();
             }
         }
-        try {
-            return doInvoke(method.getName(), params, signature, false).get();
-        } catch (ExecutionException ex) {
-            Throwable cause = ex.getCause();
-            if (cause instanceof MBeanException) {
-                // MBeanException is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
-                cause = cause.getCause();
-            }
-            throw cause;
-        }
+        return doInvoke(operation.getName(), params, signature, false);
     }
 
     private ListenableFuture<Object> doInvoke(final String operationName, final Object[] params, final String[] signature, final boolean isRetry) {
@@ -102,6 +92,10 @@ final class MBeanProxyInvocationHandler implements InvocationHandler {
                                     }
                                     futureResult.setFuture(doInvoke(operationName, params, signature, true));
                                 } else {
+                                    if (t instanceof MBeanException) {
+                                        // MBeanException is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
+                                        t = t.getCause();
+                                    }
                                     futureResult.setException(t);
                                 }
                             }

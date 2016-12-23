@@ -36,4 +36,5 @@ package com.github.veithen.visualwas.framework.proxy;
 public interface Interface<T> {
     Class<T> getInterface();
     Operation getOperation(String name);
+    Operation[] getOperations();
 }

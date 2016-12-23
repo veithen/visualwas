@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.proxy;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 public interface MBeanProxyConfigurator {
     /**
@@ -34,5 +35,5 @@ public interface MBeanProxyConfigurator {
      * @param locator
      *            the MBean locator
      */
-    <T> void registerProxy(Class<T> iface, MBeanLocator locator);
+    <T> void registerProxy(Interface<T> iface, MBeanLocator locator);
 }

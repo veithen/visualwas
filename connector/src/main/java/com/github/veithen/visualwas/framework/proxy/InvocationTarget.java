@@ -24,5 +24,5 @@ package com.github.veithen.visualwas.framework.proxy;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface InvocationTarget {
-    ListenableFuture<?> invoke(Operation operation, Object[] args);
+    ListenableFuture<?> invoke(Operation operation, Object[] params);
 }
