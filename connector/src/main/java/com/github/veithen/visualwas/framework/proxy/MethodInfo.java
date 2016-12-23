@@ -41,5 +41,6 @@ abstract class MethodInfo {
 
     abstract String getOperationName();
     abstract Type getResponseType();
+    abstract Class<?>[] getExceptionTypes();
     abstract InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation);
 }

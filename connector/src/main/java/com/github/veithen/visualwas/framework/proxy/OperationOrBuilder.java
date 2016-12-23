@@ -27,4 +27,5 @@ public interface OperationOrBuilder {
     String getName();
     Class<?>[] getSignature();
     Type getResponseType();
+    Class<?>[] getExceptionTypes();
 }

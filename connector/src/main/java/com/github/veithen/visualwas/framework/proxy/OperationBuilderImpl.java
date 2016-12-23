@@ -51,6 +51,7 @@ final class OperationBuilderImpl implements OperationBuilder {
     private String name;
     private Class<?>[] signature;
     private Type responseType;
+    private Class<?>[] exceptionTypes;
     private Map<Class<?>,Annotation> annotations = new HashMap<>();
     private List<Map<Class<?>,Annotation>> paramAnnotations;
     private final Map<Class<?>, Object> adapters = new HashMap<>();
@@ -81,6 +82,15 @@ final class OperationBuilderImpl implements OperationBuilder {
                 } else if (!(newResponseType.equals(wrapperTypeMap.get(responseType)))) {
                     throw new InterfaceFactoryException("Inconsistent response types in method group: " + responseType + ", " + newResponseType);
                 }
+            }
+        }
+        Class<?>[] exceptionTypes = methodInfo.getExceptionTypes();
+        if (exceptionTypes != null) {
+            if (this.exceptionTypes != null) {
+                // TODO
+                throw new UnsupportedOperationException();
+            } else {
+                this.exceptionTypes = exceptionTypes;
             }
         }
         Method method = methodInfo.getMethod();
@@ -119,22 +129,32 @@ final class OperationBuilderImpl implements OperationBuilder {
         return methods.values();
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Class<?>[] getSignature() {
         return signature;
     }
 
+    @Override
     public Type getResponseType() {
         return responseType;
     }
 
+    @Override
+    public Class<?>[] getExceptionTypes() {
+        return exceptionTypes;
+    }
+
+    @Override
     public <T extends Annotation> T getOperationAnnotation(Class<T> annotationClass) {
         return annotationClass.cast(annotations.get(annotationClass));
     }
 
+    @Override
     public <T extends Annotation> T getParameterAnnotation(Class<T> annotationClass, int index) {
         return annotationClass.cast(paramAnnotations.get(index).get(annotationClass));
     }
@@ -145,6 +165,6 @@ final class OperationBuilderImpl implements OperationBuilder {
     }
 
     Operation build() {
-        return new OperationImpl(name, signature, responseType, adapters);
+        return new OperationImpl(name, signature, responseType, exceptionTypes, adapters);
     }
 }

@@ -21,6 +21,7 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -35,6 +36,16 @@ public class AdminServiceAnnotationProcessor implements AnnotationProcessor {
     public void processOperation(OperationBuilder operationBuilder) {
         Operation operationAnnotation = operationBuilder.getOperationAnnotation(Operation.class);
         String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : operationBuilder.getName();
+        boolean hasIOException = false;
+        for (Class<?> exceptionType : operationBuilder.getExceptionTypes()) {
+            if (exceptionType == IOException.class) {
+                hasIOException = true;
+                break;
+            }
+        }
+        if (!hasIOException) {
+            throw new InterfaceFactoryException("Operation " + operationName + " doesn't declare IOException");
+        }
         Class<?>[] signature = operationBuilder.getSignature();
         int paramCount = signature.length;
         ParamHandler[] paramHandlers = new ParamHandler[paramCount];
@@ -50,7 +61,6 @@ public class AdminServiceAnnotationProcessor implements AnnotationProcessor {
         Class<?> returnType = getRawType(operationBuilder.getResponseType());
         operationBuilder.addAdapter(OperationHandler.class, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
                 returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader()));
-        // TODO: check exception list; should contain IOException
     }
     
     private static Class<?> getRawType(Type type) {

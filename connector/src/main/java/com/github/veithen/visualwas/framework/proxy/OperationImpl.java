@@ -28,12 +28,14 @@ final class OperationImpl implements Operation {
     private final String name;
     private final Class<?>[] signature;
     private final Type responseType;
+    private final Class<?>[] exceptionTypes;
     private final Map<Class<?>,Object> adapters;
 
-    OperationImpl(String name, Class<?>[] signature, Type responseType, Map<Class<?>, Object> adapters) {
+    OperationImpl(String name, Class<?>[] signature, Type responseType, Class<?>[] exceptionTypes, Map<Class<?>, Object> adapters) {
         this.name = name;
         this.signature = signature;
         this.responseType = responseType;
+        this.exceptionTypes = exceptionTypes;
         this.adapters = adapters;
     }
 
@@ -50,6 +52,11 @@ final class OperationImpl implements Operation {
     @Override
     public Type getResponseType() {
         return responseType;
+    }
+
+    @Override
+    public Class<?>[] getExceptionTypes() {
+        return exceptionTypes.clone();
     }
 
     @Override

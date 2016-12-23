@@ -40,6 +40,11 @@ final class SyncMethodInfo extends MethodInfo {
     }
 
     @Override
+    Class<?>[] getExceptionTypes() {
+        return getMethod().getExceptionTypes();
+    }
+
+    @Override
     InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation) {
         return new SyncInvocationHandlerDelegate(operation);
     }
