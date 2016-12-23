@@ -145,6 +145,6 @@ final class OperationBuilderImpl implements OperationBuilder {
     }
 
     Operation build() {
-        return new OperationImpl(adapters);
+        return new OperationImpl(name, signature, responseType, adapters);
     }
 }

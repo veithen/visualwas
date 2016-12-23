@@ -21,10 +21,10 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
-public interface OperationBuilder extends OperationOrBuilder {
-    <T extends Annotation> T getOperationAnnotation(Class<T> annotationClass);
-    <T extends Annotation> T getParameterAnnotation(Class<T> annotationClass, int index);
-    <T> void addAdapter(Class<T> type, T instance);
+public interface OperationOrBuilder {
+    String getName();
+    Class<?>[] getSignature();
+    Type getResponseType();
 }

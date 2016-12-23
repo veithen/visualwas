@@ -23,6 +23,6 @@ package com.github.veithen.visualwas.framework.proxy;
 
 import com.github.veithen.visualwas.framework.Adaptable;
 
-public interface Operation extends Adaptable {
+public interface Operation extends OperationOrBuilder, Adaptable {
 
 }

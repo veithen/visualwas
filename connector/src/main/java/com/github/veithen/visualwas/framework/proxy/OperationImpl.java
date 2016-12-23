@@ -21,13 +21,35 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 final class OperationImpl implements Operation {
+    private final String name;
+    private final Class<?>[] signature;
+    private final Type responseType;
     private final Map<Class<?>,Object> adapters;
 
-    OperationImpl(Map<Class<?>, Object> adapters) {
+    OperationImpl(String name, Class<?>[] signature, Type responseType, Map<Class<?>, Object> adapters) {
+        this.name = name;
+        this.signature = signature;
+        this.responseType = responseType;
         this.adapters = adapters;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Class<?>[] getSignature() {
+        return signature.clone();
+    }
+
+    @Override
+    public Type getResponseType() {
+        return responseType;
     }
 
     @Override
