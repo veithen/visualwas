@@ -24,13 +24,9 @@ package com.github.veithen.visualwas.connector.mapped;
 import java.io.IOException;
 
 import com.github.veithen.visualwas.connector.Operation;
-import com.github.veithen.visualwas.framework.proxy.Interface;
-import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface IsAliveSupport {
-    Interface<IsAliveSupport> DESCRIPTION = InterfaceFactory.createInterface(IsAliveSupport.class);
-    
     @Operation(suppressHeader=true)
     Session isAlive() throws IOException;
 

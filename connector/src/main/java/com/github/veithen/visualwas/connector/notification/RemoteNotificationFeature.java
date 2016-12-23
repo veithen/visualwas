@@ -26,16 +26,20 @@ import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingConfigurator;
 import com.github.veithen.visualwas.connector.mapped.ClassMappingFeature;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 @Dependencies(ClassMappingFeature.class)
 public final class RemoteNotificationFeature implements Feature {
+    private static final Interface<RemoteNotificationService> REMOTE_NOTIFICATION_SERVICE_INTERFACE = InterfaceFactory.createInterface(RemoteNotificationService.class);
+    
     public static final RemoteNotificationFeature INSTANCE = new RemoteNotificationFeature();
     
     private RemoteNotificationFeature() {}
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.addAdminServiceInterface(RemoteNotificationService.DESCRIPTION);
+        configurator.addAdminServiceInterface(REMOTE_NOTIFICATION_SERVICE_INTERFACE);
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
                 SubscriptionInfo.class,
                 NotificationSelector.class,

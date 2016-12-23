@@ -39,8 +39,11 @@ import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
+    private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE = InterfaceFactory.createInterface(AdminService.class);
+    
     public Connector createConnector(Endpoint endpoint, final ConnectorConfiguration config, Attributes attributes) {
         List<Feature> features = new ArrayList<Feature>(config.getFeatures());
         if (attributes != null) {
@@ -52,7 +55,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
             }
         }
         List<Interface<?>> adminServiceInterfaces = new ArrayList<>();
-        adminServiceInterfaces.add(AdminService.DESCRIPTION);
+        adminServiceInterfaces.add(ADMIN_SERVICE_INTERFACE);
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();

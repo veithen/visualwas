@@ -27,13 +27,9 @@ import javax.management.Notification;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.github.veithen.visualwas.framework.proxy.Interface;
-import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface RemoteNotificationService {
-    Interface DESCRIPTION = InterfaceFactory.createInterface(RemoteNotificationService.class);
-    
     @Operation(name="addNotificationListener")
     SubscriptionHandle addSubscription(@Param(name="filter") SubscriptionInfo subscriptionInfo,
                                        @Param(name="listener") PushNotificationListener listener) throws IOException;

@@ -23,8 +23,12 @@ package com.github.veithen.visualwas.connector.mapped;
 
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 
 public final class ClassMappingFeature implements Feature {
+    private static final Interface<IsAliveSupport> IS_ALIVE_INTERFACE = InterfaceFactory.createInterface(IsAliveSupport.class);
+    
     public static final ClassMappingFeature INSTANCE = new ClassMappingFeature();
     
     private ClassMappingFeature() {}
@@ -37,6 +41,6 @@ public final class ClassMappingFeature implements Feature {
         configurator.setSerializer(new SerializerImpl(classMapper));
         configurator.addInvocationInterceptor(new InvocationInterceptor(classMapper));
         adapter.addMappedClasses(Session.class, SOAPException.class);
-        configurator.addAdminServiceInterface(IsAliveSupport.DESCRIPTION);
+        configurator.addAdminServiceInterface(IS_ALIVE_INTERFACE);
     }
 }

@@ -38,13 +38,9 @@ import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
-import com.github.veithen.visualwas.framework.proxy.Interface;
-import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface AdminService {
-    Interface<AdminService> DESCRIPTION = InterfaceFactory.createInterface(AdminService.class);
-    
     String getDefaultDomain() throws IOException;
 
     ListenableFuture<String> getDefaultDomainAsync();
