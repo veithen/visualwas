@@ -21,17 +21,13 @@
  */
 package com.github.veithen.visualwas.connector.mapped;
 
-import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
-import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class InvocationInterceptor implements Interceptor<Invocation,Object> {
-    private static final Operation invokeOperation = AdminService.DESCRIPTION.getOperation("invoke");
-    
     private final ClassMapper classMapper;
 
     InvocationInterceptor(ClassMapper classMapper) {
@@ -40,7 +36,7 @@ final class InvocationInterceptor implements Interceptor<Invocation,Object> {
 
     @Override
     public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
-        if (invocation.getOperation() == invokeOperation) {
+        if (invocation.getOperation().getName().equals("invoke")) {
             Object[] args = invocation.getArgs();
             String[] signature = (String[])args[3];
             if (signature != null) {

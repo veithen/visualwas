@@ -31,18 +31,15 @@ import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
-import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class DisableFederationInterceptor implements Interceptor<Invocation,Object> {
-    private static final Operation getServerMBeanOperation = AdminService.DESCRIPTION.getOperation("getServerMBean");
-    private static final Operation queryNamesOperation = AdminService.DESCRIPTION.getOperation("queryNames");
-    
     private ObjectNameMapper mapper;
     
     @Override
     public ListenableFuture<?> invoke(final InvocationContext context, Invocation invocation, final Handler<Invocation,Object> nextHandler) {
-        if (invocation.getOperation() == getServerMBeanOperation) {
+        String operationName = invocation.getOperation().getName();
+        if (operationName.equals("getServerMBean")) {
             return nextHandler.invoke(context, invocation);
         } else {
             ObjectNameMapper mapper;
@@ -53,7 +50,7 @@ final class DisableFederationInterceptor implements Interceptor<Invocation,Objec
                 }
                 mapper = this.mapper;
             }
-            if (invocation.getOperation() == queryNamesOperation) {
+            if (operationName.equals("queryNames")) {
                 Object[] args = invocation.getArgs();
                 final AdminService adminService = context.getAdminService(nextHandler);
                 return mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
