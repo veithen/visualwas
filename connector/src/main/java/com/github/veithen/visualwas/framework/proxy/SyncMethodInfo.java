@@ -30,7 +30,7 @@ final class SyncMethodInfo extends MethodInfo {
     }
 
     @Override
-    String getDefaultOperationName() {
+    String getOperationName() {
         return getMethod().getName();
     }
 

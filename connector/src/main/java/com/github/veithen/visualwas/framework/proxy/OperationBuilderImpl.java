@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-final class MethodGroup implements OperationBuilder {
+final class OperationBuilderImpl implements OperationBuilder {
     private static final Map<Class<?>,Class<?>> wrapperTypeMap;
     
     static {
@@ -48,19 +48,19 @@ final class MethodGroup implements OperationBuilder {
     }
 
     private final Map<InvocationStyle,MethodInfo> methods = new HashMap<>();
-    private String defaultOperationName;
+    private String name;
     private Class<?>[] signature;
     private Type responseType;
     private Map<Class<?>,Annotation> annotations = new HashMap<>();
     private List<Map<Class<?>,Annotation>> paramAnnotations;
     private final Map<Class<?>, Object> adapters = new HashMap<>();
 
-    void add(InvocationStyle invocationStyle, MethodInfo methodInfo, Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses) {
+    void addMethod(InvocationStyle invocationStyle, MethodInfo methodInfo, Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses) {
         if (methods.containsKey(invocationStyle)) {
             throw new InterfaceFactoryException("Can't have multiple methods with the same invocation style in the same method group");
         }
         if (methods.isEmpty()) {
-            defaultOperationName = methodInfo.getDefaultOperationName();
+            name = methodInfo.getOperationName();
             signature = methodInfo.getSignature();
             responseType = methodInfo.getResponseType();
             paramAnnotations = new ArrayList<>(signature.length);
@@ -68,8 +68,8 @@ final class MethodGroup implements OperationBuilder {
                 paramAnnotations.add(new HashMap<Class<?>,Annotation>());
             }
         } else {
-            if (!defaultOperationName.equals(methodInfo.getDefaultOperationName())) {
-                throw new InterfaceFactoryException("Inconsistent default operation names in method group");
+            if (!name.equals(methodInfo.getOperationName())) {
+                throw new InterfaceFactoryException("Inconsistent operation names in method group");
             }
             if (!Arrays.equals(signature, methodInfo.getSignature())) {
                 throw new InterfaceFactoryException("Inconsistent method signatures in method group");
@@ -91,7 +91,7 @@ final class MethodGroup implements OperationBuilder {
                 annotationProcessorClasses.add(((OperationAnnotation)metaAnnotation).annotationProcessor());
                 if (annotations.containsKey(annotationType)) {
                     throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for operation "
-                            + methodInfo.getDefaultOperationName());
+                            + methodInfo.getOperationName());
                 }
                 annotations.put(annotationType, annotation);
             }
@@ -106,7 +106,7 @@ final class MethodGroup implements OperationBuilder {
                     annotationProcessorClasses.add(((ParamAnnotation)metaAnnotation).annotationProcessor());
                     if (annotations.containsKey(annotationType)) {
                         throw new InterfaceFactoryException("Duplicate " + annotationType.getName() + " annotation for parameter " 
-                                + i + " of operation " + methodInfo.getDefaultOperationName());
+                                + i + " of operation " + methodInfo.getOperationName());
                     }
                     annotations.put(annotationType, annotation);
                 }
@@ -115,12 +115,12 @@ final class MethodGroup implements OperationBuilder {
         methods.put(invocationStyle, methodInfo);
     }
 
-    Collection<MethodInfo> getMembers() {
+    Collection<MethodInfo> getMethods() {
         return methods.values();
     }
 
-    public String getOperationName() {
-        return defaultOperationName;
+    public String getName() {
+        return name;
     }
 
     public Class<?>[] getSignature() {

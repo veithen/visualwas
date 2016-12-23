@@ -34,18 +34,18 @@ public final class InterfaceFactory {
 
     public static <T> Interface<T> createInterface(Class<T> iface) throws InterfaceFactoryException {
         Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses = new HashSet<>();
-        Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
+        Map<OperationKey,OperationBuilderImpl> operationBuilders = new HashMap<>();
         outer: for (Method method : iface.getDeclaredMethods()) {
             for (InvocationStyle invocationStyle : InvocationStyle.INSTANCES) {
                 MethodInfo methodInfo = invocationStyle.getMethodInfo(method);
                 if (methodInfo != null) {
-                    MethodGroupKey key = new MethodGroupKey(methodInfo.getDefaultOperationName(), methodInfo.getSignature());
-                    MethodGroup methodGroup = methodGroups.get(key);
-                    if (methodGroup == null) {
-                        methodGroup = new MethodGroup();
-                        methodGroups.put(key, methodGroup);
+                    OperationKey key = new OperationKey(methodInfo.getOperationName(), methodInfo.getSignature());
+                    OperationBuilderImpl operationBuilder = operationBuilders.get(key);
+                    if (operationBuilder == null) {
+                        operationBuilder = new OperationBuilderImpl();
+                        operationBuilders.put(key, operationBuilder);
                     }
-                    methodGroup.add(invocationStyle, methodInfo, annotationProcessorClasses);
+                    operationBuilder.addMethod(invocationStyle, methodInfo, annotationProcessorClasses);
                     continue outer;
                 }
             }
@@ -61,13 +61,13 @@ public final class InterfaceFactory {
         }
         Map<String,Operation> operations = new HashMap<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
-        for (MethodGroup methodGroup : methodGroups.values()) {
+        for (OperationBuilderImpl operationBuilder : operationBuilders.values()) {
             for (AnnotationProcessor annotationProcessor : annotationProcessors) {
-                annotationProcessor.processOperation(methodGroup);
+                annotationProcessor.processOperation(operationBuilder);
             }
-            Operation operation = methodGroup.build();
-            operations.put(methodGroup.getOperationName(), operation);
-            for (MethodInfo methodInfo : methodGroup.getMembers()) {
+            Operation operation = operationBuilder.build();
+            operations.put(operationBuilder.getName(), operation);
+            for (MethodInfo methodInfo : operationBuilder.getMethods()) {
                 invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
             }
         }

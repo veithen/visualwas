@@ -25,7 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 public interface OperationBuilder {
-    String getOperationName();
+    String getName();
     Class<?>[] getSignature();
     Type getResponseType();
     <T extends Annotation> T getOperationAnnotation(Class<T> annotationClass);

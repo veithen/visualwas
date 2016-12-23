@@ -31,7 +31,7 @@ final class AsyncMethodInfo extends MethodInfo {
     }
 
     @Override
-    String getDefaultOperationName() {
+    String getOperationName() {
         String methodName = getMethod().getName();
         return methodName.substring(0, methodName.length()-5);
     }

@@ -34,7 +34,7 @@ public class AdminServiceAnnotationProcessor implements AnnotationProcessor {
     @Override
     public void processOperation(OperationBuilder operationBuilder) {
         Operation operationAnnotation = operationBuilder.getOperationAnnotation(Operation.class);
-        String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : operationBuilder.getOperationName();
+        String operationName = operationAnnotation != null && !operationAnnotation.name().isEmpty() ? operationAnnotation.name() : operationBuilder.getName();
         Class<?>[] signature = operationBuilder.getSignature();
         int paramCount = signature.length;
         ParamHandler[] paramHandlers = new ParamHandler[paramCount];

@@ -23,27 +23,27 @@ package com.github.veithen.visualwas.framework.proxy;
 
 import java.util.Arrays;
 
-final class MethodGroupKey {
-    private final String defaultOperationName;
+final class OperationKey {
+    private final String name;
     private final Class<?>[] signature;
 
-    MethodGroupKey(String defaultOperationName, Class<?>[] signature) {
-        this.defaultOperationName = defaultOperationName;
+    OperationKey(String name, Class<?>[] signature) {
+        this.name = name;
         this.signature = signature;
     }
 
     @Override
     public int hashCode() {
-        return defaultOperationName.hashCode() + 31*Arrays.hashCode(signature);
+        return name.hashCode() + 31*Arrays.hashCode(signature);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
             return true;
-        } else if (obj instanceof MethodGroupKey) {
-            MethodGroupKey other = (MethodGroupKey)obj;
-            return defaultOperationName.equals(other.defaultOperationName) && Arrays.equals(signature, other.signature);
+        } else if (obj instanceof OperationKey) {
+            OperationKey other = (OperationKey)obj;
+            return name.equals(other.name) && Arrays.equals(signature, other.signature);
         } else {
             return false;
         }

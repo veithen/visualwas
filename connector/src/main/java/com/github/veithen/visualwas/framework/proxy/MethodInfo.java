@@ -39,7 +39,7 @@ abstract class MethodInfo {
         return method.getParameterTypes();
     }
 
-    abstract String getDefaultOperationName();
+    abstract String getOperationName();
     abstract Type getResponseType();
     abstract InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation);
 }
