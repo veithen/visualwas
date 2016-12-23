@@ -38,13 +38,13 @@ import com.github.veithen.visualwas.framework.proxy.Interface;
 
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
-    private List<Interface> adminServiceInterfaces;
+    private List<Interface<?>> adminServiceInterfaces;
     private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
     private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(List<Interface> adminServiceInterfaces, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(List<Interface<?>> adminServiceInterfaces, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.invocationInterceptors = invocationInterceptors;
         this.soapInterceptors = soapInterceptors;
@@ -60,7 +60,7 @@ final class ConfiguratorImpl implements Configurator {
     }
 
     @Override
-    public void addAdminServiceInterface(Interface iface) {
+    public void addAdminServiceInterface(Interface<?> iface) {
         adminServiceInterfaces.add(iface);
         registerAdminServerAdapterForExtension(iface.getInterface());
     }

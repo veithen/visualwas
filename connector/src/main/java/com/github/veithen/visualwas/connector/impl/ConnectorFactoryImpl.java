@@ -51,7 +51,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 }
             }
         }
-        List<Interface> adminServiceInterfaces = new ArrayList<>();
+        List<Interface<?>> adminServiceInterfaces = new ArrayList<>();
         adminServiceInterfaces.add(AdminService.DESCRIPTION);
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();

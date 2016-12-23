@@ -31,12 +31,12 @@ import java.util.Set;
 public final class ProxyFactory {
     private ProxyFactory() {}
     
-    public static Object createProxy(ClassLoader classLoader, Interface[] ifaces, InvocationTarget target) {
+    public static Object createProxy(ClassLoader classLoader, Interface<?>[] ifaces, InvocationTarget target) {
         Set<Class<?>> javaInterfaces = new HashSet<>();
         Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
-        for (Interface iface : ifaces) {
+        for (Interface<?> iface : ifaces) {
             javaInterfaces.add(iface.getInterface());
-            invocationHandlerDelegates.putAll(((InterfaceImpl)iface).getInvocationHandlerDelegates());
+            invocationHandlerDelegates.putAll(((InterfaceImpl<?>)iface).getInvocationHandlerDelegates());
         }
         return Proxy.newProxyInstance(
                 classLoader,

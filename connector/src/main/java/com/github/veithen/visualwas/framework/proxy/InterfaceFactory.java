@@ -30,7 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 public final class InterfaceFactory {
-    public static Interface createInterface(Class<?> iface) throws InterfaceFactoryException {
+    private InterfaceFactory() {}
+
+    public static <T> Interface<T> createInterface(Class<T> iface) throws InterfaceFactoryException {
         Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses = new HashSet<>();
         Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
         outer: for (Method method : iface.getDeclaredMethods()) {
@@ -69,6 +71,6 @@ public final class InterfaceFactory {
                 invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
             }
         }
-        return new InterfaceImpl(iface, operations, invocationHandlerDelegates);
+        return new InterfaceImpl<T>(iface, operations, invocationHandlerDelegates);
     }
 }

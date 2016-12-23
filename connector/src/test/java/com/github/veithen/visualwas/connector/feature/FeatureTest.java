@@ -43,7 +43,7 @@ public class FeatureTest {
         ConnectorConfiguration config = ConnectorConfiguration.custom().addFeatures(new Feature() {
             @Override
             public void configureConnector(Configurator configurator) {
-                Interface desc = InterfaceFactory.createInterface(DummyAdminServiceExtension.class);
+                Interface<DummyAdminServiceExtension> desc = InterfaceFactory.createInterface(DummyAdminServiceExtension.class);
                 configurator.addAdminServiceInterface(desc);
                 final Operation operation = desc.getOperation("echo");
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {

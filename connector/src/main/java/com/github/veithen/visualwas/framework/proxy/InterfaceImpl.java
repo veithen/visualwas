@@ -24,19 +24,19 @@ package com.github.veithen.visualwas.framework.proxy;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-final class InterfaceImpl implements Interface {
-    private final Class<?> iface;
+final class InterfaceImpl<T> implements Interface<T> {
+    private final Class<T> iface;
     private final Map<String,Operation> operations;
     private final Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates;
 
-    InterfaceImpl(Class<?> iface, Map<String,Operation> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
+    InterfaceImpl(Class<T> iface, Map<String,Operation> operations, Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates) {
         this.iface = iface;
         this.operations = operations;
         this.invocationHandlerDelegates = invocationHandlerDelegates;
     }
 
     @Override
-    public Class<?> getInterface() {
+    public Class<T> getInterface() {
         return iface;
     }
 

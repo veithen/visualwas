@@ -33,7 +33,7 @@ package com.github.veithen.visualwas.framework.proxy;
  * When mapped to a Java interface, each operation may be represented by more than one method,
  * in which case these methods realize different invocation styles.
  */
-public interface Interface {
-    Class<?> getInterface();
+public interface Interface<T> {
+    Class<T> getInterface();
     Operation getOperation(String name);
 }

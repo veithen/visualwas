@@ -29,7 +29,7 @@ import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface IsAliveSupport {
-    Interface DESCRIPTION = InterfaceFactory.createInterface(IsAliveSupport.class);
+    Interface<IsAliveSupport> DESCRIPTION = InterfaceFactory.createInterface(IsAliveSupport.class);
     
     @Operation(suppressHeader=true)
     Session isAlive() throws IOException;

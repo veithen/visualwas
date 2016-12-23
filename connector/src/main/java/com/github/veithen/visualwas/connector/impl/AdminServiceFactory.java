@@ -31,9 +31,9 @@ import com.github.veithen.visualwas.framework.proxy.ProxyFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class AdminServiceFactory {
-    private final Interface[] ifaces;
+    private final Interface<?>[] ifaces;
 
-    AdminServiceFactory(Interface[] ifaces) {
+    AdminServiceFactory(Interface<?>[] ifaces) {
         this.ifaces = ifaces;
     }
 
