@@ -21,21 +21,54 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public abstract class InterfaceFactory {
-    private static InterfaceFactory instance;
-    
-    public synchronized static InterfaceFactory getInstance() {
-        if (instance == null) {
+public final class InterfaceFactory {
+    public static Interface createInterface(Class<?> iface) throws InterfaceFactoryException {
+        Set<Class<? extends AnnotationProcessor>> annotationProcessorClasses = new HashSet<>();
+        Map<MethodGroupKey,MethodGroup> methodGroups = new HashMap<>();
+        outer: for (Method method : iface.getDeclaredMethods()) {
+            for (InvocationStyle invocationStyle : InvocationStyle.INSTANCES) {
+                MethodInfo methodInfo = invocationStyle.getMethodInfo(method);
+                if (methodInfo != null) {
+                    MethodGroupKey key = new MethodGroupKey(methodInfo.getDefaultOperationName(), methodInfo.getSignature());
+                    MethodGroup methodGroup = methodGroups.get(key);
+                    if (methodGroup == null) {
+                        methodGroup = new MethodGroup();
+                        methodGroups.put(key, methodGroup);
+                    }
+                    methodGroup.add(invocationStyle, methodInfo, annotationProcessorClasses);
+                    continue outer;
+                }
+            }
+            throw new InterfaceFactoryException("Don't know what to do with method " + method.getName());
+        }
+        List<AnnotationProcessor> annotationProcessors = new ArrayList<>(annotationProcessorClasses.size());
+        for (Class<? extends AnnotationProcessor> annotationProcessorClass : annotationProcessorClasses) {
             try {
-                instance = (InterfaceFactory)Class.forName("com.github.veithen.visualwas.framework.proxy.InterfaceFactoryImpl").newInstance();
-            } catch (RuntimeException ex) {
-                throw ex;
-            } catch (Exception ex) {
-                throw new Error("Failed to create connector factory");
+                annotationProcessors.add(annotationProcessorClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException ex) {
+                throw new InterfaceFactoryException("Could not instantiate annotation processor " + annotationProcessorClass.getName());
             }
         }
-        return instance;
+        Map<String,Operation> operations = new HashMap<>();
+        Map<Method,InvocationHandlerDelegate> invocationHandlerDelegates = new HashMap<>();
+        for (MethodGroup methodGroup : methodGroups.values()) {
+            for (AnnotationProcessor annotationProcessor : annotationProcessors) {
+                annotationProcessor.processOperation(methodGroup);
+            }
+            Operation operation = methodGroup.build();
+            operations.put(methodGroup.getOperationName(), operation);
+            for (MethodInfo methodInfo : methodGroup.getMembers()) {
+                invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
+            }
+        }
+        return new InterfaceImpl(iface, operations, invocationHandlerDelegates);
     }
-    public abstract Interface createDescription(Class<?> iface) throws InterfaceFactoryException;
 }

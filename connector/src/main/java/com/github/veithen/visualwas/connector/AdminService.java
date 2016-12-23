@@ -43,7 +43,7 @@ import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface AdminService {
-    Interface DESCRIPTION = InterfaceFactory.getInstance().createDescription(AdminService.class);
+    Interface DESCRIPTION = InterfaceFactory.createInterface(AdminService.class);
     
     String getDefaultDomain() throws IOException;
 

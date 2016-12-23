@@ -32,7 +32,7 @@ import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface RemoteNotificationService {
-    Interface DESCRIPTION = InterfaceFactory.getInstance().createDescription(RemoteNotificationService.class);
+    Interface DESCRIPTION = InterfaceFactory.createInterface(RemoteNotificationService.class);
     
     @Operation(name="addNotificationListener")
     SubscriptionHandle addSubscription(@Param(name="filter") SubscriptionInfo subscriptionInfo,
