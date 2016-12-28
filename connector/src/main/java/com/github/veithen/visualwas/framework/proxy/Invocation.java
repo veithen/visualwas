@@ -19,25 +19,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector;
-
-import com.github.veithen.visualwas.framework.proxy.Operation;
+package com.github.veithen.visualwas.framework.proxy;
 
 public final class Invocation {
     private final Operation operation;
-    private final Object[] args;
+    private final Object[] params;
     
-    // TODO: this should probably not be public
-    public Invocation(Operation operation, Object... args) {
+    Invocation(Operation operation, Object... params) {
         this.operation = operation;
-        this.args = args;
+        this.params = params;
     }
 
     public Operation getOperation() {
         return operation;
     }
 
-    public Object[] getArgs() {
-        return args;
+    public Object[] getParameters() {
+        return params;
     }
 }

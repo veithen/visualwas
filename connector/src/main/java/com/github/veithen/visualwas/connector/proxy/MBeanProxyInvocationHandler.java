@@ -26,6 +26,7 @@ import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.FutureCallback;
@@ -44,8 +45,10 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
     }
 
     @Override
-    public ListenableFuture<?> invoke(Operation operation, Object[] params) {
+    public ListenableFuture<?> invoke(Invocation invocation) {
+        Operation operation = invocation.getOperation();
         // Normalize the params argument
+        Object[] params = invocation.getParameters();
         if (params != null && params.length == 0) {
             params = null;
         }

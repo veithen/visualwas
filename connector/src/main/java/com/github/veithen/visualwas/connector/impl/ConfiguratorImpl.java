@@ -28,13 +28,13 @@ import java.util.Map;
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 
 final class ConfiguratorImpl implements Configurator {
     private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();

@@ -22,11 +22,10 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
-import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.github.veithen.visualwas.framework.proxy.ProxyFactory;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -44,8 +43,8 @@ final class AdminServiceFactory {
                 ifaces,
                 new InvocationTarget() {
                     @Override
-                    public ListenableFuture<?> invoke(Operation operation, Object[] args) {
-                        return handler.invoke(invocationContextProvider.get(), new Invocation(operation, args));
+                    public ListenableFuture<?> invoke(Invocation invocation) {
+                        return handler.invoke(invocationContextProvider.get(), invocation);
                     }
                 });
     }

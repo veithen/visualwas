@@ -27,10 +27,10 @@ import javax.management.ObjectName;
 import javax.management.QueryExp;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class DisableFederationInterceptor implements Interceptor<Invocation,Object> {
@@ -51,7 +51,7 @@ final class DisableFederationInterceptor implements Interceptor<Invocation,Objec
                 mapper = this.mapper;
             }
             if (operationName.equals("queryNames")) {
-                Object[] args = invocation.getArgs();
+                Object[] args = invocation.getParameters();
                 final AdminService adminService = context.getAdminService(nextHandler);
                 return mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
                     @Override

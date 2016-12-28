@@ -28,7 +28,6 @@ import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
@@ -40,6 +39,7 @@ import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
     private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE = InterfaceFactory.createInterface(AdminService.class);

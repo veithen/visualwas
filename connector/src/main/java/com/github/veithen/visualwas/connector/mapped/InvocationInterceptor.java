@@ -21,10 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.mapped;
 
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class InvocationInterceptor implements Interceptor<Invocation,Object> {
@@ -37,7 +37,7 @@ final class InvocationInterceptor implements Interceptor<Invocation,Object> {
     @Override
     public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
         if (invocation.getOperation().getName().equals("invoke")) {
-            Object[] args = invocation.getArgs();
+            Object[] args = invocation.getParameters();
             String[] signature = (String[])args[3];
             if (signature != null) {
                 boolean cloned = false;

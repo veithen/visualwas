@@ -29,10 +29,10 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -63,7 +63,7 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
             header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         }
         SOAPBody body = factory.createSOAPBody(request);
-        operationHandler.createRequest(body, invocation.getArgs(), contextImpl);
+        operationHandler.createRequest(body, invocation.getParameters(), contextImpl);
         SettableFuture<Object> result = SettableFuture.create();
         Futures.addCallback(
                 soapHandler.invoke(context, request),

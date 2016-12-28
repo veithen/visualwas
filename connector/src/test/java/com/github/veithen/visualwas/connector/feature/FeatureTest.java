@@ -27,12 +27,12 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.Invocation;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
+import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -49,7 +49,7 @@ public class FeatureTest {
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {
                     public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
                         if (invocation.getOperation() == operation) {
-                            return Futures.immediateFuture(invocation.getArgs()[0]);
+                            return Futures.immediateFuture(invocation.getParameters()[0]);
                         } else {
                             return nextHandler.invoke(context, invocation);
                         }

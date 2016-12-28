@@ -31,7 +31,7 @@ final class SyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
     @Override
     Object invoke(InvocationTarget target, Object[] args) throws Throwable {
         try {
-            return target.invoke(operation, args).get();
+            return target.invoke(new Invocation(operation, args)).get();
         } catch (ExecutionException ex) {
             throw ex.getCause();
         }

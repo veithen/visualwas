@@ -28,6 +28,6 @@ final class AsyncInvocationHandlerDelegate extends InvocationHandlerDelegate {
 
     @Override
     Object invoke(InvocationTarget target, Object[] args) throws Throwable {
-        return target.invoke(operation, args);
+        return target.invoke(new Invocation(operation, args));
     }
 }
