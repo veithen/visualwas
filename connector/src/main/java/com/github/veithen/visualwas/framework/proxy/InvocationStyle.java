@@ -26,43 +26,44 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
-abstract class InvocationStyle {
-    static final InvocationStyle[] INSTANCES = {
-            new InvocationStyle() {
-                @Override
-                MethodInfo getMethodInfo(Method method) {
-                    if (method.getReturnType() != ListenableFuture.class) {
-                        return new SyncMethodInfo(method);
-                    } else {
-                        return null;
-                    }
-                }
-
-                @Override
-                Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
-                    try {
-                        return target.invoke(new Invocation(operation, args)).get();
-                    } catch (ExecutionException ex) {
-                        throw ex.getCause();
-                    }
-                }
-            },
-            new InvocationStyle() {
-                @Override
-                MethodInfo getMethodInfo(Method method) {
-                    if (method.getReturnType() == ListenableFuture.class && method.getName().endsWith("Async")) {
-                        return new AsyncMethodInfo(method);
-                    } else {
-                        return null;
-                    }
-                }
-
-                @Override
-                Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
-                    return target.invoke(new Invocation(operation, args));
-                }
+public abstract class InvocationStyle {
+    public static final InvocationStyle SYNC = new InvocationStyle() {
+        @Override
+        MethodInfo getMethodInfo(Method method) {
+            if (method.getReturnType() != ListenableFuture.class) {
+                return new SyncMethodInfo(method);
+            } else {
+                return null;
             }
-        };
+        }
+
+        @Override
+        Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
+            try {
+                return target.invoke(new Invocation(operation, this, args)).get();
+            } catch (ExecutionException ex) {
+                throw ex.getCause();
+            }
+        }
+    };
+    
+    public static final InvocationStyle ASYNC = new InvocationStyle() {
+        @Override
+        MethodInfo getMethodInfo(Method method) {
+            if (method.getReturnType() == ListenableFuture.class && method.getName().endsWith("Async")) {
+                return new AsyncMethodInfo(method);
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
+            return target.invoke(new Invocation(operation, this, args));
+        }
+    };
+
+    static final InvocationStyle[] INSTANCES = { SYNC, ASYNC };
 
     abstract MethodInfo getMethodInfo(Method method);
     abstract Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable;

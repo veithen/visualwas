@@ -75,7 +75,8 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                         return new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), initialAttributes);
                     }
                 },
-                invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))));
+                invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
+                true);
         return new ConnectorImpl(adminService, adaptableDelegate);
     }
 }

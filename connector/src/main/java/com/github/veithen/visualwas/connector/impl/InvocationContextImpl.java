@@ -81,6 +81,7 @@ final class InvocationContextImpl implements InvocationContext {
                         return InvocationContextImpl.this;
                     }
                 },
-                handler);
+                handler,
+                false);
     }
 }

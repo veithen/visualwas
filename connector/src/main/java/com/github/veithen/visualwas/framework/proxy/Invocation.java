@@ -23,15 +23,21 @@ package com.github.veithen.visualwas.framework.proxy;
 
 public final class Invocation {
     private final Operation operation;
+    private final InvocationStyle invocationStyle;
     private final Object[] params;
     
-    Invocation(Operation operation, Object... params) {
+    Invocation(Operation operation, InvocationStyle invocationStyle, Object... params) {
         this.operation = operation;
+        this.invocationStyle = invocationStyle;
         this.params = params;
     }
 
     public Operation getOperation() {
         return operation;
+    }
+
+    public InvocationStyle getInvocationStyle() {
+        return invocationStyle;
     }
 
     public Object[] getParameters() {
