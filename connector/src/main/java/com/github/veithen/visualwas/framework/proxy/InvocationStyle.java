@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.ExecutionException;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -36,6 +37,15 @@ abstract class InvocationStyle {
                         return null;
                     }
                 }
+
+                @Override
+                Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
+                    try {
+                        return target.invoke(new Invocation(operation, args)).get();
+                    } catch (ExecutionException ex) {
+                        throw ex.getCause();
+                    }
+                }
             },
             new InvocationStyle() {
                 @Override
@@ -46,8 +56,14 @@ abstract class InvocationStyle {
                         return null;
                     }
                 }
+
+                @Override
+                Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable {
+                    return target.invoke(new Invocation(operation, args));
+                }
             }
         };
 
     abstract MethodInfo getMethodInfo(Method method);
+    abstract Object invoke(InvocationTarget target, Operation operation, Object[] args) throws Throwable;
 }

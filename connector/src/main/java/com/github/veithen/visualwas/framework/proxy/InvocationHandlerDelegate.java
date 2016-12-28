@@ -21,12 +21,16 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
-abstract class InvocationHandlerDelegate {
-    final Operation operation;
+final class InvocationHandlerDelegate {
+    private final Operation operation;
+    private final InvocationStyle invocationStyle;
 
-    InvocationHandlerDelegate(Operation operation) {
+    InvocationHandlerDelegate(Operation operation, InvocationStyle invocationStyle) {
         this.operation = operation;
+        this.invocationStyle = invocationStyle;
     }
 
-    abstract Object invoke(InvocationTarget target, Object[] args) throws Throwable;
+    Object invoke(InvocationTarget target, Object[] args) throws Throwable {
+        return invocationStyle.invoke(target, operation, args);
+    }
 }

@@ -46,9 +46,4 @@ final class AsyncMethodInfo extends MethodInfo {
     Class<?>[] getExceptionTypes() {
         return null;
     }
-
-    @Override
-    InvocationHandlerDelegate createInvocationHandlerDelegate(Operation operation) {
-        return new AsyncInvocationHandlerDelegate(operation);
-    }
 }

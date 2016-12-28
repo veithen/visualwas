@@ -67,8 +67,8 @@ public final class InterfaceFactory {
             }
             Operation operation = operationBuilder.build();
             operations.put(operationBuilder.getName(), operation);
-            for (MethodInfo methodInfo : operationBuilder.getMethods()) {
-                invocationHandlerDelegates.put(methodInfo.getMethod(), methodInfo.createInvocationHandlerDelegate(operation));
+            for (Map.Entry<InvocationStyle,MethodInfo> entry : operationBuilder.getMethods().entrySet()) {
+                invocationHandlerDelegates.put(entry.getValue().getMethod(), new InvocationHandlerDelegate(operation, entry.getKey()));
             }
         }
         return new InterfaceImpl<T>(iface, operations, invocationHandlerDelegates);

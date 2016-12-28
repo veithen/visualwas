@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,8 +124,8 @@ final class OperationBuilderImpl implements OperationBuilder {
         methods.put(invocationStyle, methodInfo);
     }
 
-    Collection<MethodInfo> getMethods() {
-        return methods.values();
+    Map<InvocationStyle,MethodInfo> getMethods() {
+        return methods;
     }
 
     @Override
