@@ -57,6 +57,7 @@
         <module>websphere-api-stubs</module>
         <module>websphere-plugin</module>
         <module>thirdparty</module>
+        <module>code-coverage</module>
     </modules>
 
     <scm>
