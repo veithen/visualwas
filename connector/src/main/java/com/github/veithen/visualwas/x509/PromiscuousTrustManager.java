@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.transport;
+package com.github.veithen.visualwas.x509;
 
 import java.net.Socket;
 import java.security.cert.CertificateException;
@@ -28,8 +28,13 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.X509ExtendedTrustManager;
 
-final class DummyTrustManager extends X509ExtendedTrustManager {
-    static final DummyTrustManager INSTANCE = new DummyTrustManager();
+/**
+ * Trust manager that accepts any certificate.
+ */
+public final class PromiscuousTrustManager extends X509ExtendedTrustManager {
+    public static final PromiscuousTrustManager INSTANCE = new PromiscuousTrustManager();
+    
+    private PromiscuousTrustManager() {}
     
     public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         throw new UnsupportedOperationException();

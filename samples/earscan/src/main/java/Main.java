@@ -185,7 +185,7 @@ public class Main {
         if (args.length > 2) {
             securityEnabled = true;
             attributes.set(Credentials.class, new BasicAuthCredentials(args[2], args[3]));
-            configBuilder.setTransportConfiguration(TransportConfiguration.custom().setTrustManager(new DummyTrustManager()).build());
+            configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
         } else {
             securityEnabled = false;
         }

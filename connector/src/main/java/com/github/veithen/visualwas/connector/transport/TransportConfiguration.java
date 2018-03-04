@@ -32,6 +32,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import com.github.veithen.visualwas.x509.PromiscuousTrustManager;
+
 public final class TransportConfiguration {
     public final static class Builder {
         private Proxy proxy;
@@ -86,7 +88,7 @@ public final class TransportConfiguration {
          * @return this builder
          */
         public Builder disableCertificateValidation() {
-            return setTrustManager(DummyTrustManager.INSTANCE);
+            return setTrustManager(PromiscuousTrustManager.INSTANCE);
         }
         
         public TransportConfiguration build() {

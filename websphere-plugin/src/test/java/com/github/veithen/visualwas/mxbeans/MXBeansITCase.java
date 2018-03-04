@@ -39,6 +39,7 @@ import javax.management.remote.JMXServiceURL;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
+import com.github.veithen.visualwas.x509.PromiscuousTrustManager;
 
 public class MXBeansITCase {
     @Test
@@ -47,7 +48,7 @@ public class MXBeansITCase {
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
         env.put(SOAPJMXConnector.PROXY, Proxy.NO_PROXY);
         env.put(JMXConnector.CREDENTIALS, new String[] { "wsadmin", "abcd1234" });
-        env.put(SOAPJMXConnector.TRUST_MANAGER, new PromiscuousTrustManager());
+        env.put(SOAPJMXConnector.TRUST_MANAGER, PromiscuousTrustManager.INSTANCE);
         JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
         JMXConnector connector = JMXConnectorFactory.connect(url, env);
         MBeanServerConnection connection = connector.getMBeanServerConnection();
