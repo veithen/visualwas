@@ -214,7 +214,7 @@
                                         <image>
                                             <name>visualwas-websphere-base</name>
                                             <build>
-                                                <from>ibmcom/websphere-traditional:8.5.5.12-profile</from>
+                                                <from>ibmcom/websphere-traditional:9.0.0.7-profile</from>
                                                 <!-- Replace the start_server script with a wrapper script that executes the generated
                                                      server startup script. -->
                                                 <assembly>

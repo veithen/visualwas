@@ -37,6 +37,7 @@ public final class JSR77ClientFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.getAdapter(ClassMappingConfigurator.class).addMappedClasses(
+                JCAStatsImpl.class,
                 JDBCStatsImpl.class,
                 JTAStatsImpl.class,
                 JVMStatsImpl.class,
