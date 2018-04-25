@@ -22,10 +22,16 @@
 package com.github.veithen.visualwas.mxbeans;
 
 import java.io.IOException;
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.CompilationMXBean;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryManagerMXBean;
 import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +40,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.StandardMBean;
 
 import com.ibm.websphere.management.AdminService;
 import com.ibm.websphere.management.AdminServiceFactory;
@@ -126,29 +132,47 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
             log.fine("accessRules = " + accessRules);
         }
         accessChecker = new AccessChecker(authorizer, accessRules);
-        registerMBean(ManagementFactory.getClassLoadingMXBean(),
+        registerMBean(
+                ManagementFactory.getClassLoadingMXBean(),
+                ClassLoadingMXBean.class,
                 ManagementFactory.CLASS_LOADING_MXBEAN_NAME);
-        registerMBean(ManagementFactory.getMemoryMXBean(),
+        registerMBean(
+                ManagementFactory.getMemoryMXBean(),
+                MemoryMXBean.class,
                 ManagementFactory.MEMORY_MXBEAN_NAME);
-        registerMBean(ManagementFactory.getThreadMXBean(),
+        registerMBean(
+                ManagementFactory.getThreadMXBean(),
+                ThreadMXBean.class,
                 ManagementFactory.THREAD_MXBEAN_NAME);
-        registerMBean(ManagementFactory.getRuntimeMXBean(),
+        registerMBean(
+                ManagementFactory.getRuntimeMXBean(),
+                RuntimeMXBean.class,
                 ManagementFactory.RUNTIME_MXBEAN_NAME);
-        registerMBean(ManagementFactory.getOperatingSystemMXBean(),
+        registerMBean(
+                ManagementFactory.getOperatingSystemMXBean(),
+                OperatingSystemMXBean.class,
                 ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
-        registerMBean(ManagementFactory.getCompilationMXBean(),
+        registerMBean(
+                ManagementFactory.getCompilationMXBean(),
+                CompilationMXBean.class,
                 ManagementFactory.COMPILATION_MXBEAN_NAME);
         for (GarbageCollectorMXBean mbean : ManagementFactory.getGarbageCollectorMXBeans()) {
-            registerMBean(mbean, ManagementFactory.GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE
-                    + ",name=" + mbean.getName());
+            registerMBean(
+                    mbean,
+                    GarbageCollectorMXBean.class,
+                    ManagementFactory.GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE + ",name=" + mbean.getName());
         }
         for (MemoryManagerMXBean mbean : ManagementFactory.getMemoryManagerMXBeans()) {
-            registerMBean(mbean, ManagementFactory.MEMORY_MANAGER_MXBEAN_DOMAIN_TYPE
-                    + ",name=" + mbean.getName());
+            registerMBean(
+                    mbean,
+                    MemoryManagerMXBean.class,
+                    ManagementFactory.MEMORY_MANAGER_MXBEAN_DOMAIN_TYPE + ",name=" + mbean.getName());
         }
         for (MemoryPoolMXBean mbean : ManagementFactory.getMemoryPoolMXBeans()) {
-            registerMBean(mbean, ManagementFactory.MEMORY_POOL_MXBEAN_DOMAIN_TYPE
-                    + ",name=" + mbean.getName());
+            registerMBean(
+                    mbean,
+                    MemoryPoolMXBean.class,
+                    ManagementFactory.MEMORY_POOL_MXBEAN_DOMAIN_TYPE + ",name=" + mbean.getName());
         }
         log.info("Registered " + registeredMBeans.size() + " platform MXBeans");
         state = STARTED;
@@ -160,10 +184,15 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
      * @param object the MBean instance
      * @param name the MBean name
      */
-    private void registerMBean(Object object, String name) {
+    private <T> void registerMBean(T object, Class<T> iface, String name) {
         try {
             ObjectName objectName = new ObjectName(name);
-            registeredMBeans.add(mbs.registerMBean(new AccessControlProxy((DynamicMBean)object, objectName.getKeyProperty("type"), accessChecker), objectName).getObjectName());
+            registeredMBeans.add(mbs.registerMBean(
+                    new AccessControlProxy(
+                            new StandardMBean(object, iface, true),
+                            objectName.getKeyProperty("type"),
+                            accessChecker),
+                    objectName).getObjectName());
             if (log.isLoggable(Level.FINE)) {
                 log.fine("Registered MBean " + name + " (type " + object.getClass().getName() + ")");
             }
