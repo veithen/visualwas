@@ -40,6 +40,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.DynamicMBean;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -187,9 +188,12 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
     private <T> void registerMBean(T object, Class<T> iface, String name) {
         try {
             ObjectName objectName = new ObjectName(name);
+            // On older JVM versions the MBean implement DynamicMBean. In this case, use the
+            // instance directly to allow access to vendor specific features. Otherwise, use
+            // StandardMBean so that the proxy can get the MBean description.
             registeredMBeans.add(mbs.registerMBean(
                     new AccessControlProxy(
-                            new StandardMBean(object, iface, true),
+                            object instanceof DynamicMBean ? (DynamicMBean)object : new StandardMBean(object, iface, true),
                             objectName.getKeyProperty("type"),
                             accessChecker),
                     objectName).getObjectName());
