@@ -72,7 +72,6 @@ public final class TrustStore {
      * certificates presented by the server if they are not trusted.
      * 
      * @return the trust manager
-     * @throws GeneralSecurityException
      */
     public TrustManager createTrustManager() {
         try {

@@ -32,7 +32,7 @@ import com.github.veithen.visualwas.framework.proxy.Invocation;
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of
  * this instance are only valid during the invocation of
- * {@link Feature#configureConnector(ConnectorConfigurator)}.
+ * {@link Feature#configureConnector(Configurator)}.
  */
 public interface Configurator extends Adaptable {
     /**

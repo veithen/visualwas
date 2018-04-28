@@ -27,11 +27,12 @@ import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.ConfiguratorAdapter;
 import com.github.veithen.visualwas.connector.feature.Feature;
+import com.github.veithen.visualwas.framework.proxy.Interface;
 
 /**
  * Feature that enables the creation of MBean proxies. Proxies can be created in two different ways:
  * <ol>
- * <li>A feature can use {@link MBeanProxyConfigurator#registerProxy(Class, MBeanLocator)} to register a
+ * <li>A feature can use {@link MBeanProxyConfigurator#registerProxy(Interface, MBeanLocator)} to register a
  * proxy. That proxy will be available through {@link Connector#getAdapter(Class)}. This will create
  * a single proxy instance per connection. This method is typically used for singleton MBeans.
  * <li>Application code can use {@link MBeanProxyFactory} (obtained using

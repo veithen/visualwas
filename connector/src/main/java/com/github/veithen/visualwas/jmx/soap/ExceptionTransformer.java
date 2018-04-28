@@ -23,6 +23,8 @@ package com.github.veithen.visualwas.jmx.soap;
 
 import java.io.IOException;
 
+import javax.management.MBeanServerConnection;
+
 import com.github.veithen.visualwas.connector.Connector;
 
 /**

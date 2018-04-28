@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation that can be used on a {@link Feature} implementation to specify the configuration
  * interface exposed by a that feature. The feature must register an instance of the specified interface
- * using {@link Configurator#registerConfiguratorAdapter(Object)}. Other features can then access that
+ * using {@link Configurator#registerConfiguratorAdapter(Class, Object)}. Other features can then access that
  * instance using {@link Configurator#getAdapter(Class)}.
  */
 @Retention(RetentionPolicy.RUNTIME)
