@@ -47,7 +47,7 @@ public class MXBeansITCase {
         Map<String,Object> env = new HashMap<String,Object>();
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
         env.put(SOAPJMXConnector.PROXY, Proxy.NO_PROXY);
-        env.put(JMXConnector.CREDENTIALS, new String[] { "wsadmin", "abcd1234" });
+        env.put(JMXConnector.CREDENTIALS, new String[] { "monitor", "changeme" });
         env.put(SOAPJMXConnector.TRUST_MANAGER, PromiscuousTrustManager.INSTANCE);
         JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
         JMXConnector connector = JMXConnectorFactory.connect(url, env);

@@ -229,9 +229,8 @@
                                                     </inline>
                                                 </assembly>
                                                 <runCmds>
-                                                    <!-- Do the configuration work during image creation instead of container start. -->
-                                                    <runCmd>echo abcd1234 &gt; /tmp/PASSWORD</runCmd>
-                                                    <runCmd>/work/modify_password</runCmd>
+                                                    <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /work/configureSecurity.py</runCmd>
+
                                                     <!-- Generate a start script so that we can further accelerate the startup of container
                                                          based on this image. -->
                                                     <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1 -script /work/start_server1.sh</runCmd>
