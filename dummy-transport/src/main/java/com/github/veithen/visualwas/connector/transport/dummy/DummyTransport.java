@@ -24,13 +24,11 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axiom.soap.SOAPMessage;
 import org.w3c.dom.Document;
 
@@ -59,18 +57,6 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, Trans
 
     public Connector createConnector(Feature... features) {
         return ConnectorFactory.getInstance().createConnector(DummyTransport.ENDPOINT, ConnectorConfiguration.custom().addFeatures(features).setTransportFactory(this).build(), null);
-    }
-    
-    private void normalize(SOAPEnvelope env) {
-        // TODO: this should eventually disappear
-        SOAPHeader header = env.getHeader();
-        if (header != null) {
-            Iterator it = header.getChildrenWithNamespaceURI("urn:dummy");
-            while (it.hasNext()) {
-                it.next();
-                it.remove();
-            }
-        }
     }
     
     public void addExchange(URL request, URL response) throws IOException {
@@ -103,7 +89,6 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, Trans
     @Override
     public ListenableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
         SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
-        normalize(clonedRequest.getSOAPEnvelope());
         return requestMatcher.match((Document)clonedRequest).produce(context.getExecutor());
     }
 }

@@ -59,8 +59,6 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
             OMNamespace ns1 = factory.createOMNamespace("admin", "ns");
             header.addAttribute("JMXMessageVersion", "1.2.0", ns1);
             header.addAttribute("JMXVersion", "1.2.0", ns1);
-            // TODO: need this to prevent Axiom from skipping serialization of the header
-            header.addHeaderBlock("dummy", factory.createOMNamespace("urn:dummy", "p")).setMustUnderstand(false);
         }
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, invocation.getParameters(), contextImpl);
