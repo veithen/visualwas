@@ -27,7 +27,7 @@ import java.util.Set;
 
 final class ClassMappingConfiguratorImpl implements ClassMappingConfigurator {
     private final ClassMapper classMapper;
-    private final Set<Class<?>> processedClasses = new HashSet<Class<?>>();
+    private final Set<Class<?>> processedClasses = new HashSet<>();
 
     ClassMappingConfiguratorImpl(ClassMapper classMapper) {
         this.classMapper = classMapper;

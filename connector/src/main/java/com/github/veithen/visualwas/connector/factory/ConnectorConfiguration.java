@@ -37,7 +37,7 @@ public final class ConnectorConfiguration {
         private TransportFactory transportFactory;
         private TransportConfiguration transportConfiguration;
         private ClassLoaderProvider classLoaderProvider;
-        private List<Feature> features = new ArrayList<Feature>();
+        private List<Feature> features = new ArrayList<>();
         
         public Builder setTransportFactory(TransportFactory transportFactory) {
             this.transportFactory = transportFactory;
@@ -70,8 +70,8 @@ public final class ConnectorConfiguration {
         // TODO: describe defaults
         // TODO: describe dependency resolution
         public ConnectorConfiguration build() {
-            Deque<Feature> unprocessedFeatures = new LinkedList<Feature>(features);
-            List<Feature> processedFeatures = new ArrayList<Feature>();
+            Deque<Feature> unprocessedFeatures = new LinkedList<>(features);
+            List<Feature> processedFeatures = new ArrayList<>();
             while (!unprocessedFeatures.isEmpty()) {
                 DependencyUtil.process(unprocessedFeatures.removeFirst(), unprocessedFeatures, processedFeatures);
             }

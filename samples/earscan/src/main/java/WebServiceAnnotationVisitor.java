@@ -28,7 +28,7 @@ import org.objectweb.asm.AnnotationVisitor;
 public class WebServiceAnnotationVisitor implements AnnotationVisitor {
     private final List<WebServiceImplementation> wsImplementations;
     private final String className;
-    private final Map<String,Object> attributes = new HashMap<String,Object>();
+    private final Map<String,Object> attributes = new HashMap<>();
     
     public WebServiceAnnotationVisitor(List<WebServiceImplementation> wsImplementations, String className) {
         this.wsImplementations = wsImplementations;

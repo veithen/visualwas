@@ -49,8 +49,8 @@ import org.xml.sax.SAXException;
  */
 // TODO: merge this into WebSphereRuntimeClassLoader and clean up
 final class Realm {
-    private final Map<String,List<Bundle>> packageMap = new HashMap<String,List<Bundle>>();
-    private final Map<String,Bundle> classMap = new HashMap<String,Bundle>();
+    private final Map<String,List<Bundle>> packageMap = new HashMap<>();
+    private final Map<String,Bundle> classMap = new HashMap<>();
     private final ClassLoader parentClassLoader;
     private final URL[] bootstrapURLs;
     private WeakReference<BootstrapClassLoader> bootstrapClassLoader;
@@ -104,7 +104,7 @@ final class Realm {
                                 String pkg = exportPackage.getValue();
                                 List<Bundle> bundles = packageMap.get(pkg);
                                 if (bundles == null) {
-                                    bundles = new ArrayList<Bundle>();
+                                    bundles = new ArrayList<>();
                                     packageMap.put(pkg, bundles);
                                 }
                                 bundles.add(bundle);
@@ -140,7 +140,7 @@ final class Realm {
         BootstrapClassLoader cl = bootstrapClassLoader == null ? null : bootstrapClassLoader.get();
         if (cl == null) {
             cl = new BootstrapClassLoader(bootstrapURLs, parentClassLoader);
-            bootstrapClassLoader = new WeakReference<BootstrapClassLoader>(cl);
+            bootstrapClassLoader = new WeakReference<>(cl);
         }
         return cl;
     }

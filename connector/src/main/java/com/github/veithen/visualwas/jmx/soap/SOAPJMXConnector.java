@@ -110,7 +110,7 @@ public class SOAPJMXConnector implements JMXConnector {
         if (env == null) {
             internalConnect(this.env);
         } else {
-            Map<String,Object> actualEnv = new HashMap<String,Object>(this.env);
+            Map<String,Object> actualEnv = new HashMap<>(this.env);
             actualEnv.putAll(env);
             internalConnect(actualEnv);
         }

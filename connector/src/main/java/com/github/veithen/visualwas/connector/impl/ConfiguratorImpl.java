@@ -37,7 +37,7 @@ import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 
 final class ConfiguratorImpl implements Configurator {
-    private final Map<Class<?>,Object> adapters = new HashMap<Class<?>,Object>();
+    private final Map<Class<?>,Object> adapters = new HashMap<>();
     private List<Interface<?>> adminServiceInterfaces;
     private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
     private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;

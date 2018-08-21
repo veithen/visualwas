@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class ClassMapper {
-    private final Map<String,String> replacementClasses = new HashMap<String,String>();
-    private final Map<String,String> originalClasses = new HashMap<String,String>();
+    private final Map<String,String> replacementClasses = new HashMap<>();
+    private final Map<String,String> originalClasses = new HashMap<>();
     
     void addMapping(String originalClass, String replacementClass) {
         replacementClasses.put(originalClass, replacementClass);

@@ -33,7 +33,7 @@ final class PluginXmlHandler extends DefaultHandler {
 
     private State state = State.DOCUMENT;
     private int skipDepth = 0;
-    private final List<String> serializables = new ArrayList<String>();
+    private final List<String> serializables = new ArrayList<>();
     
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

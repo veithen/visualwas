@@ -71,7 +71,7 @@ public class WSDLResources {
         }
     }
     
-    final Map<String,byte[]> resources = new HashMap<String,byte[]>();
+    final Map<String,byte[]> resources = new HashMap<>();
     
     public void add(String name, byte[] content) {
         resources.put(name, content);

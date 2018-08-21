@@ -29,8 +29,8 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMElement;
 
 public abstract class SimpleTypeHandler implements TypeHandler {
-    private static final Map<Class<?>,SimpleTypeHandler> handlerByJavaType = new HashMap<Class<?>,SimpleTypeHandler>();
-    private static final Map<QName,SimpleTypeHandler> handlerBySchemaType = new HashMap<QName,SimpleTypeHandler>();
+    private static final Map<Class<?>,SimpleTypeHandler> handlerByJavaType = new HashMap<>();
+    private static final Map<QName,SimpleTypeHandler> handlerBySchemaType = new HashMap<>();
 
     static {
         register(String.class, new SimpleTypeHandler("string") {

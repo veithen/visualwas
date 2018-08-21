@@ -41,8 +41,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 final class ObjectNameMapper implements Mapper<ObjectName> {
-    private static final Set<String> nonRoutableDomains = new HashSet<String>(Arrays.asList("JMImplementation", "java.lang"));
-    private static final Set<String> routingPropertyKeys = new HashSet<String>(Arrays.asList("cell", "node", "process"));
+    private static final Set<String> nonRoutableDomains = new HashSet<>(Arrays.asList("JMImplementation", "java.lang"));
+    private static final Set<String> routingPropertyKeys = new HashSet<>(Arrays.asList("cell", "node", "process"));
     
     private final String cell;
     private final String node;
@@ -65,7 +65,7 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
             synchronized (localToRemoteCache) {
                 ObjectName remoteName = localToRemoteCache.get(localName);
                 if (remoteName == null) {
-                    Hashtable<String,String> newProps = new Hashtable<String,String>(localName.getKeyPropertyList());
+                    Hashtable<String,String> newProps = new Hashtable<>(localName.getKeyPropertyList());
                     newProps.put("cell", cell);
                     newProps.put("node", node);
                     newProps.put("process", process);
@@ -93,7 +93,7 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                 ObjectName localName = remoteToLocalCache.get(remoteName);
                 if (localName == null) {
                     Hashtable<String,String> props = remoteName.getKeyPropertyList();
-                    Hashtable<String,String> newProps = new Hashtable<String,String>();
+                    Hashtable<String,String> newProps = new Hashtable<>();
                     int routingPropertyKeyCount = 0;
                     for (Map.Entry<String,String> prop : props.entrySet()) {
                         String key = prop.getKey();
@@ -124,7 +124,7 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
     }
     
     Set<ObjectName> remoteToLocal(Set<ObjectName> remoteNames) {
-        Set<ObjectName> result = new HashSet<ObjectName>();
+        Set<ObjectName> result = new HashSet<>();
         for (ObjectName name : remoteNames) {
             result.add(remoteToLocal(name));
         }

@@ -29,11 +29,11 @@ public final class Attributes {
     private final Map<Class<?>,Object> map;
     
     public Attributes() {
-        map = new HashMap<Class<?>,Object>();
+        map = new HashMap<>();
     }
     
     public Attributes(Attributes atts) {
-        map = atts == null ? new HashMap<Class<?>,Object>() : new HashMap<Class<?>,Object>(atts.map);
+        map = atts == null ? new HashMap<>() : new HashMap<>(atts.map);
     }
     
     public <T> T get(Class<T> key) {

@@ -45,7 +45,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
     private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE = InterfaceFactory.createInterface(AdminService.class);
     
     public Connector createConnector(Endpoint endpoint, final ConnectorConfiguration config, Attributes attributes) {
-        List<Feature> features = new ArrayList<Feature>(config.getFeatures());
+        List<Feature> features = new ArrayList<>(config.getFeatures());
         if (attributes != null) {
             for (Class<?> key : attributes.keySet()) {
                 Dependencies ann = key.getAnnotation(Dependencies.class);

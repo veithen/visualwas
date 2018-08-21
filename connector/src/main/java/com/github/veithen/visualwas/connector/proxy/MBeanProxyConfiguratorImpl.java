@@ -33,6 +33,6 @@ final class MBeanProxyConfiguratorImpl implements MBeanProxyConfigurator {
 
     @Override
     public <T> void registerProxy(Interface<T> iface, MBeanLocator locator) {
-        configurator.registerAdminServiceAdapter(iface.getInterface(), new MBeanProxyAdapterFactory<T>(iface, locator));
+        configurator.registerAdminServiceAdapter(iface.getInterface(), new MBeanProxyAdapterFactory<>(iface, locator));
     }
 }

@@ -56,7 +56,7 @@ final class Bundle {
         if (cl == null) {
             System.out.println("Creating class loader for " + url);
             cl = new BundleClassLoader(url, realm);
-            classLoader = new WeakReference<BundleClassLoader>(cl);
+            classLoader = new WeakReference<>(cl);
         }
         return cl;
     }

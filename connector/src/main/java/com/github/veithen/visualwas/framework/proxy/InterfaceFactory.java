@@ -71,6 +71,6 @@ public final class InterfaceFactory {
                 invocationHandlerDelegates.put(entry.getValue().getMethod(), new InvocationHandlerDelegate(operation, entry.getKey()));
             }
         }
-        return new InterfaceImpl<T>(iface, operations, invocationHandlerDelegates);
+        return new InterfaceImpl<>(iface, operations, invocationHandlerDelegates);
     }
 }

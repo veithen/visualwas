@@ -164,7 +164,7 @@ public class Main {
                 } finally {
                     in.close();
                 }
-                List<String> messages = new ArrayList<String>();
+                List<String> messages = new ArrayList<>();
                 scan(earFile, messages);
                 if (!messages.isEmpty()) {
                     System.out.println(appName);

@@ -43,7 +43,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
     
     private final RemoteNotificationService service;
     private final boolean autoReregister;
-    private final List<NotificationListenerRegistration> registrations = new LinkedList<NotificationListenerRegistration>();
+    private final List<NotificationListenerRegistration> registrations = new LinkedList<>();
     // We use a single subscription for all listeners (to avoid blocking multiple threads on the server side)
     private SubscriptionInfo subscriptionInfo = new SubscriptionInfo();
     private SubscriptionHandle subscriptionHandle;

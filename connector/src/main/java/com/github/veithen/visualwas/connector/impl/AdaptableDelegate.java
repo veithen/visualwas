@@ -29,11 +29,11 @@ import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.framework.Adaptable;
 
 final class AdaptableDelegate implements Adaptable {
-    private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<Class<?>,AdapterHolder<?>>();
+    private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<>();
     private AdminService adminService;
 
     <T> void registerAdapter(Class<T> iface, AdapterFactory<T> adapterFactory) {
-        adapters.put(iface, new AdapterHolder<T>(adapterFactory));
+        adapters.put(iface, new AdapterHolder<>(adapterFactory));
     }
     
     void setAdminService(AdminService adminService) {
