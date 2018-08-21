@@ -40,6 +40,10 @@
         <tag>HEAD</tag>
     </scm>
 
+    <properties>
+        <javaVersion>1.5</javaVersion>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.osgi</groupId>
