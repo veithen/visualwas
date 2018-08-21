@@ -1,7 +1,8 @@
 language: java
 jdk:
   - oraclejdk8
-script: "mvn verify"
+install: true
+script: "mvn verify -B -U"
 cache:
   directories:
   - $HOME/.m2
