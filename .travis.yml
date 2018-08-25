@@ -1,6 +1,9 @@
 language: java
 jdk:
   - oraclejdk8
+env:
+  - WEBSPHERE_VERSION=8.5.5.13
+  - WEBSPHERE_VERSION=9.0.0.8
 install: true
 script: "mvn verify -B -U"
 cache:

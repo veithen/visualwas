@@ -78,9 +78,9 @@
         <profile>
             <id>docker</id>
             <activation>
-                <file>
-                    <exists>/usr/bin/docker</exists>
-                </file>
+                <property>
+                    <name>env.WEBSPHERE_VERSION</name>
+                </property>
             </activation>
             <build>
                 <plugins>
