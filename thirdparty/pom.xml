@@ -42,12 +42,15 @@
         <module>com.sun.tools.visualvm.core</module>
         <module>com.sun.tools.visualvm.host</module>
         <module>com.sun.tools.visualvm.jmx</module>
+        <module>com.sun.tools.visualvm.jvm</module>
         <module>com.sun.tools.visualvm.tools</module>
         <module>org.netbeans.modules.options.api</module>
         <module>org.openide.awt</module>
+        <module>org.openide.dialogs</module>
         <module>org.openide.modules</module>
         <module>org.openide.util</module>
         <module>org.openide.util.lookup</module>
+        <module>org.openide.windows</module>
     </modules>
 
     <scm>
