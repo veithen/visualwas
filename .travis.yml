@@ -2,6 +2,8 @@ language: java
 jdk:
   - oraclejdk8
 env:
+  # There are actually significant differences with respect to JMX in recent fix packs
+  - WEBSPHERE_VERSION=8.5.5.10
   - WEBSPHERE_VERSION=8.5.5.13
   - WEBSPHERE_VERSION=9.0.0.8
 install: true

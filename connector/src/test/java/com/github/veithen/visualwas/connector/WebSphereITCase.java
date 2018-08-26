@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
+import javax.management.JMRuntimeException;
 import javax.management.ObjectName;
 
 import org.junit.Test;
@@ -52,7 +53,11 @@ public class WebSphereITCase {
             ObjectName serverMBean = connector.getServerMBean();
             connector.getAttribute(serverMBean, "pid");
             fail("Expected exception");
+        } catch (JMRuntimeException ex) {
+            // Older WebSphere versions produce a proper exception.
+            assertThat(ex.getMessage()).contains("ADMN0022E");
         } catch (ConnectorException ex) {
+            // Newer versions trigger a SOAPException.
             assertThat(ex.getCause()).isInstanceOf(SOAPException.class);
         }
     }
