@@ -138,13 +138,6 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- Turn off annotation processing to workaround a bug. No class files get generated during compilation when active -->
-                    <proc>none</proc>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
