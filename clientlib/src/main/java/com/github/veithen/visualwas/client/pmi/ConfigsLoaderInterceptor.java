@@ -21,12 +21,9 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-import javax.management.ObjectName;
-
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.ContextPopulatingInterceptor;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
-import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -38,22 +35,12 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
 
     @Override
     protected ListenableFuture<Configs> produceValue(final AdminService adminService) {
-        return Futures.dereference(Futures.transform(
-                new SingletonMBeanLocator("Perf").locateMBean(adminService),
-                new Function<ObjectName,ListenableFuture<Configs>>() {
-                    @Override
-                    public ListenableFuture<Configs> apply(ObjectName perfMBean) {
-                        return Futures.transform(
-                                adminService.invokeAsync(perfMBean, "getConfigs", null, null),
-                                new Function<Object,Configs>() {
-                                    @Override
-                                    public Configs apply(Object input) {
-                                        return new Configs((PmiModuleConfig[])input);
-                                    }
-                                },
-                                MoreExecutors.directExecutor());
-                    }
-                },
-                MoreExecutors.directExecutor()));
+        return Futures.transform(
+                Futures.transformAsync(
+                        new SingletonMBeanLocator("Perf").locateMBean(adminService),
+                        (perfMBean) -> { return adminService.invokeAsync(perfMBean, "getConfigs", null, null); },
+                        MoreExecutors.directExecutor()),
+                (input) -> { return new Configs((PmiModuleConfig[])input); },
+                MoreExecutors.directExecutor());
     }
 }
