@@ -24,9 +24,14 @@ package com.github.veithen.visualwas.mxbeans;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -49,6 +54,9 @@ import com.sun.tools.visualvm.jmx.impl.JmxApplication;
 import com.sun.tools.visualvm.jvm.JvmProvider;
 
 public class VisualVMITCase {
+    private static final Set<String> unsupportedFeatures = new HashSet<>(Arrays.asList(
+            "dumpOnOOMEnabledSupported", "takeHeapDumpSupported"));
+
     @Rule
     public final TemporaryFolder netbeansUserDir = new TemporaryFolder() {
         @Override
@@ -88,6 +96,14 @@ public class VisualVMITCase {
 
         JmxApplication app = new JmxApplication(Host.LOCALHOST, url, new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false, false), null);
         Jvm jvm = new JvmProvider().createModelFor(app);
+
+        for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {
+            String name = prop.getName();
+            if (name.endsWith("Supported") && !unsupportedFeatures.contains(name)) {
+                assertThat((Boolean)prop.getReadMethod().invoke(jvm)).named("%s", name).isTrue();
+            }
+        }
+
         MonitoredData data = jvm.getMonitoredData();
         assertThat(data.getLoadedClasses()).isGreaterThan(5000L);
     }
