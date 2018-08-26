@@ -94,6 +94,7 @@ public class SOAPJMXConnector implements JMXConnector {
     private String connectionId;
     private Connector connector;
     private ExceptionTransformer exceptionTransformer;
+    private boolean connected;
 
     public SOAPJMXConnector(String host, int port, Map<String,?> env) {
         this.host = host;
@@ -164,6 +165,7 @@ public class SOAPJMXConnector implements JMXConnector {
                     ex));
             throw ex;
         }
+        connected = true;
         connectionBroadcaster.sendNotification(new JMXConnectionNotification(
                 JMXConnectionNotification.OPENED,
                 this,
@@ -187,14 +189,17 @@ public class SOAPJMXConnector implements JMXConnector {
 
     @Override
     public synchronized void close() throws IOException {
-        connector.close();
-        connectionBroadcaster.sendNotification(new JMXConnectionNotification(
-                JMXConnectionNotification.CLOSED,
-                this,
-                connectionId,
-                connectionNotificationSequence++,
-                "Connection closed",
-                null));
+        if (connected) {
+            connector.close();
+            connectionBroadcaster.sendNotification(new JMXConnectionNotification(
+                    JMXConnectionNotification.CLOSED,
+                    this,
+                    connectionId,
+                    connectionNotificationSequence++,
+                    "Connection closed",
+                    null));
+            connected = false;
+        }
     }
 
     @Override
