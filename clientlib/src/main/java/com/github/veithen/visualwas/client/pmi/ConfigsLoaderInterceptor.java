@@ -29,6 +29,7 @@ import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 
 final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Configs> {
     ConfigsLoaderInterceptor() {
@@ -49,8 +50,10 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
                                     public Configs apply(Object input) {
                                         return new Configs((PmiModuleConfig[])input);
                                     }
-                                });
+                                },
+                                MoreExecutors.directExecutor());
                     }
-                }));
+                },
+                MoreExecutors.directExecutor()));
     }
 }

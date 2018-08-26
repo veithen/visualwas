@@ -32,6 +32,7 @@ import com.github.veithen.visualwas.connector.AdminService;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 public class SingletonMBeanLocator implements MBeanLocator {
@@ -78,14 +79,16 @@ public class SingletonMBeanLocator implements MBeanLocator {
                                     public void onFailure(Throwable t) {
                                         result.setException(t);
                                     }
-                                });
+                                },
+                                MoreExecutors.directExecutor());
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
                         result.setException(t);
                     }
-                });
+                },
+                MoreExecutors.directExecutor());
         return result;
     }
 }

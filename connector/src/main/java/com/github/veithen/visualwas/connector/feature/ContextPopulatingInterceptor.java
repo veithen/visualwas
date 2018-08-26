@@ -26,6 +26,7 @@ import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Invocation,Object> {
@@ -56,7 +57,7 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
                             ContextPopulatingInterceptor.this.future = null;
                         }
                     }
-                });
+                }, MoreExecutors.directExecutor());
             }
         }
         final SettableFuture<Object> futureResult = SettableFuture.create();
@@ -72,7 +73,7 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
             public void onFailure(Throwable t) {
                 futureResult.setException(t);
             }
-        });
+        }, MoreExecutors.directExecutor());
         return futureResult;
     }
 

@@ -31,6 +31,7 @@ import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
@@ -59,7 +60,7 @@ final class SOAPExceptionInterceptor implements Interceptor<Invocation,Object> {
                 }
                 transformedFuture.setException(t);
             }
-        });
+        }, MoreExecutors.directExecutor());
         return transformedFuture;
     }
 }

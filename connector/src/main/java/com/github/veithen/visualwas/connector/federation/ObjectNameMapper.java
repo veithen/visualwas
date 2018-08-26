@@ -39,6 +39,7 @@ import javax.management.QueryExp;
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 
 final class ObjectNameMapper implements Mapper<ObjectName> {
     private static final Set<String> nonRoutableDomains = new HashSet<>(Arrays.asList("JMImplementation", "java.lang"));
@@ -154,7 +155,8 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                                 }
                                 return output;
                             }
-                        }));
+                        },
+                        MoreExecutors.directExecutor()));
                 for (String domain : nonRoutableDomains) {
                     futures.add(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
                 }
@@ -169,7 +171,8 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                                 }
                                 return output;
                             }
-                        });
+                        },
+                        MoreExecutors.directExecutor());
             } catch (MalformedObjectNameException ex) {
                 throw new Error(ex);
             }

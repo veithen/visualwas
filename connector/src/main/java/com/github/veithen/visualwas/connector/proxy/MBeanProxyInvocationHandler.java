@@ -32,6 +32,7 @@ import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 final class MBeanProxyInvocationHandler implements InvocationTarget {
@@ -102,14 +103,15 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
                                     futureResult.setException(t);
                                 }
                             }
-                        });
+                        },
+                        MoreExecutors.directExecutor());
             }
 
             @Override
             public void onFailure(Throwable t) {
                 futureResult.setException(t);
             }
-        });
+        }, MoreExecutors.directExecutor());
         return futureResult;
     }
 }

@@ -28,6 +28,7 @@ import com.github.veithen.visualwas.connector.feature.ContextPopulatingIntercept
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 
 final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<ServerIdentity> {
     ServerIdentityInterceptor() {
@@ -43,6 +44,7 @@ final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<Serve
                     public ServerIdentity apply(ObjectName serverMBean) {
                         return new ServerIdentity(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
                     }
-                });
+                },
+                MoreExecutors.directExecutor());
     }
 }
