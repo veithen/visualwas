@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package com.github.veithen.visualwas.connector.mapped;
+package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.reflect.UndeclaredThrowableException;
 
@@ -35,16 +35,16 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 /**
- * Wraps {@link SOAPException} in {@link ConnectorException} to avoid
+ * Wraps undeclared exception in {@link ConnectorException} to avoid
  * {@link UndeclaredThrowableException}.
  */
-final class SOAPExceptionInterceptor implements Interceptor<Invocation,Object> {
-    static final SOAPExceptionInterceptor INSTANCE = new SOAPExceptionInterceptor();
+final class UndeclaredExceptionInterceptor implements Interceptor<Invocation,Object> {
+    static final UndeclaredExceptionInterceptor INSTANCE = new UndeclaredExceptionInterceptor();
 
-    private SOAPExceptionInterceptor() {}
+    private UndeclaredExceptionInterceptor() {}
 
     @Override
-    public ListenableFuture<? extends Object> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
+    public ListenableFuture<? extends Object> invoke(InvocationContext context, final Invocation invocation, Handler<Invocation,Object> nextHandler) {
         ListenableFuture<? extends Object> future = nextHandler.invoke(context, invocation);
         final SettableFuture<Object> transformedFuture = SettableFuture.create();
         Futures.addCallback(future, new FutureCallback<Object>() {
@@ -55,8 +55,17 @@ final class SOAPExceptionInterceptor implements Interceptor<Invocation,Object> {
 
             @Override
             public void onFailure(Throwable t) {
-                if (t instanceof SOAPException) {
-                    t = new ConnectorException("Received SOAPException from server", t);
+                if (!(t instanceof RuntimeException || t instanceof Error)) {
+                    boolean isDeclared = false;
+                    for (Class<?> exceptionType : invocation.getOperation().getExceptionTypes()) {
+                        if (exceptionType.isInstance(t)) {
+                            isDeclared = true;
+                            break;
+                        }
+                    }
+                    if (!isDeclared) {
+                        t = new ConnectorException("Received unexpected exception", t);
+                    }
                 }
                 transformedFuture.setException(t);
             }

@@ -68,6 +68,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 adminServiceInterfaces.toArray(new Interface[adminServiceInterfaces.size()]));
         final Attributes initialAttributes = new Attributes(attributes);
         initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
+        invocationInterceptors.add(UndeclaredExceptionInterceptor.INSTANCE);
         AdminService adminService = adminServiceFactory.create(
                 new InvocationContextProvider() {
                     @Override
