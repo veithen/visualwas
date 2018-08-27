@@ -150,7 +150,7 @@
                                 <image>
                                     <name>visualwas-websphere</name>
                                     <build>
-                                        <from>visualwas-websphere-base</from>
+                                        <from>visualwas-websphere-base:${env.WEBSPHERE_VERSION}</from>
                                         <assembly>
                                             <basedir>/opt/IBM/WebSphere/AppServer/plugins</basedir>
                                             <descriptorRef>artifact</descriptorRef>
