@@ -21,8 +21,6 @@
  */
 package com.github.veithen.visualwas.connector.notification;
 
-import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Dependencies;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -37,11 +35,8 @@ public class NotificationDispatcherFeature implements Feature {
 
     @Override
     public void configureConnector(Configurator configurator) {
-        configurator.registerAdminServiceAdapter(NotificationDispatcher.class, new AdapterFactory<NotificationDispatcher>() {
-            @Override
-            public NotificationDispatcher createAdapter(AdminService adminService) {
-                return new NotificationDispatcherImpl((RemoteNotificationService)adminService, autoReregister);
-            }
-        });
+        configurator.registerAdminServiceAdapter(
+                NotificationDispatcher.class,
+                (adminService) -> new NotificationDispatcherImpl((RemoteNotificationService)adminService, autoReregister));
     }
 }

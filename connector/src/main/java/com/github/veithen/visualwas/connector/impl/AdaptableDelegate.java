@@ -44,9 +44,7 @@ final class AdaptableDelegate implements Adaptable {
     }
 
     void closing() {
-        for (AdapterHolder<?> holder : adapters.values()) {
-            holder.closing();
-        }
+        adapters.values().forEach(AdapterHolder::closing);
     }
     
     @Override

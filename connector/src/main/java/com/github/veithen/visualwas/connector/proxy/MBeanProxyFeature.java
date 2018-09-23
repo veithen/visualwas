@@ -21,9 +21,7 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.ConfiguratorAdapter;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -48,11 +46,6 @@ public final class MBeanProxyFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.registerConfiguratorAdapter(MBeanProxyConfigurator.class, new MBeanProxyConfiguratorImpl(configurator));
-        configurator.registerAdminServiceAdapter(MBeanProxyFactory.class, new AdapterFactory<MBeanProxyFactory>() {
-            @Override
-            public MBeanProxyFactory createAdapter(AdminService adminService) {
-                return new MBeanProxyFactoryImpl(adminService);
-            }
-        });
+        configurator.registerAdminServiceAdapter(MBeanProxyFactory.class, MBeanProxyFactoryImpl::new);
     }
 }

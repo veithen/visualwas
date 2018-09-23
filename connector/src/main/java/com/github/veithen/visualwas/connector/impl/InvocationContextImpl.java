@@ -75,12 +75,7 @@ final class InvocationContextImpl implements InvocationContext {
     @Override
     public AdminService getAdminService(Handler<Invocation, Object> handler) {
         return adminServiceFactory.create(
-                new InvocationContextProvider() {
-                    @Override
-                    public InvocationContextImpl get() {
-                        return InvocationContextImpl.this;
-                    }
-                },
+                () -> InvocationContextImpl.this,
                 handler,
                 false);
     }

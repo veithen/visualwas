@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
-import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.Configurator;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
@@ -65,13 +64,8 @@ final class ConfiguratorImpl implements Configurator {
         registerAdminServerAdapterForExtension(iface.getInterface());
     }
     
-    private <T> void registerAdminServerAdapterForExtension(final Class<T> iface) {
-        adaptableDelegate.registerAdapter(iface, new AdapterFactory<T>() {
-            @Override
-            public T createAdapter(AdminService adminService) {
-                return iface.cast(adminService);
-            }
-        });
+    private <T> void registerAdminServerAdapterForExtension(Class<T> iface) {
+        adaptableDelegate.registerAdapter(iface, iface::cast);
     }
 
     @Override

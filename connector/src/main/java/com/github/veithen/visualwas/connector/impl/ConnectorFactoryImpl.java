@@ -70,12 +70,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
         invocationInterceptors.add(UndeclaredExceptionInterceptor.INSTANCE);
         AdminService adminService = adminServiceFactory.create(
-                new InvocationContextProvider() {
-                    @Override
-                    public InvocationContextImpl get() {
-                        return new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), initialAttributes);
-                    }
-                },
+                () -> new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), initialAttributes),
                 invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
                 true);
         return new ConnectorImpl(adminService, adaptableDelegate);

@@ -26,9 +26,7 @@ import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.InvocationStyle;
-import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.ProxyFactory;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class AdminServiceFactory {
     private final Interface<?>[] ifaces;
@@ -42,14 +40,11 @@ final class AdminServiceFactory {
         return (AdminService)ProxyFactory.createProxy(
                 AdminServiceFactory.class.getClassLoader(),
                 ifaces,
-                new InvocationTarget() {
-                    @Override
-                    public ListenableFuture<?> invoke(Invocation invocation) {
-                        if (!allowSync && invocation.getInvocationStyle() == InvocationStyle.SYNC) {
-                            throw new UnsupportedOperationException("Synchronous invocations not allowed");
-                        }
-                        return handler.invoke(invocationContextProvider.get(), invocation);
+                (invocation) -> {
+                    if (!allowSync && invocation.getInvocationStyle() == InvocationStyle.SYNC) {
+                        throw new UnsupportedOperationException("Synchronous invocations not allowed");
                     }
+                    return handler.invoke(invocationContextProvider.get(), invocation);
                 });
     }
 }
