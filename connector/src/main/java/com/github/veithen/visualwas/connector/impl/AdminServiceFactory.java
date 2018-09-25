@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.function.Supplier;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.framework.proxy.Interface;
@@ -35,8 +37,8 @@ final class AdminServiceFactory {
         this.ifaces = ifaces;
     }
 
-    AdminService create(final InvocationContextProvider invocationContextProvider,
-            final Handler<Invocation,Object> handler, final boolean allowSync) {
+    AdminService create(Supplier<InvocationContextImpl> invocationContextSupplier,
+            Handler<Invocation,Object> handler, boolean allowSync) {
         return (AdminService)ProxyFactory.createProxy(
                 AdminServiceFactory.class.getClassLoader(),
                 ifaces,
@@ -44,7 +46,7 @@ final class AdminServiceFactory {
                     if (!allowSync && invocation.getInvocationStyle() == InvocationStyle.SYNC) {
                         throw new UnsupportedOperationException("Synchronous invocations not allowed");
                     }
-                    return handler.invoke(invocationContextProvider.get(), invocation);
+                    return handler.invoke(invocationContextSupplier.get(), invocation);
                 });
     }
 }

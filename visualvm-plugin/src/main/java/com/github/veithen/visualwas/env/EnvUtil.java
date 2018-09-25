@@ -43,7 +43,7 @@ public final class EnvUtil {
     private EnvUtil() {}
     
     public static Map<String,Object> createEnvironment(boolean securityEnabled, boolean federationDisabled) {
-        Map<String,Object> env = new HashMap<String,Object>();
+        Map<String,Object> env = new HashMap<>();
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, SOAPJMXConnector.class.getClassLoader());
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
         // In VisualVM, one typically configures the HTTP proxy to download new plugins and updates,

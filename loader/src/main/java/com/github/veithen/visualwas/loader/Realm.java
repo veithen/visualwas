@@ -22,7 +22,6 @@
 package com.github.veithen.visualwas.loader;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,12 +60,7 @@ final class Realm {
                 new File(wasHome, "java/jre/lib/ibmcfw.jar").toURI().toURL(),
                 new File(wasHome, "lib/bootstrap.jar").toURI().toURL() };
         File pluginDir = new File(wasHome, "plugins");
-        File[] jars = pluginDir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isFile() && pathname.getName().endsWith(".jar");
-            }
-        });
+        File[] jars = pluginDir.listFiles((pathname) -> pathname.isFile() && pathname.getName().endsWith(".jar"));
         if (jars == null) {
             throw new FileNotFoundException(pluginDir + " doesn't exist or is not readable");
         }
