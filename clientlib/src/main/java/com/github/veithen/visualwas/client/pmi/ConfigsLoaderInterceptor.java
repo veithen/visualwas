@@ -38,9 +38,9 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
         return Futures.transform(
                 Futures.transformAsync(
                         new SingletonMBeanLocator("Perf").locateMBean(adminService),
-                        (perfMBean) -> { return adminService.invokeAsync(perfMBean, "getConfigs", null, null); },
+                        perfMBean -> { return adminService.invokeAsync(perfMBean, "getConfigs", null, null); },
                         MoreExecutors.directExecutor()),
-                (input) -> { return new Configs((PmiModuleConfig[])input); },
+                input -> { return new Configs((PmiModuleConfig[])input); },
                 MoreExecutors.directExecutor());
     }
 }

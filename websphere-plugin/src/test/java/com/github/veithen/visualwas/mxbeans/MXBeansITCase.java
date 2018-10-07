@@ -62,7 +62,7 @@ public class MXBeansITCase {
     
     @Test
     public void testRuntimeMXBean() throws Exception {
-        run("monitor", ManagementFactory.RUNTIME_MXBEAN_NAME, RuntimeMXBean.class, (runtimeMXBean) -> {
+        run("monitor", ManagementFactory.RUNTIME_MXBEAN_NAME, RuntimeMXBean.class, runtimeMXBean -> {
             Map<String,String> systemProperties = runtimeMXBean.getSystemProperties();
             assertThat(systemProperties).containsEntry("java.util.logging.manager", "com.ibm.ws.bootstrap.WsLogManager");
         });
@@ -70,15 +70,11 @@ public class MXBeansITCase {
     
     @Test(expected=SecurityException.class)
     public void testAccessDenied() throws Exception {
-        run("monitor", ManagementFactory.MEMORY_MXBEAN_NAME, MemoryMXBean.class, (memoryMXBean) -> {
-            memoryMXBean.gc();
-        });
+        run("monitor", ManagementFactory.MEMORY_MXBEAN_NAME, MemoryMXBean.class, MemoryMXBean::gc);
     }
     
     @Test
     public void testAccessGranted() throws Exception {
-        run("operator", ManagementFactory.MEMORY_MXBEAN_NAME, MemoryMXBean.class, (memoryMXBean) -> {
-            memoryMXBean.gc();
-        });
+        run("operator", ManagementFactory.MEMORY_MXBEAN_NAME, MemoryMXBean.class, MemoryMXBean::gc);
     }
 }

@@ -59,14 +59,12 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         InterceptorChainBuilder<Invocation,Object> invocationInterceptors = new InterceptorChainBuilder<>();
         InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors = new InterceptorChainBuilder<>();
         AdaptableDelegate adaptableDelegate = new AdaptableDelegate();
-        final ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, invocationInterceptors, soapInterceptors, adaptableDelegate);
-        for (Feature feature : features) {
-            feature.configureConnector(configurator);
-        }
+        ConfiguratorImpl configurator = new ConfiguratorImpl(adminServiceInterfaces, invocationInterceptors, soapInterceptors, adaptableDelegate);
+        features.forEach(feature -> feature.configureConnector(configurator));
         configurator.release();
-        final AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
+        AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
                 adminServiceInterfaces.toArray(new Interface[adminServiceInterfaces.size()]));
-        final Attributes initialAttributes = new Attributes(attributes);
+        Attributes initialAttributes = new Attributes(attributes);
         initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
         invocationInterceptors.add(UndeclaredExceptionInterceptor.INSTANCE);
         AdminService adminService = adminServiceFactory.create(

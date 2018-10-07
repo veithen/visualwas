@@ -37,6 +37,6 @@ public class NotificationDispatcherFeature implements Feature {
     public void configureConnector(Configurator configurator) {
         configurator.registerAdminServiceAdapter(
                 NotificationDispatcher.class,
-                (adminService) -> new NotificationDispatcherImpl((RemoteNotificationService)adminService, autoReregister));
+                adminService -> new NotificationDispatcherImpl((RemoteNotificationService)adminService, autoReregister));
     }
 }

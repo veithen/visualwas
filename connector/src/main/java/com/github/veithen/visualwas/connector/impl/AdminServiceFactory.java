@@ -42,7 +42,7 @@ final class AdminServiceFactory {
         return (AdminService)ProxyFactory.createProxy(
                 AdminServiceFactory.class.getClassLoader(),
                 ifaces,
-                (invocation) -> {
+                invocation -> {
                     if (!allowSync && invocation.getInvocationStyle() == InvocationStyle.SYNC) {
                         throw new UnsupportedOperationException("Synchronous invocations not allowed");
                     }
