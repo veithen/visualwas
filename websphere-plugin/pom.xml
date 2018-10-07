@@ -44,7 +44,7 @@
     </scm>
 
     <properties>
-        <javaVersion>1.5</javaVersion>
+        <javaVersion>1.6</javaVersion>
         <symbolicName>com.github.veithen.visualwas.mxbeans</symbolicName>
     </properties>
 

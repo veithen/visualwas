@@ -41,7 +41,7 @@
     </scm>
 
     <properties>
-        <javaVersion>1.5</javaVersion>
+        <javaVersion>1.6</javaVersion>
     </properties>
 
     <dependencies>
