@@ -88,7 +88,7 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, Trans
 
     @Override
     public ListenableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
-        SOAPMessage clonedRequest = domMetaFactory.createStAXSOAPModelBuilder(request.getXMLStreamReader()).getSOAPMessage();
+        SOAPMessage clonedRequest = OMXMLBuilderFactory.createStAXSOAPModelBuilder(domMetaFactory, request.getXMLStreamReader()).getSOAPMessage();
         return requestMatcher.match((Document)clonedRequest).produce(context.getExecutor());
     }
 }

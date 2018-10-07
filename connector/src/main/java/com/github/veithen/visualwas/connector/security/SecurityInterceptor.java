@@ -21,9 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.security;
 
-import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
 import com.github.veithen.visualwas.connector.feature.Handler;
@@ -41,15 +41,15 @@ final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPResponse
     public ListenableFuture<? extends SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request, Handler<SOAPEnvelope,SOAPResponse> nextHandler) {
         Credentials credentials = context.getAttribute(Credentials.class);
         if (credentials != null) {
-            OMFactory factory = request.getOMFactory();
+            SOAPFactory factory = (SOAPFactory)request.getOMFactory();
             SOAPHeader header = request.getOrCreateHeader();
             OMNamespace ns = factory.createOMNamespace("admin", "ns");
             header.addAttribute("SecurityEnabled", "true", ns);
             if (credentials instanceof BasicAuthCredentials) {
                 BasicAuthCredentials basicAuthCreds = (BasicAuthCredentials)credentials;
-                factory.createOMElement("username", null, header).setText(basicAuthCreds.getUsername());
-                factory.createOMElement("password", null, header).setText(basicAuthCreds.getPassword());
-                factory.createOMElement("LoginMethod", null, header).setText("BasicAuth");
+                factory.createSOAPHeaderBlock("username", null, header).setText(basicAuthCreds.getUsername());
+                factory.createSOAPHeaderBlock("password", null, header).setText(basicAuthCreds.getPassword());
+                factory.createSOAPHeaderBlock("LoginMethod", null, header).setText("BasicAuth");
             } else {
                 // TODO: proper exception
                 throw new UnsupportedOperationException();
