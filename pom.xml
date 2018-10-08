@@ -70,8 +70,20 @@
     <properties>
         <javaVersion>1.8</javaVersion>
         <github.repository>visualwas</github.repository>
-        <axiom.version>1.2.20</axiom.version>
+        <axiom.version>1.2.21-SNAPSHOT</axiom.version>
     </properties>
+
+    <repositories>
+	<repository>
+            <!-- For Axiom -->
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
