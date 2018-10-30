@@ -114,7 +114,17 @@
                         <groupId>org.apache.james</groupId>
                         <artifactId>apache-mime4j-core</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <!-- Geronimo's Activation implementation doesn't work well -->
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-activation_1.1_spec</artifactId>
+                    </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>javax.activation</artifactId>
+                <version>1.2.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>

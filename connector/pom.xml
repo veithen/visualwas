@@ -53,6 +53,10 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>javax.activation</artifactId>
+        </dependency>
+        <dependency>
             <!-- Note: we use 1.4 because it's the version shipped with the Eclipse platform -->
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
