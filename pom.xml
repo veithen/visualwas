@@ -49,6 +49,7 @@
     <modules>
         <module>connector</module>
         <module>connector-tests</module>
+        <module>systests</module>
         <module>dummy-transport</module>
         <module>loader</module>
         <module>clientlib</module>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  VisualWAS
+  %%
+  Copyright (C) 2013 - 2018 Andreas Veithen
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.veithen.visualwas</groupId>
+        <artifactId>systests</artifactId>
+        <version>2.1.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>pmi-disabled-tests</artifactId>
+
+    <url>https://github.com/veithen/visualwas</url>
+
+    <scm>
+        <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
+        <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clientlib</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <activation>
+                <property>
+                    <name>env.WEBSPHERE_VERSION</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>visualwas-websphere</name>
+                                    <build>
+                                        <from>visualwas-websphere-base:${env.WEBSPHERE_VERSION}</from>
+                                        <assembly>
+                                            <basedir>/work</basedir>
+                                            <inline>
+                                                <fileSets>
+                                                    <fileSet>
+                                                        <directory>src/main/scripts</directory>
+                                                        <outputDirectory>/</outputDirectory>
+                                                    </fileSet>
+                                                </fileSets>
+                                            </inline>
+                                        </assembly>
+                                        <runCmds>
+                                            <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /work/disablePMI.py</runCmd>
+                                        </runCmds>
+                                    </build>
+                                    <run>
+                                        <ports>
+                                            <port>was.soapPort:8880</port>
+                                        </ports>
+                                        <log>
+                                            <enabled>true</enabled>
+                                        </log>
+                                        <wait>
+                                            <log>WSVR0001I</log>
+                                            <time>600000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <was.soapPort>${was.soapPort}</was.soapPort>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
