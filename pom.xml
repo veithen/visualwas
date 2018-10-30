@@ -74,7 +74,14 @@
     </properties>
 
     <repositories>
-	<repository>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
             <!-- For Axiom -->
             <id>apache.snapshots</id>
             <name>Apache Snapshot Repository</name>
