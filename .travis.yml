@@ -8,7 +8,15 @@ env:
   - WEBSPHERE_VERSION=8.5.5.13
   - WEBSPHERE_VERSION=9.0.0.8
 install: true
-script: "mvn verify -B -U"
+script: mvn -B -s .travis-settings.xml -Prelease -Dgpg.skip=true verify
+before_cache: "find $HOME/.m2 -name '*-SNAPSHOT' -a -type d -print0 | xargs -0 rm -rf"
+jobs:
+  include:
+    - if: repo = "veithen/visualwas" AND branch = master AND type = push
+      stage: deploy
+      script: mvn -B -s .travis-settings.xml -Prelease -Dgpg.skip=true -DskipTests=true deploy
+      env:
+        - secure: "j4g/eEJDnrMiFYm6DIrIf70FAlNaidJTG99wb/LY+FO0uIguFGHD33UDG0zxrSc/YG8biSfr/vO4oXM2qJcRkUiQkCfS3qNL2jD2/cmxOjsypi8Qzh4x9J5WQR1zU3PT4sSfeLyYK4Gbb0kPni4EpRkR6pcrwjcornJHUBLzis4="
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.m2
