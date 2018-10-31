@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.feature;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -71,7 +72,8 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
 
             @Override
             public void onFailure(Throwable t) {
-                futureResult.setException(t);
+                futureResult.setException(new ConnectorException(
+                        String.format("Failed to populate context attribute with type %s", type.getName()), t));
             }
         }, MoreExecutors.directExecutor());
         return futureResult;
