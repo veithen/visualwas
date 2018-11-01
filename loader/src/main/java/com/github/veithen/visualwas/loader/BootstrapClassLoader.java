@@ -25,7 +25,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
- * Loads classes from <tt>bootstrap.jar</tt>. Delegates to the specified parent class loader, except
+ * Loads classes from {@code bootstrap.jar}. Delegates to the specified parent class loader, except
  * for classes that we need to override.
  */
 final class BootstrapClassLoader extends URLClassLoader {

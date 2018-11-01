@@ -28,28 +28,28 @@ import com.github.veithen.visualwas.connector.feature.Feature;
 /**
  * 
  * <h2>Non routable MBeans</h2> Normally all MBeans registered in WebSphere's MBean server are
- * routable, i.e. they have the <tt>cell</tt>, <tt>node</tt> and <tt>process</tt> key properties and
+ * routable, i.e. they have the {@code cell}, {@code node} and {@code process} key properties and
  * can be invoked through an upstream administrative agent (deployment manager or node agent). This
  * applies even to custom MBeans registered by applications deployed on WebSphere. There are however
  * a few exceptions:
  * <ul>
- * <li>There is always an MBean with object name <tt>JMImplementation:type=MBeanServerDelegate</tt>
+ * <li>There is always an MBean with object name {@code JMImplementation:type=MBeanServerDelegate}
  * which is not routable.
- * <li>If the <tt>javax.management.builder.initial</tt> system property is overridden (using a
+ * <li>If the {@code javax.management.builder.initial} system property is overridden (using a
  * generic JVM argument in the WebSphere configuration), then custom MBeans are not routable. Note
- * that tampering with the <tt>javax.management.builder.initial</tt> system property is not
+ * that tampering with the {@code javax.management.builder.initial} system property is not
  * supported by IBM and you shouldn't do that (at least not on production systems).
- * <li>WebSphere's MBean server is of type <tt>com.ibm.ws.management.PlatformMBeanServer</tt>
- * (unless the <tt>javax.management.builder.initial</tt> system property has been overridden). This
+ * <li>WebSphere's MBean server is of type {@code com.ibm.ws.management.PlatformMBeanServer}
+ * (unless the {@code javax.management.builder.initial} system property has been overridden). This
  * class is actually a wrapper around a standard MBean server instance and the
- * <tt>getDefaultMBeanServer</tt> method can be used to get a reference to the underlying MBean
+ * {@code getDefaultMBeanServer} method can be used to get a reference to the underlying MBean
  * server. MBeans registered on that MBean server will not be routable. This feature is used by
  * XM4WAS to register the platform MXBeans in WebSphere's MBean server. These MBeans belong to the
- * <tt>java.lang</tt> domain.
+ * {@code java.lang} domain.
  * </ul>
  * The disable federation feature makes the simplifying assumption that all MBeans are routable,
  * except for MBeans in a certain set of domains. Currently, the set of domains is hardcoded to
- * <tt>JMImplementation</tt> and <tt>java.lang</tt> to cover the first and last cases identified
+ * {@code JMImplementation} and {@code java.lang} to cover the first and last cases identified
  * above. The second case is thus not covered.
  */
 @Dependencies(ServerIdentityFeature.class)

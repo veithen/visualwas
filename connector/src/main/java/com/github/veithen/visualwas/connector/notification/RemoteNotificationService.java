@@ -50,7 +50,7 @@ public interface RemoteNotificationService {
     /**
      * Poll the server for notifications for a given subscription. This call will block until at
      * least one notification is available. Note that an invocation of this method will also block a
-     * thread in the <tt>SoapConnectorThreadPool</tt> on the server side. Therefore it is
+     * thread in the {@code SoapConnectorThreadPool} on the server side. Therefore it is
      * recommended to group multiple {@link NotificationSelector} instances into a single
      * {@link SubscriptionInfo} instead of using multiple subscriptions.
      * 

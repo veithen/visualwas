@@ -26,7 +26,7 @@ import java.io.IOException;
 
 /**
  * Class loader that loads classes from a WebSphere Application Server installation. The class
- * loader uses the OSGi metadata (more precisely the <tt>Export-Package</tt> attribute) to determine
+ * loader uses the OSGi metadata (more precisely the {@code Export-Package} attribute) to determine
  * from which bundle a given class should be loaded. It internally creates a separate class loader
  * for each bundle. These class loaders are created lazily (so that only a limited number of class
  * loaders are created) and they are referenced by weak references so that they can be garbage
@@ -40,7 +40,7 @@ public class WebSphereRuntimeClassLoader extends ClassLoader {
      * 
      * @param wasHome
      *            the WebSphere Application Server installation directory (e.g.
-     *            <tt>/opt/IBM/WebSphere/AppServer</tt>)
+     *            {@code /opt/IBM/WebSphere/AppServer})
      * @param parent
      *            the parent class loader to use
      * @throws IOException
