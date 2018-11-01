@@ -1,19 +1,33 @@
 language: java
-jdk:
-  - oraclejdk8
-  - oraclejdk9
-env:
-  # There are actually significant differences with respect to JMX in recent fix packs
-  - WEBSPHERE_VERSION=8.5.5.10
-  - WEBSPHERE_VERSION=8.5.5.13
-  - WEBSPHERE_VERSION=9.0.0.8
+before_install:
+  - if [ -e $JAVA_HOME/lib/security/cacerts ]; then ln -sf /etc/ssl/certs/java/cacerts $JAVA_HOME/lib/security/cacerts; fi
 install: true
 script: mvn -B -s .travis-settings.xml -Prelease -Dgpg.skip=true verify
 before_cache: "find $HOME/.m2 -name '*-SNAPSHOT' -a -type d -print0 | xargs -0 rm -rf"
 jobs:
   include:
+    - stage: test
+      jdk: openjdk8
+      # There are actually significant differences with respect to JMX in recent fix packs
+      env: WEBSPHERE_VERSION=8.5.5.10
+    - stage: test
+      jdk: openjdk8
+      env: WEBSPHERE_VERSION=8.5.5.13
+    - stage: test
+      jdk: openjdk8
+      env: WEBSPHERE_VERSION=9.0.0.8
+    - stage: test
+      jdk: openjdk9
+      env: WEBSPHERE_VERSION=8.5.5.13
+    - stage: test
+      jdk: openjdk10
+      env: WEBSPHERE_VERSION=8.5.5.13
+    - stage: test
+      jdk: openjdk11
+      env: WEBSPHERE_VERSION=8.5.5.13
     - if: repo = "veithen/visualwas" AND branch = master AND type = push
       stage: deploy
+      jdk: openjdk8
       # Can't activate the release profile here because github-release-plugin can't be easily skipped
       script: mvn -B -s .travis-settings.xml -DskipTests=true deploy
       env:
