@@ -173,9 +173,9 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
     private void registerMBean(Object object, String name) {
         try {
             ObjectName objectName = new ObjectName(name);
-            // On older JVM versions the MBean implement DynamicMBean. In this case, use the
-            // instance directly to allow access to vendor specific features. Otherwise, use
-            // StandardMBean so that the proxy can get the MBean description.
+            // On older JVM versions the MBeans implement DynamicMBean. In this case, use the
+            // instance directly. Otherwise, use StandardMBean so that the proxy can get the MBean
+            // description.
             registeredMBeans.add(mbs.registerMBean(
                     new AccessControlProxy(
                             object instanceof DynamicMBean ? (DynamicMBean)object : new StandardMBean(object, null, true),
