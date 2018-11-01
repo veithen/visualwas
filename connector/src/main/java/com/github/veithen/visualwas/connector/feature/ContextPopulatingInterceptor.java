@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import java.io.IOException;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
@@ -72,8 +74,17 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
 
             @Override
             public void onFailure(Throwable t) {
-                futureResult.setException(new ConnectorException(
-                        String.format("Failed to populate context attribute with type %s", type.getName()), t));
+                // If it's an IOException, assume it's a low level problem independent of the
+                // operation being invoked and simply propagate the exception. Otherwise it's likely
+                // a problem specific to the operation invoked to produce the value. In that case
+                // wrap the exception. This also prevents UndeclaredThrowableExceptions from being
+                // thrown at the caller of the proxy.
+                if (t instanceof IOException) {
+                    futureResult.setException(t);
+                } else {
+                    futureResult.setException(new ConnectorException(
+                            String.format("Failed to populate context attribute with type %s", type.getName()), t));
+                }
             }
         }, MoreExecutors.directExecutor());
         return futureResult;
