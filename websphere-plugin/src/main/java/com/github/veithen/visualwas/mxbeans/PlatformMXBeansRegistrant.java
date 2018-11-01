@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.mxbeans;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryManagerMXBean;
@@ -114,8 +115,8 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
         }
         log.fine("Configuring access rules for platform MXBeans");
         Properties accessProperties = new Properties();
-        try {
-            accessProperties.load(PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties"));
+        try (InputStream in = PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties")) {
+            accessProperties.load(in);
         } catch (IOException ex) {
             log.log(Level.SEVERE, "Failed to load access rules", ex);
         }
