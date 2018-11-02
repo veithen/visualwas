@@ -54,7 +54,10 @@ public class AccessControlProxy implements DynamicMBean {
     }
     
     private void checkAccess(String methodName) {
-        accessChecker.checkAccess(type + "." + methodName);
+        // Allow access to getObjectName (defined by PlatformManagedObject) to anybody.
+        if (!methodName.equals("getObjectName")) {
+            accessChecker.checkAccess(type + "." + methodName);
+        }
     }
     
     private void checkAttributeAccess(String attribute, Map<String,String> attributeNameToMethodNameMap) {
