@@ -115,8 +115,13 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
         }
         log.fine("Configuring access rules for platform MXBeans");
         Properties accessProperties = new Properties();
-        try (InputStream in = PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties")) {
-            accessProperties.load(in);
+        try {
+            InputStream in = PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties");
+            try {
+                accessProperties.load(in);
+            } finally {
+                in.close();
+            }
         } catch (IOException ex) {
             log.log(Level.SEVERE, "Failed to load access rules", ex);
         }
