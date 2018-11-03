@@ -22,9 +22,14 @@
 package com.github.veithen.visualwas.connector.notification;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
+import javax.management.ListenerNotFoundException;
 import javax.management.Notification;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
@@ -42,38 +47,65 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
     private static final int MAX_DELAY = 30000;
     
     private final RemoteNotificationService service;
-    private final boolean autoReregister;
     private final List<NotificationListenerRegistration> registrations = new LinkedList<>();
     // We use a single subscription for all listeners (to avoid blocking multiple threads on the server side)
     private SubscriptionInfo subscriptionInfo = new SubscriptionInfo();
     private SubscriptionHandle subscriptionHandle;
     private int delay = MIN_DELAY;
 
-    NotificationDispatcherImpl(RemoteNotificationService service, boolean autoReregister) {
+    NotificationDispatcherImpl(RemoteNotificationService service) {
         this.service = service;
-        this.autoReregister = autoReregister;
+    }
+
+    private void reconcileSubscriptions() throws IOException {
+        Set<NotificationSelector> selectors = new HashSet<>();
+        for (NotificationListenerRegistration registration : registrations) {
+            selectors.add(registration.getSelector());
+        }
+        if (selectors.equals(subscriptionInfo.getSelectors())) {
+            return;
+        }
+        subscriptionInfo.setSelectors(selectors);
+        if (subscriptionHandle == null && !selectors.isEmpty()) {
+            subscriptionHandle = service.addSubscription(subscriptionInfo, null);
+            new Thread(this).start();
+        } else if (subscriptionHandle != null && selectors.isEmpty()) {
+            try {
+                service.removeSubscription(subscriptionHandle);
+            } catch (SubscriptionNotFoundException ex) {
+                // Ignore
+            }
+            subscriptionHandle = null;
+        } else if (subscriptionHandle != null) {
+            try {
+                service.updateSubscription(subscriptionHandle, subscriptionInfo);
+            } catch (SubscriptionNotFoundException ex) {
+                subscriptionHandle = service.addSubscription(subscriptionInfo, null);
+            }
+        }
     }
 
     @Override
     public synchronized void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws IOException {
-        boolean subscribed = !registrations.isEmpty();
         NotificationSelector selector = new NotificationSelector(name, filter);
         registrations.add(new NotificationListenerRegistration(selector, listener, handback));
-        subscriptionInfo.addSelector(selector);
-        if (subscribed) {
-            try {
-                service.updateSubscription(subscriptionHandle, subscriptionInfo);
-            } catch (SubscriptionNotFoundException ex) {
-                if (!autoReregister) {
-                    subscriptionInfo = new SubscriptionInfo();
-                    subscriptionInfo.addSelector(selector);
-                }
-                subscriptionHandle = service.addSubscription(subscriptionInfo, null);
+        reconcileSubscriptions();
+    }
+
+    @Override
+    public synchronized void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws IOException, ListenerNotFoundException {
+        for (Iterator<NotificationListenerRegistration> it = registrations.iterator(); it.hasNext(); ) {
+            NotificationListenerRegistration registration = it.next();
+            if (registration.getListener() == listener
+                    && registration.getSelector().getName().equals(name)
+                    && Objects.equals(registration.getSelector().getFilter(), filter)
+                    && Objects.equals(registration.getHandback(), handback)) {
+                it.remove();
+                reconcileSubscriptions();
+                return;
             }
-        } else {
-            subscriptionHandle = service.addSubscription(subscriptionInfo, null);
-            new Thread(this).start();
         }
+        throw new ListenerNotFoundException();
     }
 
     @Override
@@ -118,14 +150,10 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
                 synchronized (this) {
                     // If the handle changed, then somebody else has reregistered the subscription already
                     if (subscriptionHandle == this.subscriptionHandle) {
-                        if (autoReregister) {
-                            try {
-                                this.subscriptionHandle = service.addSubscription(subscriptionInfo, null);
-                            } catch (IOException ex2) {
-                                log.warn("Failed to renew subscription " + subscriptionHandle, ex2);
-                            }
-                        } else {
-                            this.subscriptionHandle = null;
+                        try {
+                            this.subscriptionHandle = service.addSubscription(subscriptionInfo, null);
+                        } catch (IOException ex2) {
+                            log.warn("Failed to renew subscription " + subscriptionHandle, ex2);
                         }
                     }
                 }
@@ -137,14 +165,13 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
     }
 
     public synchronized void closing() {
-        if (subscriptionHandle != null) {
-            try {
-                service.removeSubscription(subscriptionHandle);
-            } catch (Exception ex) {
-                log.error("Failed to remove subscription", ex);
-            }
-            subscriptionHandle = null;
+        registrations.clear();
+        try {
+            reconcileSubscriptions();
+        } catch (Exception ex) {
+            log.error("Failed to remove subscription", ex);
         }
+        subscriptionHandle = null;
         subscriptionInfo = null;
         registrations.clear();
     }

@@ -197,8 +197,7 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        notificationDispatcher.removeNotificationListener(name, listener, filter, handback);
     }
 
     @Override

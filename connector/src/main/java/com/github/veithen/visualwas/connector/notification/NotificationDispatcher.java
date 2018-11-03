@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.connector.notification;
 
 import java.io.IOException;
 
+import javax.management.ListenerNotFoundException;
 import javax.management.MBeanServerConnection;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
@@ -44,4 +45,6 @@ public interface NotificationDispatcher {
      *            the context to be sent to the listener when a notification is emitted
      */
     void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws IOException;
+
+    void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws IOException, ListenerNotFoundException;
 }

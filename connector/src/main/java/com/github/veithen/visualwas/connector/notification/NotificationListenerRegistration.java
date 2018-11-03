@@ -39,6 +39,14 @@ final class NotificationListenerRegistration {
         return selector;
     }
 
+    NotificationListener getListener() {
+        return listener;
+    }
+
+    Object getHandback() {
+        return handback;
+    }
+
     void handleNotification(Notification notification) {
         listener.handleNotification(notification, handback);
     }

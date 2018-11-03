@@ -60,7 +60,7 @@ public class AdminServiceAnnotationProcessor implements AnnotationProcessor {
         }
         Class<?> returnType = getRawType(operationBuilder.getResponseType());
         operationBuilder.addAdapter(OperationHandler.class, new OperationHandler(operationName, operationName, operationName + "Response", paramHandlers,
-                returnType == Void.class ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader()));
+                returnType == Void.TYPE ? null : getTypeHandler(returnType), operationAnnotation != null && operationAnnotation.suppressHeader()));
     }
     
     private static Class<?> getRawType(Type type) {

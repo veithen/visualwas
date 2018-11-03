@@ -139,7 +139,7 @@ public class SOAPJMXConnector implements JMXConnector {
         ConnectorConfiguration.Builder connectorConfigBuilder = ConnectorConfiguration.custom();
         connectorConfigBuilder.setClassLoaderProvider(classLoaderProvider);
         connectorConfigBuilder.setTransportConfiguration(transportConfigBuilder.build());
-        connectorConfigBuilder.addFeatures(new ConnectionIdFeature(connectionId), new NotificationDispatcherFeature(true));
+        connectorConfigBuilder.addFeatures(new ConnectionIdFeature(connectionId), NotificationDispatcherFeature.INSTANCE);
         Feature[] features = (Feature[])env.get(FEATURES);
         if (features != null) {
             connectorConfigBuilder.addFeatures(features);

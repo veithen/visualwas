@@ -34,6 +34,15 @@ public final class SubscriptionInfo implements Serializable {
     
     private final Set<NotificationSelector> filters = Collections.synchronizedSet(new HashSet<NotificationSelector>());
 
+    public Set<NotificationSelector> getSelectors() {
+        return new HashSet<>(filters);
+    }
+
+    public void setSelectors(Set<NotificationSelector> selectors) {
+        filters.clear();
+        filters.addAll(selectors);
+    }
+
     public void addSelector(NotificationSelector selector) {
         filters.add(selector);
     }

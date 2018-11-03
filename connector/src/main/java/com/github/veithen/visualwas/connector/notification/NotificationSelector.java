@@ -58,6 +58,14 @@ public final class NotificationSelector implements NotificationFilter {
         this.filter = filter;
     }
 
+    ObjectName getName() {
+        return name;
+    }
+
+    NotificationFilter getFilter() {
+        return filter;
+    }
+
     @Override
     public boolean isNotificationEnabled(Notification notification) {
         return name.apply((ObjectName)notification.getSource()) && (filter == null || filter.isNotificationEnabled(notification));

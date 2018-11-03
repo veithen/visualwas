@@ -33,6 +33,7 @@ import javax.management.remote.JMXConnectorFactory;
 import com.github.veithen.visualwas.client.config.ConfigClientFeature;
 import com.github.veithen.visualwas.client.jsr77.JSR77ClientFeature;
 import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
+import com.github.veithen.visualwas.client.ras.RasLoggingFeature;
 import com.github.veithen.visualwas.client.repository.RepositoryClientFeature;
 import com.github.veithen.visualwas.connector.feature.Feature;
 import com.github.veithen.visualwas.connector.federation.DisableFederationFeature;
@@ -62,7 +63,8 @@ public final class EnvUtil {
                 ConfigClientFeature.INSTANCE,
                 JSR77ClientFeature.INSTANCE,
                 PmiClientFeature.INSTANCE,
-                RepositoryClientFeature.INSTANCE));
+                RepositoryClientFeature.INSTANCE,
+                RasLoggingFeature.INSTANCE));
         env.put(SOAPJMXConnector.FEATURES, features.toArray(new Feature[features.size()]));
         return env;
     }
