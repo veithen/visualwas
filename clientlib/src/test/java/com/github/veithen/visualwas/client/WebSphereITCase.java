@@ -40,7 +40,7 @@ public abstract class WebSphereITCase {
     public void initConnector() throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
         Attributes attributes = new Attributes();
-        attributes.set(Credentials.class, new BasicAuthCredentials("wsadmin", "abcd1234"));
+        attributes.set(Credentials.class, new BasicAuthCredentials("administrator", "changeme"));
         configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
         configBuilder.addFeatures(getFeatures());
         Endpoint endpoint = new Endpoint("localhost", Integer.parseInt(System.getProperty("was.soapPort")), true);

@@ -25,7 +25,7 @@ AdminTask.applyWizardSettings([
   '-userRegistryType', 'WIMUserRegistry',
   '-adminName', 'wsadmin',
   '-adminPassword', 'abcd1234'])
-for role in ['operator', 'deployer', 'configurator', 'monitor']:
+for role in ['operator', 'deployer', 'configurator', 'monitor', 'administrator']:
   AdminTask.addFileRegistryAccount('-userId %s -password changeme' % role)
   AdminTask.mapUsersToAdminRole(['-roleName', role, '-userids', role])
 AdminConfig.save()
