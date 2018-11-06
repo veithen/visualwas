@@ -28,6 +28,7 @@ import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.framework.Adaptable;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of
@@ -48,14 +49,14 @@ public interface Configurator extends Adaptable {
     
     /**
      * Add support for additional admin service operations. The corresponding Java interface (as
-     * returned by {@link Interface#getInterface()} will be registered as an adapter
-     * and the corresponding adapter instance can be retrieved by invoking
+     * returned by {@link Interface#getInterface()} will be registered as an adapter and the
+     * corresponding adapter instance can be retrieved by invoking
      * {@link Adaptable#getAdapter(Class)} on the {@link Connector} instance. The
-     * {@link AdminService} instance passed to {@link AdapterFactory#createAdapter(AdminService)}
-     * will also implement this interface.
+     * {@link AdminService} instance passed to
+     * {@link AdapterFactory#createAdapter(AdminService, ListeningExecutorService)} will also
+     * implement this interface.
      * 
-     * @param description
-     *            the description of the operations to add
+     * @param description the description of the operations to add
      */
     void addAdminServiceInterface(Interface<?> description);
     

@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.CloseListener;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class AdapterHolder<T> {
     private final AdapterFactory<T> factory;
@@ -33,9 +34,9 @@ final class AdapterHolder<T> {
         this.factory = factory;
     }
     
-    synchronized T getAdapter(AdminService adminService) {
+    synchronized T getAdapter(AdminService adminService, ListeningExecutorService executor) {
         if (adapter == null) {
-            adapter = factory.createAdapter(adminService);
+            adapter = factory.createAdapter(adminService, executor);
         }
         return adapter;
     }

@@ -64,6 +64,6 @@ final class AdaptableDelegate implements Adaptable {
     @Override
     public <T> T getAdapter(Class<T> clazz) {
         AdapterHolder<?> holder = adapters.get(clazz);
-        return holder == null ? null : clazz.cast(holder.getAdapter(adminService));
+        return holder == null ? null : clazz.cast(holder.getAdapter(adminService, executor));
     }
 }

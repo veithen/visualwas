@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.management.ListenerNotFoundException;
 import javax.management.Notification;
@@ -40,21 +41,23 @@ import org.apache.commons.logging.LogFactory;
 
 import com.github.veithen.visualwas.connector.feature.CloseListener;
 
-final class NotificationDispatcherImpl implements NotificationDispatcher, Runnable, CloseListener {
+final class NotificationDispatcherImpl implements NotificationDispatcher, CloseListener {
     private static final Log log = LogFactory.getLog(NotificationDispatcherImpl.class);
     
     private static final int MIN_DELAY = 2000;
     private static final int MAX_DELAY = 30000;
     
     private final RemoteNotificationService service;
+    private final Executor executor;
     private final List<NotificationListenerRegistration> registrations = new LinkedList<>();
     // We use a single subscription for all listeners (to avoid blocking multiple threads on the server side)
     private SubscriptionInfo subscriptionInfo = new SubscriptionInfo();
     private SubscriptionHandle subscriptionHandle;
     private int delay = MIN_DELAY;
 
-    NotificationDispatcherImpl(RemoteNotificationService service) {
+    NotificationDispatcherImpl(RemoteNotificationService service, Executor executor) {
         this.service = service;
+        this.executor = executor;
     }
 
     private void reconcileSubscriptions() throws IOException {
@@ -68,7 +71,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
         subscriptionInfo.setSelectors(selectors);
         if (subscriptionHandle == null && !selectors.isEmpty()) {
             subscriptionHandle = service.addSubscription(subscriptionInfo, null);
-            new Thread(this).start();
+            executor.execute(this::run);
         } else if (subscriptionHandle != null && selectors.isEmpty()) {
             try {
                 service.removeSubscription(subscriptionHandle);
@@ -108,8 +111,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
         throw new ListenerNotFoundException();
     }
 
-    @Override
-    public void run() {
+    private void run() {
         boolean doDelay = false;
         while (true) {
             if (doDelay) {
@@ -130,13 +132,14 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, Runnab
             try {
                 Notification[] notifications = service.pullNotifications(subscriptionHandle, 20);
                 synchronized (this) {
-                    // TODO: listeners should be invoked asynchronously
-                    for (Notification notification : notifications) {
-                        for (NotificationListenerRegistration registration : registrations) {
-                            if (registration.getSelector().isNotificationEnabled(notification)) {
-                                registration.handleNotification(notification);
+                    for (NotificationListenerRegistration registration : registrations) {
+                        executor.execute(() -> {
+                            for (Notification notification : notifications) {
+                                if (registration.getSelector().isNotificationEnabled(notification)) {
+                                    registration.handleNotification(notification);
+                                }
                             }
-                        }
+                        });
                     }
                 }
                 if (notifications.length > 0) {

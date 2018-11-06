@@ -65,7 +65,7 @@ final class ConfiguratorImpl implements Configurator {
     }
     
     private <T> void registerAdminServerAdapterForExtension(Class<T> iface) {
-        adaptableDelegate.registerAdapter(iface, iface::cast);
+        adaptableDelegate.registerAdapter(iface, (adminService, executor) -> iface.cast(adminService));
     }
 
     @Override

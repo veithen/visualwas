@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector.proxy;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.framework.proxy.Interface;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class MBeanProxyAdapterFactory<T> implements AdapterFactory<T> {
     private final Interface<T> iface;
@@ -35,7 +36,7 @@ final class MBeanProxyAdapterFactory<T> implements AdapterFactory<T> {
     }
 
     @Override
-    public T createAdapter(AdminService adminService) {
+    public T createAdapter(AdminService adminService, ListeningExecutorService executor) {
         return MBeanProxyHelper.createProxy(adminService, iface, locator);
     }
 }

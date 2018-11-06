@@ -46,6 +46,6 @@ public final class MBeanProxyFeature implements Feature {
     @Override
     public void configureConnector(Configurator configurator) {
         configurator.registerConfiguratorAdapter(MBeanProxyConfigurator.class, new MBeanProxyConfiguratorImpl(configurator));
-        configurator.registerAdminServiceAdapter(MBeanProxyFactory.class, MBeanProxyFactoryImpl::new);
+        configurator.registerAdminServiceAdapter(MBeanProxyFactory.class, (adminService, executor) -> new MBeanProxyFactoryImpl(adminService));
     }
 }
