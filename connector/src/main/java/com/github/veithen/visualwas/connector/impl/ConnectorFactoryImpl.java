@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import org.apache.axiom.soap.SOAPEnvelope;
 
@@ -40,6 +41,7 @@ import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
+import com.google.common.util.concurrent.MoreExecutors;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
     private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE = InterfaceFactory.createInterface(AdminService.class);
@@ -68,9 +70,11 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
         invocationInterceptors.add(UndeclaredExceptionInterceptor.INSTANCE);
         AdminService adminService = adminServiceFactory.create(
-                () -> new InvocationContextImpl(config, adminServiceFactory, configurator.getSerializer(), initialAttributes),
+                () -> new InvocationContextImpl(config, adminServiceFactory, adaptableDelegate.getExecutor(), configurator.getSerializer(), initialAttributes),
                 invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
                 true);
+        // Create the executor only when we are sure we don't end up with an exception.
+        adaptableDelegate.setExecutor(MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
         return new ConnectorImpl(adminService, adaptableDelegate);
     }
 }

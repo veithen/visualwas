@@ -27,10 +27,12 @@ import java.util.Map;
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.framework.Adaptable;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class AdaptableDelegate implements Adaptable {
     private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<>();
     private AdminService adminService;
+    private ListeningExecutorService executor;
 
     <T> void registerAdapter(Class<T> iface, AdapterFactory<T> adapterFactory) {
         adapters.put(iface, new AdapterHolder<>(adapterFactory));
@@ -43,8 +45,20 @@ final class AdaptableDelegate implements Adaptable {
         this.adminService = adminService;
     }
 
+    ListeningExecutorService getExecutor() {
+        return executor;
+    }
+
+    void setExecutor(ListeningExecutorService executor) {
+        if (this.executor != null) {
+            throw new IllegalStateException();
+        }
+        this.executor = executor;
+    }
+
     void closing() {
         adapters.values().forEach(AdapterHolder::closing);
+        executor.shutdown();
     }
     
     @Override

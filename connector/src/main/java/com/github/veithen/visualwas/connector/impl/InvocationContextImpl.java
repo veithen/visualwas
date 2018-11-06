@@ -29,7 +29,6 @@ import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 
 final class InvocationContextImpl implements InvocationContext {
     private final AdminServiceFactory adminServiceFactory;
@@ -39,11 +38,11 @@ final class InvocationContextImpl implements InvocationContext {
     private final Attributes attributes;
     
     InvocationContextImpl(ConnectorConfiguration connectorConfiguration, AdminServiceFactory adminServiceFactory,
-            Serializer serializer, Attributes initialAttributes) {
+            ListeningExecutorService executor, Serializer serializer, Attributes initialAttributes) {
         this.adminServiceFactory = adminServiceFactory;
         // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
         classLoader = connectorConfiguration.getClassLoaderProvider().getClassLoader();
-        executor = MoreExecutors.newDirectExecutorService();
+        this.executor = executor;
         this.serializer = serializer;
         attributes = new Attributes(initialAttributes);
     }
