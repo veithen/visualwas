@@ -263,6 +263,7 @@
                                                     </inline>
                                                 </assembly>
                                                 <runCmds>
+                                                    <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/deployConsole.py remove</runCmd>
                                                     <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /work/configureSecurity.py</runCmd>
 
                                                     <!-- Generate a start script so that we can further accelerate the startup of container
