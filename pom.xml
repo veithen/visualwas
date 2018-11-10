@@ -71,7 +71,7 @@
     <properties>
         <javaVersion>1.8</javaVersion>
         <github.repository>visualwas</github.repository>
-        <axiom.version>1.2.21-SNAPSHOT</axiom.version>
+        <axiom.version>1.2.21</axiom.version>
     </properties>
 
     <repositories>
