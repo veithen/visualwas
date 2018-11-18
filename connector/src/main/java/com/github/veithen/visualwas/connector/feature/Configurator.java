@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import java.util.concurrent.Executor;
+
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
@@ -28,7 +30,6 @@ import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.framework.Adaptable;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 /**
  * Defines the API used by {@link Feature} objects to configure a connector instance. Instances of
@@ -53,7 +54,7 @@ public interface Configurator extends Adaptable {
      * corresponding adapter instance can be retrieved by invoking
      * {@link Adaptable#getAdapter(Class)} on the {@link Connector} instance. The
      * {@link AdminService} instance passed to
-     * {@link AdapterFactory#createAdapter(AdminService, ListeningExecutorService)} will also
+     * {@link AdapterFactory#createAdapter(AdminService, Executor)} will also
      * implement this interface.
      * 
      * @param description the description of the operations to add

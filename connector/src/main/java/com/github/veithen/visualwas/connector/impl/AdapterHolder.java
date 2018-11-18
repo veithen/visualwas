@@ -21,10 +21,11 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.concurrent.Executor;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.connector.feature.CloseListener;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class AdapterHolder<T> {
     private final AdapterFactory<T> factory;
@@ -34,7 +35,7 @@ final class AdapterHolder<T> {
         this.factory = factory;
     }
     
-    synchronized T getAdapter(AdminService adminService, ListeningExecutorService executor) {
+    synchronized T getAdapter(AdminService adminService, Executor executor) {
         if (adapter == null) {
             adapter = factory.createAdapter(adminService, executor);
         }

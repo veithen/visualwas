@@ -21,15 +21,16 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import java.util.concurrent.Executor;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 public interface InvocationContext {
 
     ClassLoader getClassLoader();
 
-    ListeningExecutorService getExecutor();
+    Executor getExecutor();
 
     <T> T getAttribute(Class<T> key);
 

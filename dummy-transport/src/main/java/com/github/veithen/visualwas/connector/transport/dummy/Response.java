@@ -22,10 +22,10 @@
 package com.github.veithen.visualwas.connector.transport.dummy;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 public abstract class Response {
-    abstract CompletableFuture<SOAPResponse> produce(ListeningExecutorService executor);
+    abstract CompletableFuture<SOAPResponse> produce(Executor executor);
 }

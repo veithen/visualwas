@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.concurrent.Executor;
+
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
@@ -28,17 +30,16 @@ import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class InvocationContextImpl implements InvocationContext {
     private final AdminServiceFactory adminServiceFactory;
     private final ClassLoader classLoader;
-    private final ListeningExecutorService executor;
+    private final Executor executor;
     private final Serializer serializer;
     private final Attributes attributes;
     
     InvocationContextImpl(ConnectorConfiguration connectorConfiguration, AdminServiceFactory adminServiceFactory,
-            ListeningExecutorService executor, Serializer serializer, Attributes initialAttributes) {
+            Executor executor, Serializer serializer, Attributes initialAttributes) {
         this.adminServiceFactory = adminServiceFactory;
         // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
         classLoader = connectorConfiguration.getClassLoaderProvider().getClassLoader();
@@ -57,7 +58,7 @@ final class InvocationContextImpl implements InvocationContext {
     }
     
     @Override
-    public ListeningExecutorService getExecutor() {
+    public Executor getExecutor() {
         return executor;
     }
 

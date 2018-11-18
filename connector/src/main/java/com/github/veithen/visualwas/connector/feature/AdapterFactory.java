@@ -21,9 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import java.util.concurrent.Executor;
+
 import com.github.veithen.visualwas.connector.AdminService;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 public interface AdapterFactory<T> {
-    T createAdapter(AdminService adminService, ListeningExecutorService executor);
+    T createAdapter(AdminService adminService, Executor executor);
 }

@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
@@ -34,7 +35,6 @@ import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 public final class CannedResponse extends Response {
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
@@ -46,7 +46,7 @@ public final class CannedResponse extends Response {
     }
 
     @Override
-    CompletableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
+    CompletableFuture<SOAPResponse> produce(Executor executor) {
         return CompletableFutures.callAsync(new Callable<SOAPResponse>() {
             @Override
             public SOAPResponse call() throws Exception {

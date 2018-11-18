@@ -41,7 +41,6 @@ import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.MoreExecutors;
 
 public final class ConnectorFactoryImpl extends ConnectorFactory {
     private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE = InterfaceFactory.createInterface(AdminService.class);
@@ -74,7 +73,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
                 invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
                 true);
         // Create the executor only when we are sure we don't end up with an exception.
-        adaptableDelegate.setExecutor(MoreExecutors.listeningDecorator(Executors.newCachedThreadPool()));
+        adaptableDelegate.setExecutor(Executors.newCachedThreadPool());
         return new ConnectorImpl(adminService, adaptableDelegate);
     }
 }

@@ -23,16 +23,17 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.framework.Adaptable;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 final class AdaptableDelegate implements Adaptable {
     private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<>();
     private AdminService adminService;
-    private ListeningExecutorService executor;
+    private ExecutorService executor;
 
     <T> void registerAdapter(Class<T> iface, AdapterFactory<T> adapterFactory) {
         adapters.put(iface, new AdapterHolder<>(adapterFactory));
@@ -45,11 +46,11 @@ final class AdaptableDelegate implements Adaptable {
         this.adminService = adminService;
     }
 
-    ListeningExecutorService getExecutor() {
+    Executor getExecutor() {
         return executor;
     }
 
-    void setExecutor(ListeningExecutorService executor) {
+    void setExecutor(ExecutorService executor) {
         if (this.executor != null) {
             throw new IllegalStateException();
         }

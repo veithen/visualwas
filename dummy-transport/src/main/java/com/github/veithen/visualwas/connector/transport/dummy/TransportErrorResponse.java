@@ -23,10 +23,10 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.util.concurrent.ListeningExecutorService;
 
 public final class TransportErrorResponse extends Response {
     private final IOException exception;
@@ -36,7 +36,7 @@ public final class TransportErrorResponse extends Response {
     }
 
     @Override
-    CompletableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
+    CompletableFuture<SOAPResponse> produce(Executor executor) {
         return CompletableFutures.immediateFailedFuture(exception);
     }
 }
