@@ -22,17 +22,16 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 /**
  * Wraps undeclared exception in {@link ConnectorException} to avoid
@@ -44,13 +43,13 @@ final class UndeclaredExceptionInterceptor implements Interceptor<Invocation,Obj
     private UndeclaredExceptionInterceptor() {}
 
     @Override
-    public ListenableFuture<? extends Object> invoke(InvocationContext context, final Invocation invocation, Handler<Invocation,Object> nextHandler) {
-        ListenableFuture<? extends Object> future = nextHandler.invoke(context, invocation);
-        final SettableFuture<Object> transformedFuture = SettableFuture.create();
-        Futures.addCallback(future, new FutureCallback<Object>() {
+    public CompletableFuture<? extends Object> invoke(InvocationContext context, final Invocation invocation, Handler<Invocation,Object> nextHandler) {
+        CompletableFuture<? extends Object> future = nextHandler.invoke(context, invocation);
+        final CompletableFuture<Object> transformedFuture = new CompletableFuture<>();
+        CompletableFutures.addCallback(future, new FutureCallback<Object>() {
             @Override
             public void onSuccess(Object value) {
-                transformedFuture.set(value);
+                transformedFuture.complete(value);
             }
 
             @Override
@@ -67,7 +66,7 @@ final class UndeclaredExceptionInterceptor implements Interceptor<Invocation,Obj
                         t = new ConnectorException("Received unexpected exception", t);
                     }
                 }
-                transformedFuture.setException(t);
+                transformedFuture.completeExceptionally(t);
             }
         }, MoreExecutors.directExecutor());
         return transformedFuture;

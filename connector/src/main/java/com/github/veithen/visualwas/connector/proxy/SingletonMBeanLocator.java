@@ -23,17 +23,16 @@ package com.github.veithen.visualwas.connector.proxy;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 public class SingletonMBeanLocator implements MBeanLocator {
     private final String type;
@@ -43,9 +42,9 @@ public class SingletonMBeanLocator implements MBeanLocator {
     }
 
     @Override
-    public ListenableFuture<ObjectName> locateMBean(final AdminService adminService) {
-        final SettableFuture<ObjectName> result = SettableFuture.create();
-        Futures.addCallback(
+    public CompletableFuture<ObjectName> locateMBean(final AdminService adminService) {
+        final CompletableFuture<ObjectName> result = new CompletableFuture<>();
+        CompletableFutures.addCallback(
                 adminService.getServerMBeanAsync(),
                 new FutureCallback<ObjectName>() {
                     @Override
@@ -54,10 +53,10 @@ public class SingletonMBeanLocator implements MBeanLocator {
                         try {
                             pattern = new ObjectName(serverMBean.getDomain() + ":type=" + type + ",cell=" + serverMBean.getKeyProperty("cell") + ",node=" + serverMBean.getKeyProperty("node") + ",process=" + serverMBean.getKeyProperty("process") + ",*");
                         } catch (MalformedObjectNameException ex) {
-                            result.setException(ex);
+                            result.completeExceptionally(ex);
                             return;
                         }
-                        Futures.addCallback(
+                        CompletableFutures.addCallback(
                                 adminService.queryNamesAsync(pattern, null),
                                 new FutureCallback<Set<ObjectName>>() {
                                     @Override
@@ -66,18 +65,18 @@ public class SingletonMBeanLocator implements MBeanLocator {
                                         if (it.hasNext()) {
                                             ObjectName mbean = it.next();
                                             if (it.hasNext()) {
-                                                result.setException(new InstanceNotFoundException("Found multiple MBeans of type " + type));
+                                                result.completeExceptionally(new InstanceNotFoundException("Found multiple MBeans of type " + type));
                                             } else {
-                                                result.set(mbean);
+                                                result.complete(mbean);
                                             }
                                         } else {
-                                            result.setException(new InstanceNotFoundException("No MBean of type " + type + " found"));
+                                            result.completeExceptionally(new InstanceNotFoundException("No MBean of type " + type + " found"));
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Throwable t) {
-                                        result.setException(t);
+                                        result.completeExceptionally(t);
                                     }
                                 },
                                 MoreExecutors.directExecutor());
@@ -85,7 +84,7 @@ public class SingletonMBeanLocator implements MBeanLocator {
 
                     @Override
                     public void onFailure(Throwable t) {
-                        result.setException(t);
+                        result.completeExceptionally(t);
                     }
                 },
                 MoreExecutors.directExecutor());

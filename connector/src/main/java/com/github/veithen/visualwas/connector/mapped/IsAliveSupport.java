@@ -22,13 +22,13 @@
 package com.github.veithen.visualwas.connector.mapped;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.veithen.visualwas.connector.Operation;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface IsAliveSupport {
     @Operation(suppressHeader=true)
     Session isAlive() throws IOException;
 
-    ListenableFuture<Session> isAliveAsync();
+    CompletableFuture<Session> isAliveAsync();
 }

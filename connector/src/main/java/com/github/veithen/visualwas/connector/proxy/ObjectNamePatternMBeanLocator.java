@@ -23,17 +23,16 @@ package com.github.veithen.visualwas.connector.proxy;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 public class ObjectNamePatternMBeanLocator implements MBeanLocator {
     private final ObjectName pattern;
@@ -47,9 +46,9 @@ public class ObjectNamePatternMBeanLocator implements MBeanLocator {
     }
 
     @Override
-    public ListenableFuture<ObjectName> locateMBean(AdminService adminService) {
-        final SettableFuture<ObjectName> result = SettableFuture.create();
-        Futures.addCallback(
+    public CompletableFuture<ObjectName> locateMBean(AdminService adminService) {
+        final CompletableFuture<ObjectName> result = new CompletableFuture<>();
+        CompletableFutures.addCallback(
                 adminService.queryNamesAsync(pattern, null),
                 new FutureCallback<Set<ObjectName>>() {
                     @Override
@@ -58,18 +57,18 @@ public class ObjectNamePatternMBeanLocator implements MBeanLocator {
                         if (it.hasNext()) {
                             ObjectName mbean = it.next();
                             if (it.hasNext()) {
-                                result.setException(new InstanceNotFoundException("Found multiple MBeans matching " + pattern));
+                                result.completeExceptionally(new InstanceNotFoundException("Found multiple MBeans matching " + pattern));
                             } else {
-                                result.set(mbean);
+                                result.complete(mbean);
                             }
                         } else {
-                            result.setException(new InstanceNotFoundException(pattern + " not found"));
+                            result.completeExceptionally(new InstanceNotFoundException(pattern + " not found"));
                         }
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
-                        result.setException(t);
+                        result.completeExceptionally(t);
                     }
                 },
                 MoreExecutors.directExecutor());

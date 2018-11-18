@@ -24,6 +24,8 @@ package com.github.veithen.visualwas.connector.feature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
@@ -34,8 +36,6 @@ import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.InterfaceFactory;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.Operation;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public class FeatureTest {
     @Test
@@ -47,9 +47,9 @@ public class FeatureTest {
                 configurator.addAdminServiceInterface(desc);
                 final Operation operation = desc.getOperation("echo");
                 configurator.addInvocationInterceptor(new Interceptor<Invocation,Object>() {
-                    public ListenableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
+                    public CompletableFuture<?> invoke(InvocationContext context, Invocation invocation, Handler<Invocation,Object> nextHandler) {
                         if (invocation.getOperation() == operation) {
-                            return Futures.immediateFuture(invocation.getParameters()[0]);
+                            return CompletableFuture.completedFuture(invocation.getParameters()[0]);
                         } else {
                             return nextHandler.invoke(context, invocation);
                         }

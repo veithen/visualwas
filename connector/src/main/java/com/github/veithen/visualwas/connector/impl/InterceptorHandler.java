@@ -21,10 +21,11 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class InterceptorHandler<S,T> implements Handler<S,T> {
     private final Interceptor<S,T> interceptor;
@@ -36,7 +37,7 @@ final class InterceptorHandler<S,T> implements Handler<S,T> {
     }
 
     @Override
-    public ListenableFuture<? extends T> invoke(InvocationContext context, S request) {
+    public CompletableFuture<? extends T> invoke(InvocationContext context, S request) {
         return interceptor.invoke(context, request, nextHandler);
     }
 }

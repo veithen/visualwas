@@ -21,8 +21,8 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 public interface InvocationTarget {
-    ListenableFuture<?> invoke(Invocation invocation);
+    CompletableFuture<?> invoke(Invocation invocation);
 }

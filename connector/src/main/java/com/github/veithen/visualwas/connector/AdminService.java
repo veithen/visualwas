@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.connector;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -38,12 +39,11 @@ import javax.management.QueryExp;
 import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.loader.ClassLoaderProvider;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface AdminService {
     String getDefaultDomain() throws IOException;
 
-    ListenableFuture<String> getDefaultDomainAsync();
+    CompletableFuture<String> getDefaultDomainAsync();
     
     /**
      * Get the object name of the MBean representing the WebSphere Application Server instance the
@@ -54,34 +54,34 @@ public interface AdminService {
      */
     ObjectName getServerMBean() throws IOException;
     
-    ListenableFuture<ObjectName> getServerMBeanAsync();
+    CompletableFuture<ObjectName> getServerMBeanAsync();
     
     Integer getMBeanCount() throws IOException;
     
-    ListenableFuture<Integer> getMBeanCountAsync();
+    CompletableFuture<Integer> getMBeanCountAsync();
     
     Set<ObjectName> queryNames(@Param(name="objectname") ObjectName objectName,
                                @Param(name="queryexp") QueryExp queryExp) throws IOException;
 
-    ListenableFuture<Set<ObjectName>> queryNamesAsync(ObjectName objectName, QueryExp queryExp);
+    CompletableFuture<Set<ObjectName>> queryNamesAsync(ObjectName objectName, QueryExp queryExp);
     
     Set<ObjectInstance> queryMBeans(@Param(name="objectname") ObjectName objectName,
                                     @Param(name="queryexp") QueryExp queryExp) throws IOException;
 
-    ListenableFuture<Set<ObjectInstance>> queryMBeansAsync(ObjectName objectName, QueryExp queryExp);
+    CompletableFuture<Set<ObjectInstance>> queryMBeansAsync(ObjectName objectName, QueryExp queryExp);
 
     boolean isRegistered(@Param(name="objectname") ObjectName objectName) throws IOException;
     
-    ListenableFuture<Boolean> isRegisteredAsync(ObjectName objectName);
+    CompletableFuture<Boolean> isRegisteredAsync(ObjectName objectName);
     
     MBeanInfo getMBeanInfo(@Param(name="objectname") ObjectName objectName) throws InstanceNotFoundException, IntrospectionException, ReflectionException, IOException;
     
-    ListenableFuture<MBeanInfo> getMBeanInfoAsync(ObjectName objectName);
+    CompletableFuture<MBeanInfo> getMBeanInfoAsync(ObjectName objectName);
     
     boolean isInstanceOf(@Param(name="objectname") ObjectName objectName,
                          @Param(name="classname") String className) throws InstanceNotFoundException, IOException;
 
-    ListenableFuture<Boolean> isInstanceOfAsync(ObjectName objectName, String className);
+    CompletableFuture<Boolean> isInstanceOfAsync(ObjectName objectName, String className);
     
     /**
      * Invokes an operation on an MBean.
@@ -114,7 +114,7 @@ public interface AdminService {
                   @Param(name="params") Object[] params,
                   @Param(name="signature") String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException, IOException, ClassNotFoundException;
 
-    ListenableFuture<Object> invokeAsync(ObjectName objectName, String operationName, Object[] params, String[] signature);
+    CompletableFuture<Object> invokeAsync(ObjectName objectName, String operationName, Object[] params, String[] signature);
     
     /**
      * Gets the value of a specific attribute of a named MBean.
@@ -143,7 +143,7 @@ public interface AdminService {
     Object getAttribute(@Param(name="objectname") ObjectName objectName,
                         @Param(name="attribute") String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, IOException, ClassNotFoundException;
 
-    ListenableFuture<Object> getAttributeAsync(ObjectName objectName, String attribute);
+    CompletableFuture<Object> getAttributeAsync(ObjectName objectName, String attribute);
     
     /**
      * Retrieves the values of several attributes of a named MBean.
@@ -167,15 +167,15 @@ public interface AdminService {
     AttributeList getAttributes(@Param(name="objectname") ObjectName objectName,
                                 @Param(name="attribute") String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException, ClassNotFoundException;
 
-    ListenableFuture<AttributeList> getAttributesAsync(ObjectName objectName, String[] attributes);
+    CompletableFuture<AttributeList> getAttributesAsync(ObjectName objectName, String[] attributes);
 
     void setAttribute(@Param(name="objectname") ObjectName objectName,
                       @Param(name="attribute") Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException;
 
-    ListenableFuture<Void> setAttributeAsync(ObjectName objectName, Attribute attribute);
+    CompletableFuture<Void> setAttributeAsync(ObjectName objectName, Attribute attribute);
     
     AttributeList setAttributes(@Param(name="objectname") ObjectName objectName,
                                 @Param(name="attribute") AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException;
 
-    ListenableFuture<AttributeList> setAttributesAsync(ObjectName objectName, AttributeList attributes);
+    CompletableFuture<AttributeList> setAttributesAsync(ObjectName objectName, AttributeList attributes);
 }

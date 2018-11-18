@@ -22,15 +22,14 @@
 package com.github.veithen.visualwas.framework.proxy;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 public abstract class InvocationStyle {
     public static final InvocationStyle SYNC = new InvocationStyle() {
         @Override
         MethodInfo getMethodInfo(Method method) {
-            if (method.getReturnType() != ListenableFuture.class) {
+            if (method.getReturnType() != CompletableFuture.class) {
                 return new SyncMethodInfo(method);
             } else {
                 return null;
@@ -50,7 +49,7 @@ public abstract class InvocationStyle {
     public static final InvocationStyle ASYNC = new InvocationStyle() {
         @Override
         MethodInfo getMethodInfo(Method method) {
-            if (method.getReturnType() == ListenableFuture.class && method.getName().endsWith("Async")) {
+            if (method.getReturnType() == CompletableFuture.class && method.getName().endsWith("Async")) {
                 return new AsyncMethodInfo(method);
             } else {
                 return null;

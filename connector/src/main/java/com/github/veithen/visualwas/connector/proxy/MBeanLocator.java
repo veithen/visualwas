@@ -21,11 +21,12 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import java.util.concurrent.CompletableFuture;
+
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface MBeanLocator {
-    ListenableFuture<ObjectName> locateMBean(AdminService adminService);
+    CompletableFuture<ObjectName> locateMBean(AdminService adminService);
 }

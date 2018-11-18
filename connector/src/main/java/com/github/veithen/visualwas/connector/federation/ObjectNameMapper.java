@@ -31,14 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.google.common.base.Function;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
 final class ObjectNameMapper implements Mapper<ObjectName> {
@@ -132,19 +132,19 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
         return result;
     }
     
-    ListenableFuture<Set<ObjectName>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<ObjectName> queryExecutor) {
+    CompletableFuture<Set<ObjectName>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<ObjectName> queryExecutor) {
         return query(objectName, queryExp, queryExecutor, this);
     }
     
-    private <T> ListenableFuture<Set<T>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<T> queryExecutor, final Mapper<T> mapper) {
+    private <T> CompletableFuture<Set<T>> query(ObjectName objectName, QueryExp queryExp, QueryExecutor<T> queryExecutor, final Mapper<T> mapper) {
         if (queryExp != null) {
             // TODO
             throw new UnsupportedOperationException();
         }
         if (objectName == null) {
             try {
-                List<ListenableFuture<Set<T>>> futures = new ArrayList<>();
-                futures.add(Futures.transform(
+                List<CompletableFuture<Set<T>>> futures = new ArrayList<>();
+                futures.add(CompletableFutures.transform(
                         queryExecutor.execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp),
                         new Function<Set<T>,Set<T>>() {
                             @Override
@@ -160,8 +160,8 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                 for (String domain : nonRoutableDomains) {
                     futures.add(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
                 }
-                return Futures.transform(
-                        Futures.allAsList(futures),
+                return CompletableFutures.transform(
+                        CompletableFutures.allAsList(futures),
                         new Function<List<Set<T>>,Set<T>>() {
                             @Override
                             public Set<T> apply(List<Set<T>> input) {

@@ -23,6 +23,7 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -39,7 +40,6 @@ import javax.management.ReflectionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class ConnectorImpl implements Connector {
     private final AdminService adminService;
@@ -55,7 +55,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getDefaultDomain();
     }
 
-    public ListenableFuture<String> getDefaultDomainAsync() {
+    public CompletableFuture<String> getDefaultDomainAsync() {
         return adminService.getDefaultDomainAsync();
     }
 
@@ -63,7 +63,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getServerMBean();
     }
 
-    public ListenableFuture<ObjectName> getServerMBeanAsync() {
+    public CompletableFuture<ObjectName> getServerMBeanAsync() {
         return adminService.getServerMBeanAsync();
     }
 
@@ -71,7 +71,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getMBeanCount();
     }
 
-    public ListenableFuture<Integer> getMBeanCountAsync() {
+    public CompletableFuture<Integer> getMBeanCountAsync() {
         return adminService.getMBeanCountAsync();
     }
 
@@ -79,7 +79,7 @@ final class ConnectorImpl implements Connector {
         return adminService.queryNames(objectName, queryExp);
     }
 
-    public ListenableFuture<Set<ObjectName>> queryNamesAsync(ObjectName objectName, QueryExp queryExp) {
+    public CompletableFuture<Set<ObjectName>> queryNamesAsync(ObjectName objectName, QueryExp queryExp) {
         return adminService.queryNamesAsync(objectName, queryExp);
     }
 
@@ -87,7 +87,7 @@ final class ConnectorImpl implements Connector {
         return adminService.queryMBeans(objectName, queryExp);
     }
 
-    public ListenableFuture<Set<ObjectInstance>> queryMBeansAsync(ObjectName objectName, QueryExp queryExp) {
+    public CompletableFuture<Set<ObjectInstance>> queryMBeansAsync(ObjectName objectName, QueryExp queryExp) {
         return adminService.queryMBeansAsync(objectName, queryExp);
     }
 
@@ -95,7 +95,7 @@ final class ConnectorImpl implements Connector {
         return adminService.isRegistered(objectName);
     }
 
-    public ListenableFuture<Boolean> isRegisteredAsync(ObjectName objectName) {
+    public CompletableFuture<Boolean> isRegisteredAsync(ObjectName objectName) {
         return adminService.isRegisteredAsync(objectName);
     }
 
@@ -103,7 +103,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getMBeanInfo(objectName);
     }
 
-    public ListenableFuture<MBeanInfo> getMBeanInfoAsync(ObjectName objectName) {
+    public CompletableFuture<MBeanInfo> getMBeanInfoAsync(ObjectName objectName) {
         return adminService.getMBeanInfoAsync(objectName);
     }
 
@@ -111,7 +111,7 @@ final class ConnectorImpl implements Connector {
         return adminService.isInstanceOf(objectName, className);
     }
 
-    public ListenableFuture<Boolean> isInstanceOfAsync(ObjectName objectName, String className) {
+    public CompletableFuture<Boolean> isInstanceOfAsync(ObjectName objectName, String className) {
         return adminService.isInstanceOfAsync(objectName, className);
     }
 
@@ -119,7 +119,7 @@ final class ConnectorImpl implements Connector {
         return adminService.invoke(objectName, operationName, params, signature);
     }
 
-    public ListenableFuture<Object> invokeAsync(ObjectName objectName, String operationName, Object[] params, String[] signature) {
+    public CompletableFuture<Object> invokeAsync(ObjectName objectName, String operationName, Object[] params, String[] signature) {
         return adminService.invokeAsync(objectName, operationName, params, signature);
     }
 
@@ -127,7 +127,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getAttribute(objectName, attribute);
     }
 
-    public ListenableFuture<Object> getAttributeAsync(ObjectName objectName, String attribute) {
+    public CompletableFuture<Object> getAttributeAsync(ObjectName objectName, String attribute) {
         return adminService.getAttributeAsync(objectName, attribute);
     }
 
@@ -135,7 +135,7 @@ final class ConnectorImpl implements Connector {
         return adminService.getAttributes(objectName, attributes);
     }
 
-    public ListenableFuture<AttributeList> getAttributesAsync(ObjectName objectName, String[] attributes) {
+    public CompletableFuture<AttributeList> getAttributesAsync(ObjectName objectName, String[] attributes) {
         return adminService.getAttributesAsync(objectName, attributes);
     }
 
@@ -143,7 +143,7 @@ final class ConnectorImpl implements Connector {
         adminService.setAttribute(objectName, attribute);
     }
 
-    public ListenableFuture<Void> setAttributeAsync(ObjectName objectName, Attribute attribute) {
+    public CompletableFuture<Void> setAttributeAsync(ObjectName objectName, Attribute attribute) {
         return adminService.setAttributeAsync(objectName, attribute);
     }
 
@@ -151,7 +151,7 @@ final class ConnectorImpl implements Connector {
         return adminService.setAttributes(objectName, attributes);
     }
 
-    public ListenableFuture<AttributeList> setAttributesAsync(ObjectName objectName, AttributeList attributes) {
+    public CompletableFuture<AttributeList> setAttributesAsync(ObjectName objectName, AttributeList attributes) {
         return adminService.setAttributesAsync(objectName, attributes);
     }
 

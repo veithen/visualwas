@@ -21,17 +21,17 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
+import java.util.concurrent.CompletableFuture;
+
 import javax.management.InstanceNotFoundException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.ContextPopulatingInterceptor;
 import com.github.veithen.visualwas.connector.proxy.SingletonMBeanLocator;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Configs> {
     ConfigsLoaderInterceptor() {
@@ -39,28 +39,28 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
     }
 
     @Override
-    protected ListenableFuture<Configs> produceValue(final AdminService adminService) {
-        SettableFuture<Object> futureConfigs = SettableFuture.create();
-        Futures.addCallback(
+    protected CompletableFuture<Configs> produceValue(final AdminService adminService) {
+        CompletableFuture<Object> futureConfigs = new CompletableFuture<>();
+        CompletableFutures.addCallback(
                 new SingletonMBeanLocator("Perf").locateMBean(adminService),
                 new FutureCallback<ObjectName>() {
                     @Override
                     public void onSuccess(ObjectName perfMBean) {
-                        futureConfigs.setFuture(adminService.invokeAsync(perfMBean, "getConfigs", null, null));
+                        CompletableFutures.setFuture(futureConfigs, adminService.invokeAsync(perfMBean, "getConfigs", null, null));
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
                         if (t instanceof InstanceNotFoundException) {
                             // This means that PMI is disabled.
-                            futureConfigs.set(new PmiModuleConfig[0]);
+                            futureConfigs.complete(new PmiModuleConfig[0]);
                         } else {
-                            futureConfigs.setException(t);
+                            futureConfigs.completeExceptionally(t);
                         }
                     }
                 },
                 MoreExecutors.directExecutor());
-        return Futures.transform(
+        return CompletableFutures.transform(
                 futureConfigs,
                 input -> { return new Configs((PmiModuleConfig[])input); },
                 MoreExecutors.directExecutor());

@@ -21,8 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 public interface Interceptor<S,T> {
-    ListenableFuture<? extends T> invoke(InvocationContext context, S request, Handler<S,T> nextHandler);
+    CompletableFuture<? extends T> invoke(InvocationContext context, S request, Handler<S,T> nextHandler);
 }

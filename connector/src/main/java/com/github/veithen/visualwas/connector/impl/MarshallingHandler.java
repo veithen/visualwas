@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
 import org.apache.axiom.om.OMNamespace;
@@ -32,6 +34,7 @@ import org.apache.axiom.soap.SOAPHeader;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -49,7 +52,7 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
     }
 
     @Override
-    public ListenableFuture<Object> invoke(InvocationContext context, Invocation invocation) {
+    public CompletableFuture<Object> invoke(InvocationContext context, Invocation invocation) {
         InvocationContextImpl contextImpl = (InvocationContextImpl)context;
         OperationHandler operationHandler = invocation.getOperation().getAdapter(OperationHandler.class);
         SOAPFactory factory = metaFactory.getSOAP11Factory();
@@ -62,8 +65,8 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
         }
         SOAPBody body = factory.createSOAPBody(request);
         operationHandler.createRequest(body, invocation.getParameters(), contextImpl);
-        SettableFuture<Object> result = SettableFuture.create();
-        Futures.addCallback(
+        CompletableFuture<Object> result = new CompletableFuture<>();
+        CompletableFutures.addCallback(
                 soapHandler.invoke(context, request),
                 new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl, result),
                 context.getExecutor());

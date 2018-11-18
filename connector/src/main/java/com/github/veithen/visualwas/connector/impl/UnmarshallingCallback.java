@@ -21,20 +21,21 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.axiom.soap.SOAPBody;
 
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.SettableFuture;
 
 final class UnmarshallingCallback implements FutureCallback<SOAPResponse> {
     private final OperationHandler operationHandler;
     private final TypeHandler faultReasonHandler;
     private final InvocationContextImpl context;
-    private final SettableFuture<Object> future;
+    private final CompletableFuture<Object> future;
     
-    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context, SettableFuture<Object> future) {
+    UnmarshallingCallback(OperationHandler operationHandler, TypeHandler faultReasonHandler, InvocationContextImpl context, CompletableFuture<Object> future) {
         this.operationHandler = operationHandler;
         this.faultReasonHandler = faultReasonHandler;
         this.context = context;
@@ -71,14 +72,14 @@ final class UnmarshallingCallback implements FutureCallback<SOAPResponse> {
             }
         }
         if (exception != null) {
-            future.setException(exception);
+            future.completeExceptionally(exception);
         } else {
-            future.set(result);
+            future.complete(result);
         }
     }
 
     @Override
     public void onFailure(Throwable t) {
-        future.setException(t);
+        future.completeExceptionally(t);
     }
 }

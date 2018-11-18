@@ -21,12 +21,15 @@
  */
 package com.github.veithen.visualwas.connector.transport;
 
+import static com.github.veithen.visualwas.connector.util.CompletableFutures.callAsync;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.OMXMLBuilderFactory;
@@ -35,7 +38,6 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
     private final URL endpointUrl;
@@ -47,8 +49,8 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
     }
 
     @Override
-    public ListenableFuture<SOAPResponse> invoke(InvocationContext context, final SOAPEnvelope request) {
-        return context.getExecutor().submit(new Callable<SOAPResponse>() {
+    public CompletableFuture<SOAPResponse> invoke(InvocationContext context, final SOAPEnvelope request) {
+        return callAsync(new Callable<SOAPResponse>() {
             @Override
             public SOAPResponse call() throws Exception {
                 HttpURLConnection conn = config.createURLConnection(endpointUrl);
@@ -90,6 +92,6 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
                     throw ex;
                 }
             }
-        });
+        }, context.getExecutor());
     }
 }

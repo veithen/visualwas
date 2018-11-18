@@ -22,33 +22,32 @@
 package com.github.veithen.visualwas.connector.feature;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.ConnectorException;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Invocation,Object> {
     private final Class<T> type;
-    private ListenableFuture<T> future;
+    private CompletableFuture<T> future;
 
     public ContextPopulatingInterceptor(Class<T> type) {
         this.type = type;
     }
 
     @Override
-    public final ListenableFuture<?> invoke(final InvocationContext context, final Invocation request,
+    public final CompletableFuture<?> invoke(final InvocationContext context, final Invocation request,
             final Handler<Invocation, Object> nextHandler) {
-        ListenableFuture<T> future;
+        CompletableFuture<T> future;
         synchronized (this) {
             future = this.future;
             if (future == null) {
                 this.future = future = produceValue(context.getAdminService(nextHandler));
-                Futures.addCallback(future, new FutureCallback<T>() {
+                CompletableFutures.addCallback(future, new FutureCallback<T>() {
                     @Override
                     public void onSuccess(T result) {
                     }
@@ -63,13 +62,13 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
                 }, MoreExecutors.directExecutor());
             }
         }
-        final SettableFuture<Object> futureResult = SettableFuture.create();
-        Futures.addCallback(future, new FutureCallback<T>() {
+        final CompletableFuture<Object> futureResult = new CompletableFuture<>();
+        CompletableFutures.addCallback(future, new FutureCallback<T>() {
             @Override
             public void onSuccess(T value) {
                 // TODO: should the context really be mutable?
                 context.setAttribute(type, value);
-                futureResult.setFuture(nextHandler.invoke(context, request));
+                CompletableFutures.setFuture(futureResult, nextHandler.invoke(context, request));
             }
 
             @Override
@@ -80,9 +79,9 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
                 // wrap the exception. This also prevents UndeclaredThrowableExceptions from being
                 // thrown at the caller of the proxy.
                 if (t instanceof IOException) {
-                    futureResult.setException(t);
+                    futureResult.completeExceptionally(t);
                 } else {
-                    futureResult.setException(new ConnectorException(
+                    futureResult.completeExceptionally(new ConnectorException(
                             String.format("Failed to populate context attribute with type %s", type.getName()), t));
                 }
             }
@@ -90,5 +89,5 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
         return futureResult;
     }
 
-    protected abstract ListenableFuture<T> produceValue(AdminService adminService);
+    protected abstract CompletableFuture<T> produceValue(AdminService adminService);
 }

@@ -21,6 +21,8 @@
  */
 package com.github.veithen.visualwas.connector.security;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -30,7 +32,6 @@ import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPResponse> {
     static final SecurityInterceptor INSTANCE = new SecurityInterceptor();
@@ -38,7 +39,7 @@ final class SecurityInterceptor implements Interceptor<SOAPEnvelope,SOAPResponse
     private SecurityInterceptor() {}
 
     @Override
-    public ListenableFuture<? extends SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request, Handler<SOAPEnvelope,SOAPResponse> nextHandler) {
+    public CompletableFuture<? extends SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request, Handler<SOAPEnvelope,SOAPResponse> nextHandler) {
         Credentials credentials = context.getAttribute(Credentials.class);
         if (credentials != null) {
             SOAPFactory factory = (SOAPFactory)request.getOMFactory();

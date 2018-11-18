@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.federation;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.ObjectName;
 import javax.management.QueryExp;
@@ -31,13 +32,12 @@ import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.ListenableFuture;
 
 final class DisableFederationInterceptor implements Interceptor<Invocation,Object> {
     private ObjectNameMapper mapper;
     
     @Override
-    public ListenableFuture<?> invoke(final InvocationContext context, Invocation invocation, final Handler<Invocation,Object> nextHandler) {
+    public CompletableFuture<?> invoke(final InvocationContext context, Invocation invocation, final Handler<Invocation,Object> nextHandler) {
         String operationName = invocation.getOperation().getName();
         if (operationName.equals("getServerMBean")) {
             return nextHandler.invoke(context, invocation);
@@ -55,7 +55,7 @@ final class DisableFederationInterceptor implements Interceptor<Invocation,Objec
                 final AdminService adminService = context.getAdminService(nextHandler);
                 return mapper.query((ObjectName)args[0], (QueryExp)args[1], new QueryExecutor<ObjectName>() {
                     @Override
-                    public ListenableFuture<Set<ObjectName>> execute(ObjectName objectName, QueryExp queryExp) {
+                    public CompletableFuture<Set<ObjectName>> execute(ObjectName objectName, QueryExp queryExp) {
                         return adminService.queryNamesAsync(objectName, queryExp);
                     }
                 });

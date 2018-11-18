@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
@@ -42,7 +43,6 @@ import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.connector.transport.TransportFactory;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, TransportFactory {
     public static final Endpoint ENDPOINT = new Endpoint("localhost", 8888, false);
@@ -87,7 +87,7 @@ public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, Trans
     }
 
     @Override
-    public ListenableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
+    public CompletableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
         SOAPMessage clonedRequest = OMXMLBuilderFactory.createStAXSOAPModelBuilder(domMetaFactory, request.getXMLStreamReader()).getSOAPMessage();
         return requestMatcher.match((Document)clonedRequest).produce(context.getExecutor());
     }

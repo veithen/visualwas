@@ -22,30 +22,30 @@
 package com.github.veithen.visualwas.connector.notification;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.Notification;
 
 import com.github.veithen.visualwas.connector.Operation;
 import com.github.veithen.visualwas.connector.Param;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface RemoteNotificationService {
     @Operation(name="addNotificationListener")
     SubscriptionHandle addSubscription(@Param(name="filter") SubscriptionInfo subscriptionInfo,
                                        @Param(name="listener") PushNotificationListener listener) throws IOException;
 
-    ListenableFuture<SubscriptionHandle> addSubscriptionAsync(SubscriptionInfo subscriptionInfo, PushNotificationListener listener);
+    CompletableFuture<SubscriptionHandle> addSubscriptionAsync(SubscriptionInfo subscriptionInfo, PushNotificationListener listener);
 
     @Operation(name="removeNotificationListener")
     void removeSubscription(@Param(name="listenerId") SubscriptionHandle handle) throws SubscriptionNotFoundException, IOException;
 
-    ListenableFuture<Void> removeSubscriptionAsync(SubscriptionHandle handle);
+    CompletableFuture<Void> removeSubscriptionAsync(SubscriptionHandle handle);
 
     @Operation(name="resetFilter")
     void updateSubscription(@Param(name="listenerId") SubscriptionHandle handle,
                             @Param(name="filter") SubscriptionInfo subscriptionInfo) throws SubscriptionNotFoundException, IOException;
 
-    ListenableFuture<Void> updateSubscriptionAsync(SubscriptionHandle handle, SubscriptionInfo subscriptionInfo);
+    CompletableFuture<Void> updateSubscriptionAsync(SubscriptionHandle handle, SubscriptionInfo subscriptionInfo);
 
     /**
      * Poll the server for notifications for a given subscription. This call will block until at
@@ -68,5 +68,5 @@ public interface RemoteNotificationService {
     Notification[] pullNotifications(@Param(name="id") SubscriptionHandle handle,
                                      @Param(name="batchSize") Integer batchSize) throws SubscriptionNotFoundException, IOException;
 
-    ListenableFuture<Notification[]> pullNotificationsAsync(SubscriptionHandle handle, Integer batchSize);
+    CompletableFuture<Notification[]> pullNotificationsAsync(SubscriptionHandle handle, Integer batchSize);
 }

@@ -21,24 +21,24 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
+import java.util.concurrent.CompletableFuture;
+
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.Operation;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.SettableFuture;
 
 final class MBeanProxyInvocationHandler implements InvocationTarget {
     private final AdminService adminService;
     private final MBeanLocator locator;
-    private ListenableFuture<ObjectName> mbeanFuture;
+    private CompletableFuture<ObjectName> mbeanFuture;
     
     MBeanProxyInvocationHandler(AdminService adminService, MBeanLocator locator) {
         this.adminService = adminService;
@@ -46,7 +46,7 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
     }
 
     @Override
-    public ListenableFuture<?> invoke(Invocation invocation) {
+    public CompletableFuture<?> invoke(Invocation invocation) {
         Operation operation = invocation.getOperation();
         // Normalize the params argument
         Object[] params = invocation.getParameters();
@@ -66,24 +66,24 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
         return doInvoke(operation.getName(), params, signature, false);
     }
 
-    private ListenableFuture<Object> doInvoke(final String operationName, final Object[] params, final String[] signature, final boolean isRetry) {
-        final ListenableFuture<ObjectName> mbeanFuture;
+    private CompletableFuture<Object> doInvoke(final String operationName, final Object[] params, final String[] signature, final boolean isRetry) {
+        final CompletableFuture<ObjectName> mbeanFuture;
         synchronized (this) {
             if (this.mbeanFuture == null) {
                 this.mbeanFuture = locator.locateMBean(adminService);
             }
             mbeanFuture = this.mbeanFuture;
         }
-        final SettableFuture<Object> futureResult = SettableFuture.create();
-        Futures.addCallback(mbeanFuture, new FutureCallback<ObjectName>() {
+        final CompletableFuture<Object> futureResult = new CompletableFuture<>();
+        CompletableFutures.addCallback(mbeanFuture, new FutureCallback<ObjectName>() {
             @Override
             public void onSuccess(ObjectName mbean) {
-                Futures.addCallback(
+                CompletableFutures.addCallback(
                         adminService.invokeAsync(mbean, operationName, params, signature),
                         new FutureCallback<Object>() {
                             @Override
                             public void onSuccess(Object result) {
-                                futureResult.set(result);
+                                futureResult.complete(result);
                             }
 
                             @Override
@@ -94,13 +94,13 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
                                             MBeanProxyInvocationHandler.this.mbeanFuture = null;
                                         }
                                     }
-                                    futureResult.setFuture(doInvoke(operationName, params, signature, true));
+                                    CompletableFutures.setFuture(futureResult, doInvoke(operationName, params, signature, true));
                                 } else {
                                     if (t instanceof MBeanException) {
                                         // MBeanException is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
                                         t = t.getCause();
                                     }
-                                    futureResult.setException(t);
+                                    futureResult.completeExceptionally(t);
                                 }
                             }
                         },
@@ -109,7 +109,7 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
 
             @Override
             public void onFailure(Throwable t) {
-                futureResult.setException(t);
+                futureResult.completeExceptionally(t);
             }
         }, MoreExecutors.directExecutor());
         return futureResult;

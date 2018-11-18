@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
@@ -32,7 +33,7 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.google.common.util.concurrent.ListeningExecutorService;
 
 public final class CannedResponse extends Response {
@@ -45,8 +46,8 @@ public final class CannedResponse extends Response {
     }
 
     @Override
-    ListenableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
-        return executor.submit(new Callable<SOAPResponse>() {
+    CompletableFuture<SOAPResponse> produce(ListeningExecutorService executor) {
+        return CompletableFutures.callAsync(new Callable<SOAPResponse>() {
             @Override
             public SOAPResponse call() throws Exception {
                 final InputStream in = url.openStream();
@@ -68,6 +69,6 @@ public final class CannedResponse extends Response {
                     }
                 };
             }
-        });
+        }, executor);
     }
 }

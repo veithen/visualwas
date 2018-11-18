@@ -22,12 +22,11 @@
 package com.github.veithen.visualwas.connector.federation;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
-import com.google.common.util.concurrent.ListenableFuture;
-
 interface QueryExecutor<T> {
-    ListenableFuture<Set<T>> execute(ObjectName objectName, QueryExp queryExp);
+    CompletableFuture<Set<T>> execute(ObjectName objectName, QueryExp queryExp);
 }
