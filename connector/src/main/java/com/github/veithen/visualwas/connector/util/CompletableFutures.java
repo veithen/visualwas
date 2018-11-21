@@ -29,7 +29,6 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-import com.google.common.base.Function;
 import com.google.common.util.concurrent.FutureCallback;
 
 public final class CompletableFutures {
@@ -58,11 +57,6 @@ public final class CompletableFutures {
                 callback.onSuccess(result);
             }
         }, executor);
-    }
-
-    public static <I, O> CompletableFuture<O> transform(
-            CompletableFuture<I> input, Function<? super I, ? extends O> function, Executor executor) {
-        return input.thenApplyAsync(function, executor);
     }
 
     public static <T> CompletableFuture<T> immediateFailedFuture(Throwable throwable) {

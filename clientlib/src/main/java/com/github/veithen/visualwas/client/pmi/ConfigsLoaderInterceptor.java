@@ -60,9 +60,6 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
                     }
                 },
                 MoreExecutors.directExecutor());
-        return CompletableFutures.transform(
-                futureConfigs,
-                input -> { return new Configs((PmiModuleConfig[])input); },
-                MoreExecutors.directExecutor());
+        return futureConfigs.thenApply(input -> new Configs((PmiModuleConfig[])input));
     }
 }

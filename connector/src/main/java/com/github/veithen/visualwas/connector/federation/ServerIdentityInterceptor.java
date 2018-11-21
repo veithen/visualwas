@@ -23,13 +23,8 @@ package com.github.veithen.visualwas.connector.federation;
 
 import java.util.concurrent.CompletableFuture;
 
-import javax.management.ObjectName;
-
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.feature.ContextPopulatingInterceptor;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.MoreExecutors;
 
 final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<ServerIdentity> {
     ServerIdentityInterceptor() {
@@ -38,14 +33,10 @@ final class ServerIdentityInterceptor extends ContextPopulatingInterceptor<Serve
 
     @Override
     protected CompletableFuture<ServerIdentity> produceValue(AdminService adminService) {
-        return CompletableFutures.transform(
-                adminService.getServerMBeanAsync(),
-                new Function<ObjectName, ServerIdentity>() {
-                    @Override
-                    public ServerIdentity apply(ObjectName serverMBean) {
-                        return new ServerIdentity(serverMBean.getKeyProperty("cell"), serverMBean.getKeyProperty("node"), serverMBean.getKeyProperty("process"));
-                    }
-                },
-                MoreExecutors.directExecutor());
+        return adminService.getServerMBeanAsync().thenApply(
+                serverMBean -> new ServerIdentity(
+                        serverMBean.getKeyProperty("cell"),
+                        serverMBean.getKeyProperty("node"),
+                        serverMBean.getKeyProperty("process")));
     }
 }

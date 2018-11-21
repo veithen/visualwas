@@ -32,14 +32,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
 import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.base.Function;
-import com.google.common.util.concurrent.MoreExecutors;
 
 final class ObjectNameMapper implements Mapper<ObjectName> {
     private static final Set<String> nonRoutableDomains = new HashSet<>(Arrays.asList("JMImplementation", "java.lang"));
@@ -144,35 +143,14 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
         if (objectName == null) {
             try {
                 List<CompletableFuture<Set<T>>> futures = new ArrayList<>();
-                futures.add(CompletableFutures.transform(
-                        queryExecutor.execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp),
-                        new Function<Set<T>,Set<T>>() {
-                            @Override
-                            public Set<T> apply(Set<T> input) {
-                                Set<T> output = new HashSet<>();
-                                for (T result : input) {
-                                    output.add(mapper.remoteToLocal(result));
-                                }
-                                return output;
-                            }
-                        },
-                        MoreExecutors.directExecutor()));
+                futures.add(queryExecutor
+                        .execute(new ObjectName("*:cell=" + cell + ",node=" + node + ",process=" + process + ",*"), queryExp)
+                        .thenApply(input -> input.stream().map(mapper::remoteToLocal).collect(Collectors.toSet())));
                 for (String domain : nonRoutableDomains) {
                     futures.add(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
                 }
-                return CompletableFutures.transform(
-                        CompletableFutures.allAsList(futures),
-                        new Function<List<Set<T>>,Set<T>>() {
-                            @Override
-                            public Set<T> apply(List<Set<T>> input) {
-                                Set<T> output = new HashSet<>();
-                                for (Set<T> results : input) {
-                                    output.addAll(results);
-                                }
-                                return output;
-                            }
-                        },
-                        MoreExecutors.directExecutor());
+                return CompletableFutures.allAsList(futures).thenApply(
+                        output -> output.stream().flatMap(Set::stream).collect(Collectors.toSet()));
             } catch (MalformedObjectNameException ex) {
                 throw new Error(ex);
             }
