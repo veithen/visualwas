@@ -22,18 +22,17 @@
 package com.github.veithen.visualwas.connector.proxy;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.function.Function;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 import com.github.veithen.visualwas.framework.proxy.InvocationTarget;
 import com.github.veithen.visualwas.framework.proxy.Operation;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
 final class MBeanProxyInvocationHandler implements InvocationTarget {
     private final AdminService adminService;
@@ -74,44 +73,32 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
             }
             mbeanFuture = this.mbeanFuture;
         }
-        final CompletableFuture<Object> futureResult = new CompletableFuture<>();
-        CompletableFutures.addCallback(mbeanFuture, new FutureCallback<ObjectName>() {
-            @Override
-            public void onSuccess(ObjectName mbean) {
-                CompletableFutures.addCallback(
-                        adminService.invokeAsync(mbean, operationName, params, signature),
-                        new FutureCallback<Object>() {
-                            @Override
-                            public void onSuccess(Object result) {
-                                futureResult.complete(result);
+        return mbeanFuture
+                .thenCompose(mbean -> adminService.invokeAsync(mbean, operationName, params, signature))
+                // There is no thenCompose that handles exception. Instead, produce a CompletableFuture
+                // with handle and then use thenCompose with the identity function.
+                .handle((result, t) -> {
+                    if (t == null) {
+                        return CompletableFuture.completedFuture(result);
+                    }
+                    if (t instanceof CompletionException) {
+                        t = t.getCause();
+                    }
+                    if (!isRetry && t instanceof InstanceNotFoundException) {
+                        synchronized (MBeanProxyInvocationHandler.this) {
+                            if (MBeanProxyInvocationHandler.this.mbeanFuture == mbeanFuture) {
+                                MBeanProxyInvocationHandler.this.mbeanFuture = null;
                             }
-
-                            @Override
-                            public void onFailure(Throwable t) {
-                                if (!isRetry && t instanceof InstanceNotFoundException) {
-                                    synchronized (MBeanProxyInvocationHandler.this) {
-                                        if (MBeanProxyInvocationHandler.this.mbeanFuture == mbeanFuture) {
-                                            MBeanProxyInvocationHandler.this.mbeanFuture = null;
-                                        }
-                                    }
-                                    CompletableFutures.setFuture(futureResult, doInvoke(operationName, params, signature, true));
-                                } else {
-                                    if (t instanceof MBeanException) {
-                                        // MBeanException is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
-                                        t = t.getCause();
-                                    }
-                                    futureResult.completeExceptionally(t);
-                                }
-                            }
-                        },
-                        MoreExecutors.directExecutor());
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                futureResult.completeExceptionally(t);
-            }
-        }, MoreExecutors.directExecutor());
-        return futureResult;
+                        }
+                        return doInvoke(operationName, params, signature, true);
+                    } else {
+                        if (t instanceof MBeanException) {
+                            // MBeanException is a wrapper around exceptions thrown by MBeans. Unwrap the exception.
+                            t = t.getCause();
+                        }
+                        throw new CompletionException(t);
+                    }
+                })
+                .thenCompose(Function.identity());
     }
 }
