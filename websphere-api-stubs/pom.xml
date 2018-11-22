@@ -50,4 +50,16 @@
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.veithen.maven</groupId>
+                <artifactId>jacoco-report-maven-plugin</artifactId>
+                <configuration>
+                    <includeClasses>false</includeClasses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
