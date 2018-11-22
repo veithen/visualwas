@@ -32,7 +32,6 @@ import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 
 public class ContextPopulatingInterceptorTest {
     private class DummyContextKey {}
@@ -51,7 +50,9 @@ public class ContextPopulatingInterceptorTest {
                 configurator.addInvocationInterceptor(new ContextPopulatingInterceptor<DummyContextKey>(DummyContextKey.class) {
                     @Override
                     protected CompletableFuture<DummyContextKey> produceValue(AdminService adminService) {
-                        return CompletableFutures.immediateFailedFuture(new Exception());
+                        CompletableFuture<DummyContextKey> future = new CompletableFuture<>();
+                        future.completeExceptionally(new Exception());
+                        return future;
                     }
                 });
             }

@@ -24,8 +24,6 @@ package com.github.veithen.visualwas.client.pmi;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.base.Strings;
-
 final class Configs {
     private final Map<String,PmiModuleConfig> configs = new HashMap<>();
 
@@ -36,7 +34,7 @@ final class Configs {
     }
     
     PmiModuleConfig getConfig(String statsType) {
-        if (Strings.isNullOrEmpty(statsType)) {
+        if (statsType == null || statsType.isEmpty()) {
             return null;
         }
         if (statsType.endsWith("#")) {

@@ -38,8 +38,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.QueryExp;
 
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
-
 final class ObjectNameMapper implements Mapper<ObjectName> {
     private static final Set<String> nonRoutableDomains = new HashSet<>(Arrays.asList("JMImplementation", "java.lang"));
     private static final Set<String> routingPropertyKeys = new HashSet<>(Arrays.asList("cell", "node", "process"));
@@ -149,8 +147,9 @@ final class ObjectNameMapper implements Mapper<ObjectName> {
                 for (String domain : nonRoutableDomains) {
                     futures.add(queryExecutor.execute(new ObjectName(domain + ":*"), queryExp));
                 }
-                return CompletableFutures.allAsList(futures).thenApply(
-                        output -> output.stream().flatMap(Set::stream).collect(Collectors.toSet()));
+                return CompletableFuture
+                        .allOf(futures.toArray(new CompletableFuture<?>[futures.size()]))
+                        .thenApply(unused -> futures.stream().map(x -> x.getNow(null)).flatMap(Set::stream).collect(Collectors.toSet()));
             } catch (MalformedObjectNameException ex) {
                 throw new Error(ex);
             }

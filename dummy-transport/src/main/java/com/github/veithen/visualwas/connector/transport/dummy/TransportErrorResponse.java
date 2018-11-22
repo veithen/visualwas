@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 
 public final class TransportErrorResponse extends Response {
     private final IOException exception;
@@ -37,6 +36,8 @@ public final class TransportErrorResponse extends Response {
 
     @Override
     CompletableFuture<SOAPResponse> produce(Executor executor) {
-        return CompletableFutures.immediateFailedFuture(exception);
+        CompletableFuture<SOAPResponse> future = new CompletableFuture<>();
+        future.completeExceptionally(exception);
+        return future;
     }
 }
