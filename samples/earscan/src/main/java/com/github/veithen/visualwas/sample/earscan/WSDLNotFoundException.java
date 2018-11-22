@@ -1,3 +1,4 @@
+package com.github.veithen.visualwas.sample.earscan;
 /*
  * #%L
  * VisualWAS
