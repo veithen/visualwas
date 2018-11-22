@@ -22,59 +22,34 @@
 package com.github.veithen.visualwas.connector.proxy;
 
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
 public abstract class AbstractObjectNamePatternMBeanLocator implements MBeanLocator {
+    private CompletableFuture<ObjectName> queryRequiredSingleton(AdminService adminService, ObjectName pattern) {
+        return adminService.queryNamesAsync(pattern, null).thenApply(names -> {
+            Iterator<ObjectName> it = names.iterator();
+            if (it.hasNext()) {
+                ObjectName mbean = it.next();
+                if (it.hasNext()) {
+                    throw new CompletionException(new InstanceNotFoundException("Found multiple MBeans matching " + pattern));
+                } else {
+                    return mbean;
+                }
+            } else {
+                throw new CompletionException(new InstanceNotFoundException(pattern + " not found"));
+            }
+        });
+    }
+    
     @Override
     public final CompletableFuture<ObjectName> locateMBean(AdminService adminService) {
-        final CompletableFuture<ObjectName> result = new CompletableFuture<>();
-        CompletableFutures.addCallback(
-                producePattern(adminService),
-                new FutureCallback<ObjectName>() {
-                    @Override
-                    public void onSuccess(ObjectName pattern) {
-                        CompletableFutures.addCallback(
-                                adminService.queryNamesAsync(pattern, null),
-                                new FutureCallback<Set<ObjectName>>() {
-                                    @Override
-                                    public void onSuccess(Set<ObjectName> names) {
-                                        Iterator<ObjectName> it = names.iterator();
-                                        if (it.hasNext()) {
-                                            ObjectName mbean = it.next();
-                                            if (it.hasNext()) {
-                                                result.completeExceptionally(new InstanceNotFoundException("Found multiple MBeans matching " + pattern));
-                                            } else {
-                                                result.complete(mbean);
-                                            }
-                                        } else {
-                                            result.completeExceptionally(new InstanceNotFoundException(pattern + " not found"));
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Throwable t) {
-                                        result.completeExceptionally(t);
-                                    }
-                                },
-                                MoreExecutors.directExecutor());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        result.completeExceptionally(t);
-                    }
-                },
-                MoreExecutors.directExecutor());
-        return result;
+        return producePattern(adminService).thenCompose(pattern -> queryRequiredSingleton(adminService, pattern));
     }
 
     protected abstract CompletableFuture<ObjectName> producePattern(AdminService adminService);
