@@ -1,4 +1,3 @@
-package com.github.veithen.visualwas.sample.earscan;
 /*
  * #%L
  * VisualWAS
@@ -20,6 +19,7 @@ package com.github.veithen.visualwas.sample.earscan;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package com.github.veithen.visualwas.sample.earscan;
 
 public class WSDLNotFoundException extends RuntimeException {
     private static final long serialVersionUID = -743446950998260614L;

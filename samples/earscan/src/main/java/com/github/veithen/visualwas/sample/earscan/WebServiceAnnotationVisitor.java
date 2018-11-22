@@ -1,4 +1,3 @@
-package com.github.veithen.visualwas.sample.earscan;
 /*
  * #%L
  * VisualWAS
@@ -20,6 +19,8 @@ package com.github.veithen.visualwas.sample.earscan;
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+package com.github.veithen.visualwas.sample.earscan;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
