@@ -23,15 +23,13 @@ package com.github.veithen.visualwas.connector.impl;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.Interceptor;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
 /**
  * Wraps undeclared exception in {@link ConnectorException} to avoid
@@ -44,31 +42,23 @@ final class UndeclaredExceptionInterceptor implements Interceptor<Invocation,Obj
 
     @Override
     public CompletableFuture<? extends Object> invoke(InvocationContext context, final Invocation invocation, Handler<Invocation,Object> nextHandler) {
-        CompletableFuture<? extends Object> future = nextHandler.invoke(context, invocation);
-        final CompletableFuture<Object> transformedFuture = new CompletableFuture<>();
-        CompletableFutures.addCallback(future, new FutureCallback<Object>() {
-            @Override
-            public void onSuccess(Object value) {
-                transformedFuture.complete(value);
+        return nextHandler.invoke(context, invocation).exceptionally(t -> {
+            if (t instanceof CompletionException) {
+                t = t.getCause();
             }
-
-            @Override
-            public void onFailure(Throwable t) {
-                if (!(t instanceof RuntimeException || t instanceof Error)) {
-                    boolean isDeclared = false;
-                    for (Class<?> exceptionType : invocation.getOperation().getExceptionTypes()) {
-                        if (exceptionType.isInstance(t)) {
-                            isDeclared = true;
-                            break;
-                        }
-                    }
-                    if (!isDeclared) {
-                        t = new ConnectorException("Received unexpected exception", t);
+            if (!(t instanceof RuntimeException || t instanceof Error)) {
+                boolean isDeclared = false;
+                for (Class<?> exceptionType : invocation.getOperation().getExceptionTypes()) {
+                    if (exceptionType.isInstance(t)) {
+                        isDeclared = true;
+                        break;
                     }
                 }
-                transformedFuture.completeExceptionally(t);
+                if (!isDeclared) {
+                    t = new ConnectorException("Received unexpected exception", t);
+                }
             }
-        }, MoreExecutors.directExecutor());
-        return transformedFuture;
+            throw new CompletionException(t);
+        });
     }
 }

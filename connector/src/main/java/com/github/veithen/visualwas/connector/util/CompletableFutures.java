@@ -25,11 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-
-import com.google.common.util.concurrent.FutureCallback;
 
 public final class CompletableFutures {
     private CompletableFutures() {}
@@ -46,33 +43,10 @@ public final class CompletableFutures {
         return future;
     }
 
-    public static <T> void addCallback(CompletableFuture<T> future, FutureCallback<? super T> callback, Executor executor) {
-        future.whenCompleteAsync((result, t) -> {
-            if (t != null) {
-                if (t instanceof CompletionException) {
-                    t = t.getCause();
-                }
-                callback.onFailure(t);
-            } else {
-                callback.onSuccess(result);
-            }
-        }, executor);
-    }
-
     public static <T> CompletableFuture<T> immediateFailedFuture(Throwable throwable) {
         CompletableFuture<T> future = new CompletableFuture<>();
         future.completeExceptionally(throwable);
         return future;
-    }
-
-    public static <T> void setFuture(CompletableFuture<T> that, CompletableFuture<? extends T> other) {
-        other.whenComplete((result, t) -> {
-            if (t == null) {
-                that.complete(result);
-            } else {
-                that.completeExceptionally(t);
-            }
-        });
     }
 
     public static <T> CompletableFuture<List<T>> allAsList(List<CompletableFuture<T>> futures) {
