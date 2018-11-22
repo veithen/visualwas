@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.connector.impl;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMMetaFactory;
@@ -31,14 +32,11 @@ import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axiom.soap.SOAPHeader;
 
+import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
 final class MarshallingHandler implements Handler<Invocation,Object> {
     private static final OMMetaFactory metaFactory = OMAbstractFactory.getMetaFactory();
@@ -63,13 +61,41 @@ final class MarshallingHandler implements Handler<Invocation,Object> {
             header.addAttribute("JMXMessageVersion", "1.2.0", ns1);
             header.addAttribute("JMXVersion", "1.2.0", ns1);
         }
-        SOAPBody body = factory.createSOAPBody(request);
-        operationHandler.createRequest(body, invocation.getParameters(), contextImpl);
-        CompletableFuture<Object> result = new CompletableFuture<>();
-        CompletableFutures.addCallback(
-                soapHandler.invoke(context, request),
-                new UnmarshallingCallback(operationHandler, faultReasonHandler, contextImpl, result),
-                context.getExecutor());
-        return result;
+        SOAPBody requestBody = factory.createSOAPBody(request);
+        operationHandler.createRequest(requestBody, invocation.getParameters(), contextImpl);
+        return soapHandler.invoke(context, request).thenApplyAsync(response -> {
+            Object result = null;
+            Throwable exception = null;
+            try {
+                SOAPBody responseBody = response.getEnvelope().getBody();
+                if (response.isFault()) {
+                    try {
+                        exception = (Throwable)faultReasonHandler.extractValue(responseBody.getFault().getReason(), contextImpl);
+                    } catch (TypeHandlerException ex) {
+                        exception = new ConnectorException("The operation has thrown an exception, but it could not be deserialized", ex);
+                    }
+                } else {
+                    try {
+                        result = operationHandler.processResponse(responseBody.getFirstElement(), contextImpl);
+                    } catch (OperationHandlerException ex) {
+                        exception = new ConnectorException("Invocation failed", ex);
+                    }
+                }
+            } catch (Throwable ex) {
+                exception = ex;
+            }
+            try {
+                response.discard();
+            } catch (Throwable ex) {
+                if (exception == null) {
+                    exception = ex;
+                }
+            }
+            if (exception != null) {
+                throw new CompletionException(exception);
+            } else {
+                return result;
+            }
+        }, context.getExecutor());
     }
 }
