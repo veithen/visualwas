@@ -23,25 +23,11 @@ package com.github.veithen.visualwas.connector.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 
 public final class CompletableFutures {
     private CompletableFutures() {}
-
-    public static <T> CompletableFuture<T> callAsync(Callable<T> callable, Executor executor) {
-        CompletableFuture<T> future = new CompletableFuture<>();
-        executor.execute(() -> {
-            try {
-                future.complete(callable.call());
-            } catch (Throwable ex) {
-                future.completeExceptionally(ex);
-            }
-        });
-        return future;
-    }
 
     public static <T> CompletableFuture<T> immediateFailedFuture(Throwable throwable) {
         CompletableFuture<T> future = new CompletableFuture<>();

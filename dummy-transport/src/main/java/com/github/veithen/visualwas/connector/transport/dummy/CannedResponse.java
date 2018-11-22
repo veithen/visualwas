@@ -24,8 +24,8 @@ package com.github.veithen.visualwas.connector.transport.dummy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -34,7 +34,6 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 
 public final class CannedResponse extends Response {
     private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
@@ -47,9 +46,8 @@ public final class CannedResponse extends Response {
 
     @Override
     CompletableFuture<SOAPResponse> produce(Executor executor) {
-        return CompletableFutures.callAsync(new Callable<SOAPResponse>() {
-            @Override
-            public SOAPResponse call() throws Exception {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
                 final InputStream in = url.openStream();
                 final SOAPEnvelope envelope = OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPEnvelope();
                 return new SOAPResponse() {
@@ -68,6 +66,8 @@ public final class CannedResponse extends Response {
                         in.close();
                     }
                 };
+            } catch (IOException ex) {
+                throw new CompletionException(ex);
             }
         }, executor);
     }
