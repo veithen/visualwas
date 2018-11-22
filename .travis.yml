@@ -14,11 +14,8 @@ jobs:
       jdk: openjdk8
       env: WEBSPHERE_VERSION=8.5.5.14
     - stage: test
-      jdk: openjdk8
-      env: WEBSPHERE_VERSION=9.0.0.9
-    - stage: test
       jdk: openjdk9
-      env: WEBSPHERE_VERSION=8.5.5.14
+      env: WEBSPHERE_VERSION=9.0.0.9
     - stage: test
       jdk: openjdk10
       env: WEBSPHERE_VERSION=8.5.5.14
