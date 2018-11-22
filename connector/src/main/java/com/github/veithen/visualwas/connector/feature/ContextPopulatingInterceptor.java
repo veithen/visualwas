@@ -23,13 +23,11 @@ package com.github.veithen.visualwas.connector.feature;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.ConnectorException;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
 public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Invocation,Object> {
     private final Class<T> type;
@@ -46,47 +44,36 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
         synchronized (this) {
             future = this.future;
             if (future == null) {
-                this.future = future = produceValue(context.getAdminService(nextHandler));
-                CompletableFutures.addCallback(future, new FutureCallback<T>() {
-                    @Override
-                    public void onSuccess(T result) {
+                this.future = future = produceValue(context.getAdminService(nextHandler)).exceptionally(t -> {
+                    if (t instanceof CompletionException) {
+                        t = t.getCause();
                     }
-
-                    @Override
-                    public void onFailure(Throwable t) {
+                    // If it's an IOException, assume it's a low level problem independent of the
+                    // operation being invoked and simply propagate the exception. Otherwise it's likely
+                    // a problem specific to the operation invoked to produce the value. In that case
+                    // wrap the exception. This also prevents UndeclaredThrowableExceptions from being
+                    // thrown at the caller of the proxy.
+                    if (!(t instanceof IOException)) {
+                        t = new ConnectorException(
+                                String.format("Failed to populate context attribute with type %s", type.getName()), t);
+                    }
+                    throw new CompletionException(t);
+                });
+                future.whenComplete((result, t) -> {
+                    if (t != null) {
                         // Remove the future so that subsequent invocations will retry
                         synchronized (ContextPopulatingInterceptor.this) {
                             ContextPopulatingInterceptor.this.future = null;
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                });
             }
         }
-        final CompletableFuture<Object> futureResult = new CompletableFuture<>();
-        CompletableFutures.addCallback(future, new FutureCallback<T>() {
-            @Override
-            public void onSuccess(T value) {
-                // TODO: should the context really be mutable?
-                context.setAttribute(type, value);
-                CompletableFutures.setFuture(futureResult, nextHandler.invoke(context, request));
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                // If it's an IOException, assume it's a low level problem independent of the
-                // operation being invoked and simply propagate the exception. Otherwise it's likely
-                // a problem specific to the operation invoked to produce the value. In that case
-                // wrap the exception. This also prevents UndeclaredThrowableExceptions from being
-                // thrown at the caller of the proxy.
-                if (t instanceof IOException) {
-                    futureResult.completeExceptionally(t);
-                } else {
-                    futureResult.completeExceptionally(new ConnectorException(
-                            String.format("Failed to populate context attribute with type %s", type.getName()), t));
-                }
-            }
-        }, MoreExecutors.directExecutor());
-        return futureResult;
+        return future.thenCompose(value -> {
+            // TODO: should the context really be mutable?
+            context.setAttribute(type, value);
+            return nextHandler.invoke(context, request);
+        });
     }
 
     protected abstract CompletableFuture<T> produceValue(AdminService adminService);
