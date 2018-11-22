@@ -21,20 +21,15 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
-import javax.management.InstanceNotFoundException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
-public class SingletonMBeanLocator implements MBeanLocator {
+public class SingletonMBeanLocator extends AbstractObjectNamePatternMBeanLocator {
     private final String type;
 
     public SingletonMBeanLocator(String type) {
@@ -42,52 +37,13 @@ public class SingletonMBeanLocator implements MBeanLocator {
     }
 
     @Override
-    public CompletableFuture<ObjectName> locateMBean(final AdminService adminService) {
-        final CompletableFuture<ObjectName> result = new CompletableFuture<>();
-        CompletableFutures.addCallback(
-                adminService.getServerMBeanAsync(),
-                new FutureCallback<ObjectName>() {
-                    @Override
-                    public void onSuccess(ObjectName serverMBean) {
-                        ObjectName pattern;
-                        try {
-                            pattern = new ObjectName(serverMBean.getDomain() + ":type=" + type + ",cell=" + serverMBean.getKeyProperty("cell") + ",node=" + serverMBean.getKeyProperty("node") + ",process=" + serverMBean.getKeyProperty("process") + ",*");
-                        } catch (MalformedObjectNameException ex) {
-                            result.completeExceptionally(ex);
-                            return;
-                        }
-                        CompletableFutures.addCallback(
-                                adminService.queryNamesAsync(pattern, null),
-                                new FutureCallback<Set<ObjectName>>() {
-                                    @Override
-                                    public void onSuccess(Set<ObjectName> names) {
-                                        Iterator<ObjectName> it = names.iterator();
-                                        if (it.hasNext()) {
-                                            ObjectName mbean = it.next();
-                                            if (it.hasNext()) {
-                                                result.completeExceptionally(new InstanceNotFoundException("Found multiple MBeans of type " + type));
-                                            } else {
-                                                result.complete(mbean);
-                                            }
-                                        } else {
-                                            result.completeExceptionally(new InstanceNotFoundException("No MBean of type " + type + " found"));
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Throwable t) {
-                                        result.completeExceptionally(t);
-                                    }
-                                },
-                                MoreExecutors.directExecutor());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        result.completeExceptionally(t);
-                    }
-                },
-                MoreExecutors.directExecutor());
-        return result;
+    protected CompletableFuture<ObjectName> producePattern(AdminService adminService) {
+        return adminService.getServerMBeanAsync().thenApply(serverMBean -> {
+            try {
+                return new ObjectName(serverMBean.getDomain() + ":type=" + type + ",cell=" + serverMBean.getKeyProperty("cell") + ",node=" + serverMBean.getKeyProperty("node") + ",process=" + serverMBean.getKeyProperty("process") + ",*");
+            } catch (MalformedObjectNameException ex) {
+                throw new CompletionException(ex);
+            }
+        });
     }
 }

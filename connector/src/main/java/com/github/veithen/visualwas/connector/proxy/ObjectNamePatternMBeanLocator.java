@@ -21,20 +21,14 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import javax.management.InstanceNotFoundException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.util.CompletableFutures;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.MoreExecutors;
 
-public class ObjectNamePatternMBeanLocator implements MBeanLocator {
+public class ObjectNamePatternMBeanLocator extends AbstractObjectNamePatternMBeanLocator {
     private final ObjectName pattern;
 
     public ObjectNamePatternMBeanLocator(ObjectName pattern) {
@@ -46,32 +40,7 @@ public class ObjectNamePatternMBeanLocator implements MBeanLocator {
     }
 
     @Override
-    public CompletableFuture<ObjectName> locateMBean(AdminService adminService) {
-        final CompletableFuture<ObjectName> result = new CompletableFuture<>();
-        CompletableFutures.addCallback(
-                adminService.queryNamesAsync(pattern, null),
-                new FutureCallback<Set<ObjectName>>() {
-                    @Override
-                    public void onSuccess(Set<ObjectName> names) {
-                        Iterator<ObjectName> it = names.iterator();
-                        if (it.hasNext()) {
-                            ObjectName mbean = it.next();
-                            if (it.hasNext()) {
-                                result.completeExceptionally(new InstanceNotFoundException("Found multiple MBeans matching " + pattern));
-                            } else {
-                                result.complete(mbean);
-                            }
-                        } else {
-                            result.completeExceptionally(new InstanceNotFoundException(pattern + " not found"));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        result.completeExceptionally(t);
-                    }
-                },
-                MoreExecutors.directExecutor());
-        return result;
+    protected CompletableFuture<ObjectName> producePattern(AdminService adminService) {
+        return CompletableFuture.completedFuture(pattern);
     }
 }
