@@ -23,8 +23,8 @@ package com.github.veithen.visualwas.client;
 
 import org.junit.Before;
 
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -39,8 +39,9 @@ public abstract class WebSphereITCase {
     @Before
     public void initConnector() throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
-        Attributes attributes = new Attributes();
-        attributes.set(Credentials.class, new BasicAuthCredentials("administrator", "changeme"));
+        Attributes attributes = Attributes.builder()
+                .set(Credentials.class, new BasicAuthCredentials("administrator", "changeme"))
+                .build();
         configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
         configBuilder.addFeatures(getFeatures());
         Endpoint endpoint = new Endpoint("localhost", Integer.parseInt(System.getProperty("was.soapPort")), true);

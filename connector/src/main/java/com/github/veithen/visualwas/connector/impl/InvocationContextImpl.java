@@ -24,8 +24,7 @@ package com.github.veithen.visualwas.connector.impl;
 import java.util.concurrent.Executor;
 
 import com.github.veithen.visualwas.connector.AdminService;
-import com.github.veithen.visualwas.connector.factory.Attributes;
-import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.Serializer;
@@ -38,14 +37,13 @@ final class InvocationContextImpl implements InvocationContext {
     private final Serializer serializer;
     private final Attributes attributes;
     
-    InvocationContextImpl(ConnectorConfiguration connectorConfiguration, AdminServiceFactory adminServiceFactory,
-            Executor executor, Serializer serializer, Attributes initialAttributes) {
+    InvocationContextImpl(AdminServiceFactory adminServiceFactory, ClassLoader classLoader,
+            Executor executor, Serializer serializer, Attributes attributes) {
+        this.classLoader = classLoader;
         this.adminServiceFactory = adminServiceFactory;
-        // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
-        classLoader = connectorConfiguration.getClassLoaderProvider().getClassLoader();
         this.executor = executor;
         this.serializer = serializer;
-        attributes = new Attributes(initialAttributes);
+        this.attributes = attributes;
     }
     
     Serializer getSerializer() {
@@ -63,13 +61,13 @@ final class InvocationContextImpl implements InvocationContext {
     }
 
     @Override
-    public <T> T getAttribute(Class<T> key) {
-        return attributes.get(key);
+    public Attributes getAttributes() {
+        return attributes;
     }
 
     @Override
-    public <T> void setAttribute(Class<T> key, T value) {
-        attributes.set(key, value);
+    public <T> T getAttribute(Class<T> key) {
+        return attributes.get(key);
     }
 
     @Override
@@ -78,5 +76,10 @@ final class InvocationContextImpl implements InvocationContext {
                 () -> InvocationContextImpl.this,
                 handler,
                 false);
+    }
+
+    @Override
+    public InvocationContext withAttributes(Attributes attributes) {
+        return new InvocationContextImpl(adminServiceFactory, classLoader, executor, serializer, attributes);
     }
 }

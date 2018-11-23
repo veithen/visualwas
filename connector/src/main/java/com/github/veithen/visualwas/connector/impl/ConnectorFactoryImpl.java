@@ -28,8 +28,8 @@ import java.util.concurrent.Executors;
 import org.apache.axiom.soap.SOAPEnvelope;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.factory.DependencyUtil;
@@ -65,11 +65,18 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
         configurator.release();
         AdminServiceFactory adminServiceFactory = new AdminServiceFactory(
                 adminServiceInterfaces.toArray(new Interface[adminServiceInterfaces.size()]));
-        Attributes initialAttributes = new Attributes(attributes);
-        initialAttributes.set(TransportConfiguration.class, config.getTransportConfiguration());
+        Attributes contextAttributes = Attributes.builder(attributes)
+                .set(TransportConfiguration.class, config.getTransportConfiguration())
+                .build();
         invocationInterceptors.add(UndeclaredExceptionInterceptor.INSTANCE);
         AdminService adminService = adminServiceFactory.create(
-                () -> new InvocationContextImpl(config, adminServiceFactory, adaptableDelegate.getExecutor(), configurator.getSerializer(), initialAttributes),
+                () -> new InvocationContextImpl(
+                        adminServiceFactory,
+                        // Get the ClassLoader once when the context is created (i.e. at the beginning of the invocation)
+                        config.getClassLoaderProvider().getClassLoader(),
+                        adaptableDelegate.getExecutor(),
+                        configurator.getSerializer(),
+                        contextAttributes),
                 invocationInterceptors.buildHandler(new MarshallingHandler(soapInterceptors.buildHandler(config.getTransportFactory().createHandler(endpoint, config.getTransportConfiguration())))),
                 true);
         // Create the executor only when we are sure we don't end up with an exception.

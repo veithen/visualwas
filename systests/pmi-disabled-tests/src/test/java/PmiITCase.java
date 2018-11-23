@@ -25,8 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
@@ -40,8 +40,9 @@ public class PmiITCase {
     @Before
     public void initConnector() throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
-        Attributes attributes = new Attributes();
-        attributes.set(Credentials.class, new BasicAuthCredentials("wsadmin", "abcd1234"));
+        Attributes attributes = Attributes.builder()
+                .set(Credentials.class, new BasicAuthCredentials("wsadmin", "abcd1234"))
+                .build();
         configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
         configBuilder.addFeatures(PmiClientFeature.INSTANCE);
         Endpoint endpoint = new Endpoint("localhost", Integer.parseInt(System.getProperty("was.soapPort")), true);

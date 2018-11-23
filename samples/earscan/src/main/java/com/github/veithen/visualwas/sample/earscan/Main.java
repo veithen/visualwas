@@ -49,8 +49,8 @@ import org.objectweb.asm.ClassReader;
 import com.github.veithen.visualwas.client.repository.ConfigRepository;
 import com.github.veithen.visualwas.client.repository.DocumentContentSource;
 import com.github.veithen.visualwas.client.repository.RepositoryClientFeature;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.security.BasicAuthCredentials;
@@ -183,7 +183,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
         boolean securityEnabled;
-        Attributes attributes = new Attributes();
+        Attributes.Builder attributes = Attributes.builder();
         if (args.length > 2) {
             securityEnabled = true;
             attributes.set(Credentials.class, new BasicAuthCredentials(args[2], args[3]));
@@ -193,6 +193,6 @@ public class Main {
         }
         configBuilder.addFeatures(RepositoryClientFeature.INSTANCE);
         Endpoint endpoint = new Endpoint(args[0], Integer.parseInt(args[1]), securityEnabled);
-        scanAll(ConnectorFactory.getInstance().createConnector(endpoint, configBuilder.build(), attributes));
+        scanAll(ConnectorFactory.getInstance().createConnector(endpoint, configBuilder.build(), attributes.build()));
     }
 }

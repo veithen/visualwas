@@ -38,8 +38,8 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.net.ssl.TrustManager;
 import javax.security.auth.Subject;
 
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
-import com.github.veithen.visualwas.connector.factory.Attributes;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -119,7 +119,7 @@ public class SOAPJMXConnector implements JMXConnector {
     
     private synchronized void internalConnect(Map<String,?> env) throws IOException {
         connectionId = UUID.randomUUID().toString();
-        Attributes attributes = new Attributes();
+        Attributes.Builder attributes = Attributes.builder();
         String[] jmxCredentials = (String[])env.get(JMXConnector.CREDENTIALS);
         if (jmxCredentials != null) {
             attributes.set(Credentials.class, new BasicAuthCredentials(jmxCredentials[0], jmxCredentials[1]));
@@ -147,7 +147,7 @@ public class SOAPJMXConnector implements JMXConnector {
         connector = ConnectorFactory.getInstance().createConnector(
                 new Endpoint(host, port, jmxCredentials != null),
                 connectorConfigBuilder.build(),
-                attributes);
+                attributes.build());
         exceptionTransformer = (ExceptionTransformer)env.get(EXCEPTION_TRANSFORMER);
         if (exceptionTransformer == null) {
             exceptionTransformer = ExceptionTransformer.DEFAULT;

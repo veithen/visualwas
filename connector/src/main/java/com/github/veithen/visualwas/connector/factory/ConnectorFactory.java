@@ -21,6 +21,7 @@
  */
 package com.github.veithen.visualwas.connector.factory;
 
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.Endpoint;
 

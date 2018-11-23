@@ -24,6 +24,7 @@ package com.github.veithen.visualwas.connector.feature;
 import java.util.concurrent.Executor;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 
 public interface InvocationContext {
@@ -32,9 +33,11 @@ public interface InvocationContext {
 
     Executor getExecutor();
 
+    Attributes getAttributes();
+
     <T> T getAttribute(Class<T> key);
 
-    <T> void setAttribute(Class<T> key, T value);
-
     AdminService getAdminService(Handler<Invocation,Object> handler);
+
+    InvocationContext withAttributes(Attributes attributes);
 }

@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import com.github.veithen.visualwas.connector.AdminService;
+import com.github.veithen.visualwas.connector.Attributes;
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 
@@ -70,9 +71,9 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
             }
         }
         return future.thenCompose(value -> {
-            // TODO: should the context really be mutable?
-            context.setAttribute(type, value);
-            return nextHandler.invoke(context, request);
+            return nextHandler.invoke(
+                    context.withAttributes(Attributes.builder(context.getAttributes()).set(type, value).build()),
+                    request);
         });
     }
 
