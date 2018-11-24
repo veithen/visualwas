@@ -75,5 +75,85 @@
             <artifactId>woodstox-core-asl</artifactId>
             <version>4.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <activation>
+                <property>
+                    <name>env.WEBSPHERE_VERSION</name>
+                    <!-- TODO -->
+                    <value>8.5.5.14</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>visualwas-websphere-base:${env.WEBSPHERE_VERSION}</name>
+                                    <run>
+                                        <ports>
+                                            <port>was.soapPort:8880</port>
+                                            <port>was.adminPort:9043</port>
+                                        </ports>
+                                        <log>
+                                            <enabled>true</enabled>
+                                        </log>
+                                        <wait>
+                                            <log>WSVR0001I</log>
+                                            <time>600000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemPropertyVariables>
+                                        <was.soapPort>${was.soapPort}</was.soapPort>
+                                        <was.adminPort>${was.adminPort}</was.adminPort>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

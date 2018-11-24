@@ -180,19 +180,22 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    static void run(String host, int port, Attributes attributes) throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
-        boolean securityEnabled;
-        Attributes.Builder attributes = Attributes.builder();
-        if (args.length > 2) {
-            securityEnabled = true;
-            attributes.set(Credentials.class, new BasicAuthCredentials(args[2], args[3]));
+        boolean securityEnabled = attributes.get(Credentials.class) != null;
+        if (securityEnabled) {
             configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
-        } else {
-            securityEnabled = false;
         }
         configBuilder.addFeatures(RepositoryClientFeature.INSTANCE);
-        Endpoint endpoint = new Endpoint(args[0], Integer.parseInt(args[1]), securityEnabled);
-        scanAll(ConnectorFactory.getInstance().createConnector(endpoint, configBuilder.build(), attributes.build()));
+        Endpoint endpoint = new Endpoint(host, port, securityEnabled);
+        scanAll(ConnectorFactory.getInstance().createConnector(endpoint, configBuilder.build(), attributes));
+    }
+
+    public static void main(String... args) throws Exception {
+        Attributes.Builder attributes = Attributes.builder();
+        if (args.length > 2) {
+            attributes.set(Credentials.class, new BasicAuthCredentials(args[2], args[3]));
+        }
+        run(args[0], Integer.parseInt(args[1]), attributes.build());
     }
 }

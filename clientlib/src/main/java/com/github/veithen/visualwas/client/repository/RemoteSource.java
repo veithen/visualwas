@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectInputStream.GetField;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.zip.GZIPInputStream;
@@ -42,6 +43,7 @@ public class RemoteSource extends RepositorySource {
 
     private TransportConfiguration transportConfiguration;
     private Credentials credentials;
+    private PortMapper portMapper;
     private FileTransferConfig fileTransferConfig;
     private FileTransferOptions fileTransferOptions;
 
@@ -49,6 +51,7 @@ public class RemoteSource extends RepositorySource {
         InvocationContext context = ((MappedObjectInputStream)stream).getInvocationContext();
         transportConfiguration = context.getAttribute(TransportConfiguration.class);
         credentials = context.getAttribute(Credentials.class);
+        portMapper = context.getAttribute(PortMapper.class);
         GetField fields = stream.readFields();
         fileTransferConfig = (FileTransferConfig)fields.get("ftConfig", null);
         fileTransferOptions = (FileTransferOptions)fields.get("options", null);
@@ -56,9 +59,13 @@ public class RemoteSource extends RepositorySource {
     
     @Override
     public InputStream getInputStream() throws IOException {
+        InetSocketAddress address = new InetSocketAddress(fileTransferConfig.getHost(), fileTransferConfig.getPort());
+        if (portMapper != null) {
+            address = portMapper.map(address);
+        }
         boolean securityEnabled = fileTransferConfig.isSecurityEnabled();
         HttpURLConnection conn = transportConfiguration.createURLConnection(new URL(securityEnabled ? "https" : "http",
-                fileTransferConfig.getHost(), fileTransferConfig.getPort(),
+                address.getHostString(), address.getPort(),
                 "/FileTransfer/transfer/" + URLEncoder.encode(getSrcPath(), "UTF-8") + "?compress=" + fileTransferOptions.isCompress() + "&deleteOnCompletion=" + fileTransferOptions.isDeleteOnCompletion()));
         if (securityEnabled && credentials != null) {
             credentials.configure(conn);
