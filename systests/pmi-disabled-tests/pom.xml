@@ -82,7 +82,7 @@
                                             <inline>
                                                 <fileSets>
                                                     <fileSet>
-                                                        <directory>src/main/scripts</directory>
+                                                        <directory>src/test/scripts</directory>
                                                         <outputDirectory>/</outputDirectory>
                                                     </fileSet>
                                                 </fileSets>
