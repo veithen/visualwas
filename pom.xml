@@ -228,6 +228,29 @@
             <build>
                 <plugins>
                     <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/jacoco</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jacoco</groupId>
+                                            <artifactId>org.jacoco.agent</artifactId>
+                                            <classifier>runtime</classifier>
+                                            <destFileName>agent.jar</destFileName>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <inherited>false</inherited>
@@ -253,12 +276,17 @@
                                                                 <directory>src/main/scripts</directory>
                                                                 <outputDirectory>/</outputDirectory>
                                                             </fileSet>
+                                                            <fileSet>
+                                                                <directory>${project.build.directory}/jacoco</directory>
+                                                                <outputDirectory>jacoco</outputDirectory>
+                                                            </fileSet>
                                                         </fileSets>
                                                     </inline>
                                                 </assembly>
                                                 <runCmds>
                                                     <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/deployConsole.py remove</runCmd>
                                                     <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /work/configureSecurity.py</runCmd>
+                                                    <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/wsadmin.sh -conntype NONE -lang jython -f /work/configureAgent.py</runCmd>
 
                                                     <!-- Generate a start script so that we can further accelerate the startup of container
                                                          based on this image. -->

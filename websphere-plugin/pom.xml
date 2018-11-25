@@ -143,6 +143,22 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>dump</goal>
+                                </goals>
+                                <configuration>
+                                    <address>localhost</address>
+                                    <port>${was.jacocoAgentPort}</port>
+                                    <append>true</append>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
@@ -159,6 +175,7 @@
                                     <run>
                                         <ports>
                                             <port>was.soapPort:8880</port>
+                                            <port>was.jacocoAgentPort:6300</port>
                                         </ports>
                                         <log>
                                             <enabled>true</enabled>
