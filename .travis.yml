@@ -8,20 +8,16 @@ jobs:
   include:
     - stage: test
       jdk: openjdk8
-      # There are actually significant differences with respect to JMX in recent fix packs
-      env: WEBSPHERE_VERSION=8.5.5.10
-    - stage: test
-      jdk: openjdk8
-      env: WEBSPHERE_VERSION=8.5.5.14
+      env: WEBSPHERE_VERSION=9.0.0.9
     - stage: test
       jdk: openjdk9
       env: WEBSPHERE_VERSION=9.0.0.9
     - stage: test
       jdk: openjdk10
-      env: WEBSPHERE_VERSION=8.5.5.14
+      env: WEBSPHERE_VERSION=9.0.0.9
     - stage: test
       jdk: openjdk11
-      env: WEBSPHERE_VERSION=8.5.5.14
+      env: WEBSPHERE_VERSION=9.0.0.9
     - if: repo = "veithen/visualwas" AND branch = master AND type = push
       stage: deploy
       jdk: openjdk8
