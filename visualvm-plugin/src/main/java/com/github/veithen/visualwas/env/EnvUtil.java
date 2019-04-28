@@ -36,14 +36,13 @@ import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
 import com.github.veithen.visualwas.client.ras.RasLoggingFeature;
 import com.github.veithen.visualwas.client.repository.RepositoryClientFeature;
 import com.github.veithen.visualwas.connector.feature.Feature;
-import com.github.veithen.visualwas.connector.federation.DisableFederationFeature;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.trust.TrustStore;
 
 public final class EnvUtil {
     private EnvUtil() {}
     
-    public static Map<String,Object> createEnvironment(boolean securityEnabled, boolean federationDisabled) {
+    public static Map<String,Object> createEnvironment(boolean securityEnabled) {
         Map<String,Object> env = new HashMap<>();
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, SOAPJMXConnector.class.getClassLoader());
         env.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, "com.github.veithen.visualwas.jmx");
@@ -56,9 +55,6 @@ public final class EnvUtil {
         WebSphereClassLoaderProvider classLoaderProvider = WebSphereClassLoaderProvider.getInstance();
         env.put(SOAPJMXConnector.CLASS_LOADER_PROVIDER, classLoaderProvider);
         List<Feature> features = new ArrayList<>();
-        if (federationDisabled) {
-            features.add(DisableFederationFeature.INSTANCE);
-        }
         features.addAll(Arrays.asList(
                 ConfigClientFeature.INSTANCE,
                 JSR77ClientFeature.INSTANCE,

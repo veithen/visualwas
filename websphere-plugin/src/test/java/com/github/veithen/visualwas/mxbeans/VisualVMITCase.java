@@ -82,7 +82,7 @@ public class VisualVMITCase {
         String password = "changeme";
 
         // Automatically add the server certificate to the trust store
-        Map<String,Object> env = EnvUtil.createEnvironment(true, false);
+        Map<String,Object> env = EnvUtil.createEnvironment(true);
         env.put(JMXConnector.CREDENTIALS, new String[] { user, password });
         try {
             JMXConnectorFactory.connect(url, env);
@@ -94,7 +94,7 @@ public class VisualVMITCase {
             TrustStore.getInstance().addCertificate(chain[chain.length-1]);
         }
 
-        JmxApplication app = new JmxApplication(Host.LOCALHOST, url, new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false, false), null);
+        JmxApplication app = new JmxApplication(Host.LOCALHOST, url, new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), null);
         Jvm jvm = new JvmProvider().createModelFor(app);
 
         for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {

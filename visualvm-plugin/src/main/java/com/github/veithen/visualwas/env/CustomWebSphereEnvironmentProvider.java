@@ -35,11 +35,8 @@ import com.sun.tools.visualvm.jmx.EnvironmentProvider;
  * Configuration information is passed to the constructor.
  */
 public class CustomWebSphereEnvironmentProvider extends CredentialsProvider.Custom {
-    private final boolean federationDisabled;
-    
-    public CustomWebSphereEnvironmentProvider(String username, char[] password, boolean persistent, boolean federationDisabled) {
+    public CustomWebSphereEnvironmentProvider(String username, char[] password, boolean persistent) {
         super(username, password, persistent);
-        this.federationDisabled = federationDisabled;
     }
 
     @Override
@@ -50,15 +47,9 @@ public class CustomWebSphereEnvironmentProvider extends CredentialsProvider.Cust
     }
 
     @Override
-    public void saveEnvironment(Storage storage) {
-        super.saveEnvironment(storage);
-        storage.setCustomProperty(Constants.PROP_FEDERATION_DISABLED, Boolean.toString(federationDisabled));
-    }
-
-    @Override
     public Map<String,?> getEnvironment(Application application, Storage storage) {
         Map<String,?> parentEnv = super.getEnvironment(application, storage);
-        Map<String,Object> env = EnvUtil.createEnvironment(parentEnv.get(JMXConnector.CREDENTIALS) != null, federationDisabled);
+        Map<String,Object> env = EnvUtil.createEnvironment(parentEnv.get(JMXConnector.CREDENTIALS) != null);
         env.putAll(parentEnv);
         return env;
     }

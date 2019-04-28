@@ -109,6 +109,6 @@ public class WebSphereJmxConnectionCustomizer extends JmxConnectionCustomizer {
         WebSpherePropertiesPanel wasPanel = (WebSpherePropertiesPanel)panel;
         String hostPort = wasPanel.getHost() + ":" + wasPanel.getPort();
         return new Setup("service:jmx:soap://" + hostPort, hostPort,
-                new CustomWebSphereEnvironmentProvider(wasPanel.getUsername(), wasPanel.getPassword(), wasPanel.isSaveCredentials(), wasPanel.isFederationDisabled()), true);
+                new CustomWebSphereEnvironmentProvider(wasPanel.getUsername(), wasPanel.getPassword(), wasPanel.isSaveCredentials()), true);
     }
 }
