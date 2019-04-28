@@ -61,7 +61,7 @@ public class SignerExchangeDialog extends JDialog {
         JLabel label = new JLabel();
         Mnemonics.setLocalizedText(label, NbBundle.getMessage(SignerExchangeDialog.class, "LBL_untrusted_warning"));
         add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, WEST, NONE, new Insets(2, 0, 2, 0), 0, 0));
-        final JList<X509Certificate> certSelector = new JList<X509Certificate>(new CertificateChainListModel(chain));
+        final JList<X509Certificate> certSelector = new JList<>(new CertificateChainListModel(chain));
         label.setLabelFor(certSelector);
         certSelector.setCellRenderer(new CertificateChainListCellRenderer());
         certSelector.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
