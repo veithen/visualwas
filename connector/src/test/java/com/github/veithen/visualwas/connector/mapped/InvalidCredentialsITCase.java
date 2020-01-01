@@ -51,10 +51,10 @@ public class InvalidCredentialsITCase extends WebSphereITCase {
             connector.getAttribute(serverMBean, "pid");
             fail("Expected exception");
         } catch (JMRuntimeException ex) {
-            // Older WebSphere versions produce a proper exception.
-            assertThat(ex.getMessage()).contains("ADMN0022E");
+            // WebSphere 9.0.5.x produces a proper exception.
+            assertThat(ex.getMessage()).isEqualTo("Unable to authenticate incoming request");
         } catch (ConnectorException ex) {
-            // Newer versions trigger a SOAPException.
+            // 8.5.5.x and 9.0.0.x trigger a SOAPException.
             assertThat(ex.getCause()).isInstanceOf(SOAPException.class);
         }
     }
