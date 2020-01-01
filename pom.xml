@@ -291,6 +291,11 @@
                                                          based on this image. -->
                                                     <runCmd>/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1 -script /work/start_server1.sh</runCmd>
                                                 </runCmds>
+                                                <entryPoint>
+                                                    <exec>
+                                                        <arg>/work/start_server</arg>
+                                                    </exec>
+                                                </entryPoint>
                                             </build>
                                         </image>
                                     </images>
