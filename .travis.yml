@@ -20,9 +20,6 @@ jobs:
       env: WEBSPHERE_VERSION=9.0.0.11
     - stage: test
       jdk: openjdk8
-      env: WEBSPHERE_VERSION=8.5.5.14-profile
-    - stage: test
-      jdk: openjdk8
       env: WEBSPHERE_VERSION=9.0.5.2
     - if: repo = "veithen/visualwas" AND branch = master AND type = push
       stage: deploy
