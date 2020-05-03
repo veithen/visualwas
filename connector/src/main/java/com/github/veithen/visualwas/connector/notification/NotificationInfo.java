@@ -2,7 +2,7 @@
  * #%L
  * VisualWAS
  * %%
- * Copyright (C) 2013 - 2019 Andreas Veithen
+ * Copyright (C) 2013 - 2020 Andreas Veithen
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
