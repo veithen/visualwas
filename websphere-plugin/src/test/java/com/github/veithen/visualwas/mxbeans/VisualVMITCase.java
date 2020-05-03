@@ -96,6 +96,7 @@ public class VisualVMITCase {
 
         JmxApplication app = new JmxApplication(Host.LOCALHOST, url, new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), null);
         Jvm jvm = new JvmProvider().createModelFor(app);
+        assertThat(jvm).isNotNull();
 
         for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {
             String name = prop.getName();
