@@ -60,6 +60,6 @@
     </scm>
 
     <properties>
-        <visualvm.version>visualvm_131</visualvm.version>
+        <visualvm.version>visualvm_134</visualvm.version>
     </properties>
 </project>

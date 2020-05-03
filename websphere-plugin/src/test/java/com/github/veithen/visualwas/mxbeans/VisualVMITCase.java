@@ -95,7 +95,7 @@ public class VisualVMITCase {
         }
 
         JmxApplication app = new JmxApplicationProvider().createJmxApplication(
-                url.toString(), "test", new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), false);
+                url.toString(), "test", "test", new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), false);
         Jvm jvm = new JvmProvider().createModelFor(app);
         assertThat(jvm).isNotNull();
 
