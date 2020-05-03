@@ -95,6 +95,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}.thirdparty</groupId>
+            <artifactId>org.openide.util.ui</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>connector</artifactId>
             <version>${project.version}</version>

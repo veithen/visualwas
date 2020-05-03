@@ -50,6 +50,7 @@
         <module>org.openide.modules</module>
         <module>org.openide.util</module>
         <module>org.openide.util.lookup</module>
+        <module>org.openide.util.ui</module>
         <module>org.openide.windows</module>
     </modules>
 
@@ -60,6 +61,6 @@
     </scm>
 
     <properties>
-        <visualvm.version>visualvm_137</visualvm.version>
+        <visualvm.version>visualvm_14</visualvm.version>
     </properties>
 </project>
