@@ -28,7 +28,6 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -54,9 +53,6 @@ import com.sun.tools.visualvm.jmx.impl.JmxApplicationProvider;
 import com.sun.tools.visualvm.jvm.JvmProvider;
 
 public class VisualVMITCase {
-    private static final Set<String> unsupportedFeatures = new HashSet<>(Arrays.asList(
-            "dumpOnOOMEnabledSupported", "takeHeapDumpSupported"));
-
     @Rule
     public final TemporaryFolder netbeansUserDir = new TemporaryFolder() {
         @Override
@@ -99,12 +95,14 @@ public class VisualVMITCase {
         Jvm jvm = new JvmProvider().createModelFor(app);
         assertThat(jvm).isNotNull();
 
+        Set<String> unsupportedFeatures = new HashSet<>();
         for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {
             String name = prop.getName();
-            if (name.endsWith("Supported") && !unsupportedFeatures.contains(name)) {
-                assertThat((Boolean)prop.getReadMethod().invoke(jvm)).named("%s", name).isTrue();
+            if (name.endsWith("Supported") && !(Boolean)prop.getReadMethod().invoke(jvm)) {
+                unsupportedFeatures.add(name.substring(0, name.length()-9));
             }
         }
+        assertThat(unsupportedFeatures).containsExactly("dumpOnOOMEnabled", "takeHeapDump");
 
         MonitoredData data = jvm.getMonitoredData();
         assertThat(data.getLoadedClasses()).isGreaterThan(5000L);
