@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
@@ -37,9 +38,8 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.net.ssl.SSLHandshakeException;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.openide.modules.ModuleInstall;
 
 import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
@@ -53,58 +53,48 @@ import com.sun.tools.visualvm.jmx.impl.JmxApplicationProvider;
 import com.sun.tools.visualvm.jvm.JvmProvider;
 
 public class VisualVMITCase {
-    @Rule
-    public final TemporaryFolder netbeansUserDir = new TemporaryFolder() {
-        @Override
-        protected void before() throws Throwable {
-            super.before();
-            System.setProperty("netbeans.user", getRoot().getAbsolutePath());
-        }
-
-        @Override
-        protected void after() {
-            System.getProperties().remove("netbeans.user");
-            super.after();
-        }
-    };
-
     @Test
-    public void test() throws Exception {
-        Constructor<? extends ModuleInstall> installer = Class.forName("com.sun.tools.visualvm.jmx.Installer").asSubclass(ModuleInstall.class).getDeclaredConstructor();
-        installer.setAccessible(true);
-        installer.newInstance().restored();
-        JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
-        String user = "monitor";
-        String password = "changeme";
-
-        // Automatically add the server certificate to the trust store
-        Map<String,Object> env = EnvUtil.createEnvironment(true);
-        env.put(JMXConnector.CREDENTIALS, new String[] { user, password });
+    public void test(@TempDir File netbeansUserDir) throws Exception {
+        System.setProperty("netbeans.user", netbeansUserDir.getAbsolutePath());
         try {
-            JMXConnectorFactory.connect(url, env);
-            fail("Expected exception");
-        } catch (SSLHandshakeException ex) {
-            Throwable cause = ex.getCause();
-            assertThat(cause).isInstanceOf(NotTrustedException.class);
-            X509Certificate[] chain = ((NotTrustedException)ex.getCause()).getChain();
-            TrustStore.getInstance().addCertificate(chain[chain.length-1]);
-        }
+            Constructor<? extends ModuleInstall> installer = Class.forName("com.sun.tools.visualvm.jmx.Installer").asSubclass(ModuleInstall.class).getDeclaredConstructor();
+            installer.setAccessible(true);
+            installer.newInstance().restored();
+            JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
+            String user = "monitor";
+            String password = "changeme";
 
-        JmxApplication app = new JmxApplicationProvider().createJmxApplication(
-                url.toString(), "test", "test", new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), false);
-        Jvm jvm = new JvmProvider().createModelFor(app);
-        assertThat(jvm).isNotNull();
-
-        Set<String> unsupportedFeatures = new HashSet<>();
-        for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {
-            String name = prop.getName();
-            if (name.endsWith("Supported") && !(Boolean)prop.getReadMethod().invoke(jvm)) {
-                unsupportedFeatures.add(name.substring(0, name.length()-9));
+            // Automatically add the server certificate to the trust store
+            Map<String,Object> env = EnvUtil.createEnvironment(true);
+            env.put(JMXConnector.CREDENTIALS, new String[] { user, password });
+            try {
+                JMXConnectorFactory.connect(url, env);
+                fail("Expected exception");
+            } catch (SSLHandshakeException ex) {
+                Throwable cause = ex.getCause();
+                assertThat(cause).isInstanceOf(NotTrustedException.class);
+                X509Certificate[] chain = ((NotTrustedException)ex.getCause()).getChain();
+                TrustStore.getInstance().addCertificate(chain[chain.length-1]);
             }
-        }
-        assertThat(unsupportedFeatures).containsExactly("dumpOnOOMEnabled", "takeHeapDump");
 
-        MonitoredData data = jvm.getMonitoredData();
-        assertThat(data.getLoadedClasses()).isGreaterThan(5000L);
+            JmxApplication app = new JmxApplicationProvider().createJmxApplication(
+                    url.toString(), "test", "test", new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), false);
+            Jvm jvm = new JvmProvider().createModelFor(app);
+            assertThat(jvm).isNotNull();
+
+            Set<String> unsupportedFeatures = new HashSet<>();
+            for (PropertyDescriptor prop : Introspector.getBeanInfo(Jvm.class).getPropertyDescriptors()) {
+                String name = prop.getName();
+                if (name.endsWith("Supported") && !(Boolean)prop.getReadMethod().invoke(jvm)) {
+                    unsupportedFeatures.add(name.substring(0, name.length()-9));
+                }
+            }
+            assertThat(unsupportedFeatures).containsExactly("dumpOnOOMEnabled", "takeHeapDump");
+
+            MonitoredData data = jvm.getMonitoredData();
+            assertThat(data.getLoadedClasses()).isGreaterThan(5000L);
+        } finally {
+            System.getProperties().remove("netbeans.user");
+        }
     }
 }
