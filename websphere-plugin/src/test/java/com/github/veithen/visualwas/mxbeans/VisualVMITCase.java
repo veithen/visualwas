@@ -49,8 +49,8 @@ import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.github.veithen.visualwas.trust.TrustStore;
 import com.sun.tools.visualvm.application.jvm.Jvm;
 import com.sun.tools.visualvm.application.jvm.MonitoredData;
-import com.sun.tools.visualvm.host.Host;
 import com.sun.tools.visualvm.jmx.impl.JmxApplication;
+import com.sun.tools.visualvm.jmx.impl.JmxApplicationProvider;
 import com.sun.tools.visualvm.jvm.JvmProvider;
 
 public class VisualVMITCase {
@@ -94,7 +94,8 @@ public class VisualVMITCase {
             TrustStore.getInstance().addCertificate(chain[chain.length-1]);
         }
 
-        JmxApplication app = new JmxApplication(Host.LOCALHOST, url, new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), null);
+        JmxApplication app = new JmxApplicationProvider().createJmxApplication(
+                url.toString(), "test", new CustomWebSphereEnvironmentProvider(user, password.toCharArray(), false), false);
         Jvm jvm = new JvmProvider().createModelFor(app);
         assertThat(jvm).isNotNull();
 
