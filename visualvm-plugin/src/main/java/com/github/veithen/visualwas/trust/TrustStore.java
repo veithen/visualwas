@@ -117,4 +117,8 @@ public final class TrustStore {
             throw new TrustStoreError(ex);
         }
     }
+
+    public void clear() {
+        prefs.remove(PROP_KEY);
+    }
 }
