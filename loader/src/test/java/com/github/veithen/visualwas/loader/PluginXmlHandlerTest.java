@@ -25,7 +25,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PluginXmlHandlerTest {
     @Test
