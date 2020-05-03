@@ -102,7 +102,7 @@ public class MXBeansITCase {
             InputStream in = PlatformMXBeansRegistrant.class.getResourceAsStream("access.properties");
             accessProperties.load(in);
             in.close();
-            assertThat(accessProperties.keySet()).containsAllIn(keys);
+            assertThat(accessProperties.keySet()).containsAtLeastElementsIn(keys);
         });
     }
     
