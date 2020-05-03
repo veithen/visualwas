@@ -249,6 +249,7 @@
                                 <configuration>
                                     <systemPropertyVariables>
                                         <was.soapPort>${was.soapPort}</was.soapPort>
+                                        <java.util.logging.config.file>${basedir}/src/test/conf/logging.properties</java.util.logging.config.file>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
