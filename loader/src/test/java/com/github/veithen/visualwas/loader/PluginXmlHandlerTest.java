@@ -21,23 +21,19 @@
  */
 package com.github.veithen.visualwas.loader;
 
-import java.util.List;
+import static com.google.common.truth.Truth.assertThat;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-public class PluginXmlHandlerTest extends Assert {
+public class PluginXmlHandlerTest {
     @Test
     public void test() throws Exception {
         PluginXmlHandler handler = new PluginXmlHandler();
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.newSAXParser().parse(PluginXmlHandlerTest.class.getResource("plugin.xml").toString(), handler);
-        List<String> serializables = handler.getSerializables();
-        assertEquals(2, serializables.size());
-        assertEquals("class1", serializables.get(0));
-        assertEquals("class2", serializables.get(1));
+        assertThat(handler.getSerializables()).containsExactly("class1", "class2").inOrder();
     }
 }
