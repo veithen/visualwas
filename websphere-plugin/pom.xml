@@ -70,6 +70,12 @@
             <artifactId>connector</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -99,6 +105,17 @@
             <groupId>org.sonatype.goodies</groupId>
             <artifactId>goodies-prefs</artifactId>
             <version>2.3.1</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.veithen.ulog</groupId>
+            <artifactId>ulog</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
