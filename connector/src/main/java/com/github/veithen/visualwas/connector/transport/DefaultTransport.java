@@ -32,12 +32,16 @@ import java.util.concurrent.CompletionException;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.github.veithen.visualwas.connector.feature.Handler;
 import com.github.veithen.visualwas.connector.feature.InvocationContext;
 import com.github.veithen.visualwas.connector.feature.SOAPResponse;
 
 final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
+    private static final Log log = LogFactory.getLog(DefaultTransport.class);
+
     private final URL endpointUrl;
     private final TransportConfiguration config;
     
@@ -50,6 +54,9 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
     public CompletableFuture<SOAPResponse> invoke(InvocationContext context, final SOAPEnvelope request) {
         return CompletableFuture.supplyAsync(() -> {
             try {
+                if (log.isDebugEnabled()) {
+                    log.debug("Posting to " + endpointUrl + "; payload is " + request.getBody().getFirstElement().getQName());
+                }
                 HttpURLConnection conn = config.createURLConnection(endpointUrl);
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
@@ -60,7 +67,11 @@ final class DefaultTransport implements Handler<SOAPEnvelope,SOAPResponse> {
                 // TODO: this should actually throw IOException
                 request.serialize(out);
                 out.close();
-                final boolean isFault = conn.getResponseCode() != 200;
+                int responseCode = conn.getResponseCode();
+                if (log.isDebugEnabled()) {
+                    log.debug("Response code: " + responseCode);
+                }
+                final boolean isFault = responseCode != 200;
                 final InputStream in = isFault ? conn.getErrorStream() : conn.getInputStream();
                 try {
                     final SOAPEnvelope responseEnvelope = OMXMLBuilderFactory.createSOAPModelBuilder(in, "UTF-8").getSOAPEnvelope(); // TODO: encoding!

@@ -21,7 +21,14 @@
  */
 package com.github.veithen.visualwas.framework.proxy;
 
+import java.util.Arrays;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 final class InvocationHandlerDelegate {
+    private static final Log log = LogFactory.getLog(InvocationHandlerDelegate.class);
+
     private final Operation operation;
     private final InvocationStyle invocationStyle;
 
@@ -31,6 +38,15 @@ final class InvocationHandlerDelegate {
     }
 
     Object invoke(InvocationTarget target, Object[] args) throws Throwable {
+        if (log.isDebugEnabled()) {
+            StringBuilder builder = new StringBuilder("Invoking operation ");
+            builder.append(operation.getName());
+            if (args != null && args.length > 0) {
+                builder.append(" with arguments ");
+                builder.append(Arrays.asList(args));
+            }
+            log.debug(builder.toString());
+        }
         return invocationStyle.invoke(target, operation, args);
     }
 }
