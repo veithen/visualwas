@@ -25,10 +25,10 @@ import java.util.Map;
 
 import javax.management.remote.JMXConnector;
 
-import com.sun.tools.visualvm.application.Application;
-import com.sun.tools.visualvm.core.datasource.Storage;
-import com.sun.tools.visualvm.jmx.CredentialsProvider;
-import com.sun.tools.visualvm.jmx.EnvironmentProvider;
+import org.graalvm.visualvm.application.Application;
+import org.graalvm.visualvm.core.datasource.Storage;
+import org.graalvm.visualvm.jmx.CredentialsProvider;
+import org.graalvm.visualvm.jmx.EnvironmentProvider;
 
 /**
  * WebSphere {@link EnvironmentProvider} implementation used during initial connection creation.

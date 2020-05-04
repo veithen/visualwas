@@ -23,22 +23,20 @@ package com.github.veithen.visualwas;
 
 import java.util.Set;
 
-import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXServiceURL;
 
-import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
-import com.sun.tools.visualvm.application.Application;
-import com.sun.tools.visualvm.core.datasource.DataSource;
-import com.sun.tools.visualvm.core.datasource.Storage;
-import com.sun.tools.visualvm.core.explorer.ExplorerSupport;
-import com.sun.tools.visualvm.core.properties.PropertiesPanel;
-import com.sun.tools.visualvm.host.Host;
-import com.sun.tools.visualvm.jmx.EnvironmentProvider;
-import com.sun.tools.visualvm.jmx.JmxConnectionCustomizer;
-import com.sun.tools.visualvm.jmx.impl.JmxApplication;
-import com.sun.tools.visualvm.tools.jmx.JmxModelFactory;
-
+import org.graalvm.visualvm.application.Application;
+import org.graalvm.visualvm.core.datasource.DataSource;
+import org.graalvm.visualvm.core.datasource.Storage;
+import org.graalvm.visualvm.core.explorer.ExplorerSupport;
+import org.graalvm.visualvm.core.properties.PropertiesPanel;
+import org.graalvm.visualvm.host.Host;
+import org.graalvm.visualvm.jmx.JmxConnectionCustomizer;
+import org.graalvm.visualvm.jmx.JmxConnectionCustomizer.Setup;
+import org.graalvm.visualvm.tools.jmx.JmxModelFactory;
 import org.openide.util.NbBundle;
+
+import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
 
 public class WebSphereJmxConnectionCustomizer extends JmxConnectionCustomizer {
     public WebSphereJmxConnectionCustomizer() {

@@ -112,7 +112,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.jvm</artifactId>
+            <artifactId>org.graalvm.visualvm.jvm</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

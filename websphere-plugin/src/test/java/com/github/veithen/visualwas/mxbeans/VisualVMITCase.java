@@ -32,6 +32,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.management.remote.JMXConnector;
@@ -39,8 +40,15 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import javax.net.ssl.SSLHandshakeException;
 
+import org.graalvm.visualvm.application.Application;
+import org.graalvm.visualvm.application.jvm.Jvm;
+import org.graalvm.visualvm.application.jvm.JvmFactory;
+import org.graalvm.visualvm.application.jvm.MonitoredData;
+import org.graalvm.visualvm.core.datasupport.Stateful;
+import org.graalvm.visualvm.jmx.JmxApplicationsSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -51,11 +59,6 @@ import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
 import com.github.veithen.visualwas.env.EnvUtil;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.github.veithen.visualwas.trust.TrustStore;
-import com.sun.tools.visualvm.application.Application;
-import com.sun.tools.visualvm.application.jvm.Jvm;
-import com.sun.tools.visualvm.application.jvm.JvmFactory;
-import com.sun.tools.visualvm.application.jvm.MonitoredData;
-import com.sun.tools.visualvm.jmx.JmxApplicationsSupport;
 
 public class VisualVMITCase {
     @TempDir
@@ -70,8 +73,8 @@ public class VisualVMITCase {
     @BeforeAll
     static void before() throws Exception {
         System.setProperty("netbeans.user", netbeansUserDir.getAbsolutePath());
-        installModule("com.sun.tools.visualvm.jmx.Installer");
-        installModule("com.sun.tools.visualvm.jvm.Installer");
+        installModule("org.graalvm.visualvm.jmx.Installer");
+        installModule("org.graalvm.visualvm.jvm.Installer");
     }
 
     @AfterAll
@@ -88,6 +91,7 @@ public class VisualVMITCase {
 
     @ParameterizedTest
     @MethodSource("provideArguments")
+    @Timeout(value=2, unit=TimeUnit.MINUTES)
     public void test(String role, String[] expectedUnsupportedFeatures) throws Exception {
         JMXServiceURL url = new JMXServiceURL("soap", "localhost", Integer.parseInt(System.getProperty("was.soapPort")));
         String password = "changeme";
@@ -111,6 +115,21 @@ public class VisualVMITCase {
                     url.toString(), "test", new CustomWebSphereEnvironmentProvider(role, password.toCharArray(), false), false);
             assertThat(app).isNotNull();
             try {
+                Object lock = new Object();
+                app.addPropertyChangeListener(Stateful.PROPERTY_STATE, (evt) -> {
+                    synchronized (lock) {
+                        lock.notifyAll();
+                    }
+                });
+                synchronized (lock) {
+                    while (app.getState() != Stateful.STATE_AVAILABLE) {
+                        lock.wait();
+                    }
+                }
+
+                // There is a problem in VisualVM 2.0.1 that can cause deadlock. Sleep a bit to avoid that.
+                Thread.sleep(250);
+
                 Jvm jvm = JvmFactory.getJVMFor(app);
                 assertThat(jvm).isNotNull();
 

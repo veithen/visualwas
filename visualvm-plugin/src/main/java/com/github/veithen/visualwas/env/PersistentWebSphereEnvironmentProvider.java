@@ -25,11 +25,12 @@ import java.util.Map;
 
 import javax.management.remote.JMXConnector;
 
+import org.graalvm.visualvm.application.Application;
+import org.graalvm.visualvm.core.datasource.Storage;
+import org.graalvm.visualvm.jmx.CredentialsProvider;
+import org.graalvm.visualvm.jmx.EnvironmentProvider;
+
 import com.github.veithen.visualwas.Installer;
-import com.sun.tools.visualvm.application.Application;
-import com.sun.tools.visualvm.core.datasource.Storage;
-import com.sun.tools.visualvm.jmx.CredentialsProvider;
-import com.sun.tools.visualvm.jmx.EnvironmentProvider;
 
 /**
  * WebSphere {@link EnvironmentProvider} implementation used when loading the configuration from

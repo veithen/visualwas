@@ -46,27 +46,27 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.application</artifactId>
+            <artifactId>org.graalvm.visualvm.application</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.core</artifactId>
+            <artifactId>org.graalvm.visualvm.core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.host</artifactId>
+            <artifactId>org.graalvm.visualvm.host</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.jmx</artifactId>
+            <artifactId>org.graalvm.visualvm.jmx</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>com.sun.tools.visualvm.tools</artifactId>
+            <artifactId>org.graalvm.visualvm.tools</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

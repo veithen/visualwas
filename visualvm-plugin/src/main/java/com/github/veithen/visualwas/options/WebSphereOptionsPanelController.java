@@ -27,12 +27,11 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 
+import org.graalvm.visualvm.core.options.UISupport;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
-
-import com.sun.tools.visualvm.core.options.UISupport;
 
 public class WebSphereOptionsPanelController extends OptionsPanelController {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);

@@ -25,10 +25,10 @@
  */
 package com.github.veithen.visualwas;
 
+import org.graalvm.visualvm.jmx.JmxConnectionSupport;
 import org.openide.modules.ModuleInstall;
 
 import com.github.veithen.visualwas.env.PersistentWebSphereEnvironmentProvider;
-import com.sun.tools.visualvm.jmx.JmxConnectionSupport;
 
 public class Installer extends ModuleInstall {
     @Override

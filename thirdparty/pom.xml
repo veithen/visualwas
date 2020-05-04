@@ -38,12 +38,12 @@
 
     <modules>
         <module>visualvm</module>
-        <module>com.sun.tools.visualvm.application</module>
-        <module>com.sun.tools.visualvm.core</module>
-        <module>com.sun.tools.visualvm.host</module>
-        <module>com.sun.tools.visualvm.jmx</module>
-        <module>com.sun.tools.visualvm.jvm</module>
-        <module>com.sun.tools.visualvm.tools</module>
+        <module>org.graalvm.visualvm.application</module>
+        <module>org.graalvm.visualvm.core</module>
+        <module>org.graalvm.visualvm.host</module>
+        <module>org.graalvm.visualvm.jmx</module>
+        <module>org.graalvm.visualvm.jvm</module>
+        <module>org.graalvm.visualvm.tools</module>
         <module>org.netbeans.modules.options.api</module>
         <module>org.openide.awt</module>
         <module>org.openide.dialogs</module>
@@ -61,6 +61,6 @@
     </scm>
 
     <properties>
-        <visualvm.version>visualvm_144</visualvm.version>
+        <visualvm.version>visualvm_201</visualvm.version>
     </properties>
 </project>

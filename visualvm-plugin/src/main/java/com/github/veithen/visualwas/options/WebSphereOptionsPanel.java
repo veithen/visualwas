@@ -45,14 +45,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.graalvm.visualvm.core.options.UISupport;
+import org.graalvm.visualvm.core.ui.components.SectionSeparator;
+import org.graalvm.visualvm.core.ui.components.Spacer;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
 import com.github.veithen.visualwas.SimpleDocumentListener;
 import com.github.veithen.visualwas.trust.TrustStore;
-import com.sun.tools.visualvm.core.options.UISupport;
-import com.sun.tools.visualvm.core.ui.components.SectionSeparator;
-import com.sun.tools.visualvm.core.ui.components.Spacer;
 
 @SuppressWarnings("serial")
 public class WebSphereOptionsPanel extends JPanel {

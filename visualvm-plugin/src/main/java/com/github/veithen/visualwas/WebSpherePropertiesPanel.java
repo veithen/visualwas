@@ -55,6 +55,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.graalvm.visualvm.core.properties.PropertiesPanel;
+import org.graalvm.visualvm.core.ui.components.Spacer;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 
@@ -62,8 +64,6 @@ import com.github.veithen.visualwas.env.EnvUtil;
 import com.github.veithen.visualwas.jmx.WebSphereMBeanServerConnection;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.trust.NotTrustedException;
-import com.sun.tools.visualvm.core.properties.PropertiesPanel;
-import com.sun.tools.visualvm.core.ui.components.Spacer;
 
 @SuppressWarnings("serial")
 public class WebSpherePropertiesPanel extends PropertiesPanel {
