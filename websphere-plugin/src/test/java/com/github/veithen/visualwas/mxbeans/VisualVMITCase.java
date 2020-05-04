@@ -51,22 +51,27 @@ import com.github.veithen.visualwas.env.CustomWebSphereEnvironmentProvider;
 import com.github.veithen.visualwas.env.EnvUtil;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.github.veithen.visualwas.trust.TrustStore;
+import com.sun.tools.visualvm.application.Application;
 import com.sun.tools.visualvm.application.jvm.Jvm;
+import com.sun.tools.visualvm.application.jvm.JvmFactory;
 import com.sun.tools.visualvm.application.jvm.MonitoredData;
-import com.sun.tools.visualvm.jmx.impl.JmxApplication;
-import com.sun.tools.visualvm.jmx.impl.JmxApplicationProvider;
-import com.sun.tools.visualvm.jvm.JvmProvider;
+import com.sun.tools.visualvm.jmx.JmxApplicationsSupport;
 
 public class VisualVMITCase {
     @TempDir
     static File netbeansUserDir;
 
+    private static void installModule(String installerClassName) throws Exception {
+        Constructor<? extends ModuleInstall> installer = Class.forName(installerClassName).asSubclass(ModuleInstall.class).getDeclaredConstructor();
+        installer.setAccessible(true);
+        installer.newInstance().restored();
+    }
+
     @BeforeAll
     static void before() throws Exception {
         System.setProperty("netbeans.user", netbeansUserDir.getAbsolutePath());
-        Constructor<? extends ModuleInstall> installer = Class.forName("com.sun.tools.visualvm.jmx.Installer").asSubclass(ModuleInstall.class).getDeclaredConstructor();
-        installer.setAccessible(true);
-        installer.newInstance().restored();
+        installModule("com.sun.tools.visualvm.jmx.Installer");
+        installModule("com.sun.tools.visualvm.jvm.Installer");
     }
 
     @AfterAll
@@ -102,10 +107,11 @@ public class VisualVMITCase {
         }
 
         try {
-            JmxApplication app = new JmxApplicationProvider().createJmxApplication(
-                    url.toString(), "test", "test", new CustomWebSphereEnvironmentProvider(role, password.toCharArray(), false), false, false);
+            Application app = JmxApplicationsSupport.getInstance().createJmxApplication(
+                    url.toString(), "test", new CustomWebSphereEnvironmentProvider(role, password.toCharArray(), false), false);
+            assertThat(app).isNotNull();
             try {
-                Jvm jvm = new JvmProvider().createModelFor(app);
+                Jvm jvm = JvmFactory.getJVMFor(app);
                 assertThat(jvm).isNotNull();
 
                 Set<String> unsupportedFeatures = new HashSet<>();
