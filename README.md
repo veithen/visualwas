@@ -7,6 +7,10 @@ The VisualWAS project provides a VisualVM plugin to connect to WebSphere Applica
 
 Also provided is a WebSphere plugin that registers the [platform MXBeans][1] in WebSphere's MBean server so that memory and thread statistics are available in VisualVM.
 
+## Compatibility
+
+VisualWAS >= 4.0.0 is designed to work with VisualVM >= 2.0. Older versions of VisualWAS work with VisualVM 1.3.x and 1.4.x.
+
 ## Installation
 
 ### VisualVM plugin installation
