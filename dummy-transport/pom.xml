@@ -27,7 +27,7 @@
     <parent>
         <groupId>com.github.veithen.visualwas</groupId>
         <artifactId>visualwas</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.0</version>
     </parent>
 
     <artifactId>dummy-transport</artifactId>
@@ -37,7 +37,7 @@
     <scm>
         <connection>scm:git:http://github.com/veithen/visualwas.git</connection>
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>4.0.0</tag>
     </scm>
 
     <dependencies>
