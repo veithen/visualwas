@@ -24,6 +24,8 @@ package com.github.veithen.visualwas.connector.mapped;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
 import javax.management.JMRuntimeException;
 import javax.management.ObjectName;
 
@@ -52,7 +54,10 @@ public class InvalidCredentialsITCase extends WebSphereITCase {
             fail("Expected exception");
         } catch (JMRuntimeException ex) {
             // WebSphere 9.0.5.x produces a proper exception.
-            assertThat(ex.getMessage()).isEqualTo("Unable to authenticate incoming request");
+            assertThat(ex.getMessage()).isIn(Arrays.asList(
+                    "Unable to authenticate incoming request",
+                    "Unable to authenticate user of the incoming SOAP request"
+            ));
         } catch (ConnectorException ex) {
             // 8.5.5.x and 9.0.0.x trigger a SOAPException.
             assertThat(ex.getCause()).isInstanceOf(SOAPException.class);
