@@ -141,9 +141,9 @@
         <finalName>VisualWAS-${project.version}</finalName>
         <plugins>
             <plugin>
-                <groupId>org.bitstrings.maven.plugins</groupId>
+                <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>4.1</version>
+                <version>4.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <codeNameBase>${project.groupId}</codeNameBase>
