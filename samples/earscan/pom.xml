@@ -88,8 +88,6 @@
             <activation>
                 <property>
                     <name>env.WEBSPHERE_VERSION</name>
-                    <!-- TODO -->
-                    <value>8.5.5.14</value>
                 </property>
             </activation>
             <build>

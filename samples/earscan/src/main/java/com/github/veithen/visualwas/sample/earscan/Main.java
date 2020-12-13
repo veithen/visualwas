@@ -59,7 +59,7 @@ import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
 public class Main {
-    private static final Set<String> internalApps = new HashSet<>(Arrays.asList("commsvc", "WebSphereWSDM", "isclite", "OTiS", "ibmasyncrsp"));
+    private static final Set<String> internalApps = new HashSet<>(Arrays.asList("commsvc", "WebSphereWSDM", "isclite", "OTiS", "ibmasyncrsp", "RESTAPIDocs", "SwaggerUI"));
     
     private static void scanArchive(InputStream in, boolean isWar, List<String> messages) throws Exception {
         JarInputStream jar = new JarInputStream(in);
