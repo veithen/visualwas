@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.jboss.spec.javax.management.j2ee</groupId>
             <artifactId>jboss-j2eemgmt-api_1.1_spec</artifactId>
-            <version>1.0.1.Final</version>
+            <version>2.0.0.Final</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -66,6 +66,20 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>javax.management.j2ee*;version=!,*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
