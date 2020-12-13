@@ -52,9 +52,9 @@
             <version>1.6.3</version>
         </dependency>
         <dependency>
-            <groupId>asm</groupId>
+            <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>3.3</version>
+            <version>9.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

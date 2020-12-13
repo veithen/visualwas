@@ -26,30 +26,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Opcodes;
 
-public class WebServiceAnnotationVisitor implements AnnotationVisitor {
+public class WebServiceAnnotationVisitor extends AnnotationVisitor {
     private final List<WebServiceImplementation> wsImplementations;
     private final String className;
     private final Map<String,Object> attributes = new HashMap<>();
     
     public WebServiceAnnotationVisitor(List<WebServiceImplementation> wsImplementations, String className) {
+        super(Opcodes.ASM9);
         this.wsImplementations = wsImplementations;
         this.className = className;
     }
     
     public void visit(String name, Object value) {
         attributes.put(name, value);
-    }
-
-    public AnnotationVisitor visitAnnotation(String name, String desc) {
-        return null;
-    }
-
-    public AnnotationVisitor visitArray(String name) {
-        return null;
-    }
-
-    public void visitEnum(String name, String desc, String value) {
     }
 
     public void visitEnd() {
