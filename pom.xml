@@ -20,13 +20,13 @@
   <http://www.gnu.org/licenses/gpl-3.0.html>.
   #L%
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>22</version>
+        <version>24-SNAPSHOT</version>
     </parent>
 
     <groupId>com.github.veithen.visualwas</groupId>
@@ -72,25 +72,6 @@
         <axiom.version>1.2.22</axiom.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <!-- For Axiom -->
-            <id>apache.snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>https://repository.apache.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -98,8 +79,7 @@
                 <artifactId>axiom-api</artifactId>
                 <version>${axiom.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <!-- Already included in Java 6 -->
+                    <exclusion><!-- Already included in Java 6 -->
                         <groupId>org.apache.geronimo.specs</groupId>
                         <artifactId>geronimo-stax-api_1.0_spec</artifactId>
                     </exclusion>
@@ -130,8 +110,7 @@
                 <artifactId>axiom-impl</artifactId>
                 <version>${axiom.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <!-- We use the StAX implementation from the JRE -->
+                    <exclusion><!-- We use the StAX implementation from the JRE -->
                         <groupId>org.codehaus.woodstox</groupId>
                         <artifactId>woodstox-core-asl</artifactId>
                     </exclusion>
@@ -160,6 +139,25 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <!-- For Axiom -->
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
