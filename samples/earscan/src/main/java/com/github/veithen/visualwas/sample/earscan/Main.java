@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -59,17 +59,29 @@ import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 
 public class Main {
-    private static final Set<String> internalApps = new HashSet<>(Arrays.asList("commsvc", "WebSphereWSDM", "isclite", "OTiS", "ibmasyncrsp", "RESTAPIDocs", "SwaggerUI"));
-    
-    private static void scanArchive(InputStream in, boolean isWar, List<String> messages) throws Exception {
+    private static final Set<String> internalApps =
+            new HashSet<>(
+                    Arrays.asList(
+                            "commsvc",
+                            "WebSphereWSDM",
+                            "isclite",
+                            "OTiS",
+                            "ibmasyncrsp",
+                            "RESTAPIDocs",
+                            "SwaggerUI"));
+
+    private static void scanArchive(InputStream in, boolean isWar, List<String> messages)
+            throws Exception {
         JarInputStream jar = new JarInputStream(in);
         JarEntry entry;
-        List<WebServiceImplementation> wsImplementations = new ArrayList<WebServiceImplementation>();
+        List<WebServiceImplementation> wsImplementations =
+                new ArrayList<WebServiceImplementation>();
         WSDLResources wsdlResources = new WSDLResources();
         while ((entry = jar.getNextJarEntry()) != null) {
             String name = entry.getName();
             if ((!isWar || name.startsWith("WEB-INF/classes/")) && name.endsWith(".class")) {
-                new ClassReader(jar).accept(new WebServiceAnnotationExtractor(wsImplementations), 0);
+                new ClassReader(jar)
+                        .accept(new WebServiceAnnotationExtractor(wsImplementations), 0);
             } else if (!isWar && name.startsWith("META-INF/wsdl/")
                     || isWar && name.startsWith("WEB-INF/wsdl/")) {
                 wsdlResources.add(name, IOUtils.toByteArray(jar));
@@ -84,16 +96,35 @@ public class Main {
                 messages.add("[" + className + "] No wsdlLocation specified");
             } else {
                 try {
-                    Definition definitions = wsdlReader.readWSDL(wsdlResources.getWsdl(wsdlLocation));
-                    QName serviceQName = new QName(wsImplementation.getTargetNamespace(), wsImplementation.getServiceName());
+                    Definition definitions =
+                            wsdlReader.readWSDL(wsdlResources.getWsdl(wsdlLocation));
+                    QName serviceQName =
+                            new QName(
+                                    wsImplementation.getTargetNamespace(),
+                                    wsImplementation.getServiceName());
                     Service service = definitions.getService(serviceQName);
                     if (service == null) {
-                        messages.add("[" + className + "] Service " + serviceQName + " not found in WSDL");
+                        messages.add(
+                                "["
+                                        + className
+                                        + "] Service "
+                                        + serviceQName
+                                        + " not found in WSDL");
                     } else if (service.getPort(wsImplementation.getPortName()) == null) {
-                        messages.add("[" + className + "] Port " + wsImplementation.getPortName() + " not found in service " + serviceQName);
+                        messages.add(
+                                "["
+                                        + className
+                                        + "] Port "
+                                        + wsImplementation.getPortName()
+                                        + " not found in service "
+                                        + serviceQName);
                     }
                 } catch (WSDLNotFoundException ex) {
-                    messages.add("[" + className + "] Document not found or in wrong place: " + ex.getName());
+                    messages.add(
+                            "["
+                                    + className
+                                    + "] Document not found or in wrong place: "
+                                    + ex.getName());
                 }
             }
         }
@@ -102,20 +133,25 @@ public class Main {
     private static void scan(File earFile, List<String> messages) throws Exception {
         Set<String> ejbJars = new HashSet<>();
         Set<String> wars = new HashSet<>();
-        
+
         JarInputStream ear = new JarInputStream(new FileInputStream(earFile));
         try {
             JarEntry entry;
             while ((entry = ear.getNextJarEntry()) != null) {
                 if (entry.getName().equals("META-INF/application.xml")) {
-                    OMElement app = OMXMLBuilderFactory.createOMBuilder(StAXParserConfiguration.STANDALONE, ear).getDocumentElement();
+                    OMElement app =
+                            OMXMLBuilderFactory.createOMBuilder(
+                                            StAXParserConfiguration.STANDALONE, ear)
+                                    .getDocumentElement();
                     for (Iterator it = app.getChildrenWithLocalName("module"); it.hasNext(); ) {
-                        OMElement module = ((OMElement)it.next()).getFirstElement();
+                        OMElement module = ((OMElement) it.next()).getFirstElement();
                         String type = module.getLocalName();
                         if (type.equals("ejb")) {
                             ejbJars.add(module.getText());
                         } else if (type.equals("web")) {
-                            wars.add(((OMElement)module.getChildrenWithLocalName("web-uri").next()).getText());
+                            wars.add(
+                                    ((OMElement) module.getChildrenWithLocalName("web-uri").next())
+                                            .getText());
                         } else {
                             System.err.println("Unknown module type: " + type);
                         }
@@ -126,7 +162,7 @@ public class Main {
         } finally {
             ear.close();
         }
-        
+
         ear = new JarInputStream(new FileInputStream(earFile));
         try {
             JarEntry entry;
@@ -146,15 +182,26 @@ public class Main {
     private static void scanAll(Connector connector) throws Exception {
         String cell = connector.getServerMBean().getKeyProperty("cell");
         ConfigRepository configRepository = connector.getAdapter(ConfigRepository.class);
-        for (String appResource : configRepository.listResourceNames("cells/" + cell + "/applications", 2, 1)) {
-            String appName = appResource.substring(appResource.lastIndexOf('/')+1, appResource.length()-4);
+        for (String appResource :
+                configRepository.listResourceNames("cells/" + cell + "/applications", 2, 1)) {
+            String appName =
+                    appResource.substring(
+                            appResource.lastIndexOf('/') + 1, appResource.length() - 4);
             // Skip internal WebSphere applications
             if (internalApps.contains(appName)) {
                 continue;
             }
             File earFile = File.createTempFile("app-" + appName, ".ear");
             try {
-                DocumentContentSource source = configRepository.extract("cells/" + cell + "/applications/" + appName + ".ear/" + appName + ".ear");
+                DocumentContentSource source =
+                        configRepository.extract(
+                                "cells/"
+                                        + cell
+                                        + "/applications/"
+                                        + appName
+                                        + ".ear/"
+                                        + appName
+                                        + ".ear");
                 InputStream in = source.getSource().getInputStream();
                 try {
                     FileOutputStream out = new FileOutputStream(earFile);
@@ -184,11 +231,14 @@ public class Main {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
         boolean securityEnabled = attributes.get(Credentials.class) != null;
         if (securityEnabled) {
-            configBuilder.setTransportConfiguration(TransportConfiguration.custom().disableCertificateValidation().build());
+            configBuilder.setTransportConfiguration(
+                    TransportConfiguration.custom().disableCertificateValidation().build());
         }
         configBuilder.addFeatures(RepositoryClientFeature.INSTANCE);
         Endpoint endpoint = new Endpoint(host, port, securityEnabled);
-        scanAll(ConnectorFactory.getInstance().createConnector(endpoint, configBuilder.build(), attributes));
+        scanAll(
+                ConnectorFactory.getInstance()
+                        .createConnector(endpoint, configBuilder.build(), attributes));
     }
 
     public static void main(String... args) throws Exception {

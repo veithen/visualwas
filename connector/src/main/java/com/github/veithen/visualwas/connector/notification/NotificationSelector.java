@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -42,17 +42,17 @@ public final class NotificationSelector implements NotificationFilter {
         new ObjectStreamField("listenerId", Integer.TYPE),
         new ObjectStreamField("info", NotificationInfo.class)
     };
-    
+
     private static final AtomicInteger listenerIdSeq = new AtomicInteger();
-    
+
     // In the original class, the listenerId identifies a NotificationListener instance. However,
     // NotificationListener instances are irrelevant for the subscription API. Therefore we simply
     // generate a unique ID.
     private int listenerId = listenerIdSeq.incrementAndGet();
-    
+
     private ObjectName name;
     private NotificationFilter filter;
-    
+
     public NotificationSelector(ObjectName name, NotificationFilter filter) {
         this.name = name;
         this.filter = filter;
@@ -68,13 +68,14 @@ public final class NotificationSelector implements NotificationFilter {
 
     @Override
     public boolean isNotificationEnabled(Notification notification) {
-        return name.apply((ObjectName)notification.getSource()) && (filter == null || filter.isNotificationEnabled(notification));
+        return name.apply((ObjectName) notification.getSource())
+                && (filter == null || filter.isNotificationEnabled(notification));
     }
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         GetField fields = stream.readFields();
         listenerId = fields.get("listenerId", 0);
-        NotificationInfo notificationInfo = (NotificationInfo)fields.get("info", null);
+        NotificationInfo notificationInfo = (NotificationInfo) fields.get("info", null);
         name = notificationInfo.getName();
         filter = notificationInfo.getFilter();
     }
@@ -85,9 +86,10 @@ public final class NotificationSelector implements NotificationFilter {
         fields.put("info", new NotificationInfo(name, filter));
         stream.writeFields();
     }
-    
+
     // Instances of this class are used in HashSets. Therefore we should ensure that the hashCode
-    // is computed exactly as by the original class. Note that since we generate a unique listenerId,
+    // is computed exactly as by the original class. Note that since we generate a unique
+    // listenerId,
     // equality (as defined by the original class) is equivalent to identity and we don't need to
     // override equals.
     public int hashCode() {

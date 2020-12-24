@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -36,8 +36,9 @@ public final class MappedObjectInputStream extends ObjectInputStream {
     private final ClassMapper classMapper;
     private final InvocationContext context;
     private boolean nextIsClassName;
-    
-    MappedObjectInputStream(InputStream in, ClassMapper classMapper, InvocationContext context) throws IOException {
+
+    MappedObjectInputStream(InputStream in, ClassMapper classMapper, InvocationContext context)
+            throws IOException {
         super(in);
         this.classMapper = classMapper;
         this.context = context;
@@ -48,7 +49,8 @@ public final class MappedObjectInputStream extends ObjectInputStream {
     }
 
     @Override
-    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+    protected Class<?> resolveClass(ObjectStreamClass desc)
+            throws IOException, ClassNotFoundException {
         return Class.forName(desc.getName(), false, context.getClassLoader());
     }
 

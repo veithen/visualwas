@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -39,18 +39,20 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
     protected CompletableFuture<Configs> produceValue(final AdminService adminService) {
         return new SingletonMBeanLocator("Perf")
                 .locateMBean(adminService)
-                .thenCompose(perfMBean -> adminService.invokeAsync(perfMBean, "getConfigs", null, null))
-                .exceptionally(t -> {
-                    if (t instanceof CompletionException) {
-                        t = t.getCause();
-                    }
-                    if (t instanceof InstanceNotFoundException) {
-                        // This means that PMI is disabled.
-                        return new PmiModuleConfig[0];
-                    } else {
-                        throw new CompletionException(t);
-                    }
-                })
-                .thenApply(input -> new Configs((PmiModuleConfig[])input));
+                .thenCompose(
+                        perfMBean -> adminService.invokeAsync(perfMBean, "getConfigs", null, null))
+                .exceptionally(
+                        t -> {
+                            if (t instanceof CompletionException) {
+                                t = t.getCause();
+                            }
+                            if (t instanceof InstanceNotFoundException) {
+                                // This means that PMI is disabled.
+                                return new PmiModuleConfig[0];
+                            } else {
+                                throw new CompletionException(t);
+                            }
+                        })
+                .thenApply(input -> new Configs((PmiModuleConfig[]) input));
     }
 }

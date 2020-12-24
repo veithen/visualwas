@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -36,14 +36,18 @@ import com.github.veithen.visualwas.framework.proxy.Interface;
 import com.github.veithen.visualwas.framework.proxy.Invocation;
 
 final class ConfiguratorImpl implements Configurator {
-    private final Map<Class<?>,Object> adapters = new HashMap<>();
+    private final Map<Class<?>, Object> adapters = new HashMap<>();
     private List<Interface<?>> adminServiceInterfaces;
-    private InterceptorChainBuilder<Invocation,Object> invocationInterceptors;
-    private InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors;
+    private InterceptorChainBuilder<Invocation, Object> invocationInterceptors;
+    private InterceptorChainBuilder<SOAPEnvelope, SOAPResponse> soapInterceptors;
     private Serializer serializer = DefaultSerializer.INSTANCE;
     private AdaptableDelegate adaptableDelegate;
 
-    ConfiguratorImpl(List<Interface<?>> adminServiceInterfaces, InterceptorChainBuilder<Invocation,Object> invocationInterceptors, InterceptorChainBuilder<SOAPEnvelope,SOAPResponse> soapInterceptors, AdaptableDelegate adaptableDelegate) {
+    ConfiguratorImpl(
+            List<Interface<?>> adminServiceInterfaces,
+            InterceptorChainBuilder<Invocation, Object> invocationInterceptors,
+            InterceptorChainBuilder<SOAPEnvelope, SOAPResponse> soapInterceptors,
+            AdaptableDelegate adaptableDelegate) {
         this.adminServiceInterfaces = adminServiceInterfaces;
         this.invocationInterceptors = invocationInterceptors;
         this.soapInterceptors = soapInterceptors;
@@ -63,18 +67,19 @@ final class ConfiguratorImpl implements Configurator {
         adminServiceInterfaces.add(iface);
         registerAdminServerAdapterForExtension(iface.getInterface());
     }
-    
+
     private <T> void registerAdminServerAdapterForExtension(Class<T> iface) {
-        adaptableDelegate.registerAdapter(iface, (adminService, executor) -> iface.cast(adminService));
+        adaptableDelegate.registerAdapter(
+                iface, (adminService, executor) -> iface.cast(adminService));
     }
 
     @Override
-    public void addInvocationInterceptor(Interceptor<Invocation,Object> interceptor) {
+    public void addInvocationInterceptor(Interceptor<Invocation, Object> interceptor) {
         invocationInterceptors.add(interceptor);
     }
-    
+
     @Override
-    public void addSOAPInterceptor(Interceptor<SOAPEnvelope,SOAPResponse> interceptor) {
+    public void addSOAPInterceptor(Interceptor<SOAPEnvelope, SOAPResponse> interceptor) {
         soapInterceptors.add(interceptor);
     }
 

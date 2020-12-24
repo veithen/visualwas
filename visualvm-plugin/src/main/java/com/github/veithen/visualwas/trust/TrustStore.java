@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -39,51 +39,54 @@ import org.openide.util.NbPreferences;
 
 public final class TrustStore {
     private static final String PROP_KEY = "trustStore";
-    
+
     private static TrustStore instance;
-    
+
     private final Preferences prefs;
-    
+
     private TrustStore() {
         prefs = NbPreferences.forModule(TrustStore.class);
     }
-    
+
     public static TrustStore getInstance() {
         if (instance == null) {
             instance = new TrustStore();
         }
         return instance;
     }
-    
+
     private KeyStore getTrustStore() {
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             byte[] trustStoreContent = prefs.getByteArray(PROP_KEY, null);
-            trustStore.load(trustStoreContent == null ? null : new ByteArrayInputStream(trustStoreContent), new char[0]);
+            trustStore.load(
+                    trustStoreContent == null ? null : new ByteArrayInputStream(trustStoreContent),
+                    new char[0]);
             return trustStore;
         } catch (IOException | GeneralSecurityException ex) {
             throw new TrustStoreError(ex);
         }
     }
-    
+
     /**
      * Create a {@link TrustManager} that validates server certificates against this trust store.
      * The returned trust manager is configured to throw a {@link NotTrustedException} with the
      * certificates presented by the server if they are not trusted.
-     * 
+     *
      * @return the trust manager
      */
     public TrustManager createTrustManager() {
         try {
             KeyStore trustStore = getTrustStore();
             if (trustStore.aliases().hasMoreElements()) {
-                TrustManagerFactory tmfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                TrustManagerFactory tmfactory =
+                        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 tmfactory.init(trustStore);
                 TrustManager[] trustManagers = tmfactory.getTrustManagers();
                 if (trustManagers.length != 1) {
                     throw new RuntimeException("Expected a TrustManager array with a single entry");
                 }
-                return new TrustManagerWrapper((X509ExtendedTrustManager)trustManagers[0]);
+                return new TrustManagerWrapper((X509ExtendedTrustManager) trustManagers[0]);
             } else {
                 return new NoTrustManager();
             }
@@ -103,7 +106,7 @@ public final class TrustStore {
             throw new TrustStoreError(ex);
         }
     }
-    
+
     public void export(File file, char[] password) throws IOException {
         try {
             KeyStore trustStore = getTrustStore();

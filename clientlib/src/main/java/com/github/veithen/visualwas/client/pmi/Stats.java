@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -41,10 +41,13 @@ public class Stats implements Serializable {
     private List<Statistic> dataMembers;
     private ArrayList<Stats> subCollections;
     private long time;
-    
+
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        PmiModuleConfig config = (((MappedObjectInputStream)stream).getInvocationContext()).getAttribute(Configs.class).getConfig(statsType);
+        PmiModuleConfig config =
+                (((MappedObjectInputStream) stream).getInvocationContext())
+                        .getAttribute(Configs.class)
+                        .getConfig(statsType);
         if (config != null) {
             for (Statistic stat : dataMembers) {
                 stat.setDataInfo(config.getDataInfo(stat.getId()));
@@ -55,7 +58,7 @@ public class Stats implements Serializable {
     public final String getStatsType() {
         return statsType;
     }
-    
+
     public final String getName() {
         return name;
     }
@@ -68,7 +71,7 @@ public class Stats implements Serializable {
         }
         return null;
     }
-    
+
     public final Stats getSubStats(String name) {
         for (Stats stats : subCollections) {
             if (stats.getName().equals(name)) {
@@ -77,20 +80,20 @@ public class Stats implements Serializable {
         }
         return null;
     }
-    
+
     @Override
     public final String toString() {
         StringBuilder buffer = new StringBuilder();
         format(buffer, 0);
         return buffer.toString();
     }
-    
+
     private static void indent(StringBuilder buffer, int amount) {
-        for (int i=0; i<amount; i++) {
+        for (int i = 0; i < amount; i++) {
             buffer.append("  ");
         }
     }
-    
+
     private final void format(StringBuilder buffer, int indent) {
         indent(buffer, indent);
         buffer.append("Stats name=");
@@ -102,14 +105,14 @@ public class Stats implements Serializable {
         buffer.append("{\n");
         if (dataMembers != null) {
             for (Statistic stat : dataMembers) {
-                indent(buffer, indent+1);
+                indent(buffer, indent + 1);
                 buffer.append(stat);
                 buffer.append('\n');
             }
         }
         if (subCollections != null) {
             for (Stats stats : subCollections) {
-                stats.format(buffer, indent+1);
+                stats.format(buffer, indent + 1);
                 buffer.append('\n');
             }
         }

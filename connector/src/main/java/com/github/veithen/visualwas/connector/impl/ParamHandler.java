@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -35,13 +35,21 @@ public final class ParamHandler {
         this.name = name;
         this.valueHandler = valueHandler;
     }
-    
-    public void createOMElement(OMElement operationElement, OMNamespace xsiNS, Object value, InvocationContextImpl context) {
+
+    public void createOMElement(
+            OMElement operationElement,
+            OMNamespace xsiNS,
+            Object value,
+            InvocationContextImpl context) {
         OMFactory factory = operationElement.getOMFactory();
         OMElement element = factory.createOMElement(name, null, operationElement);
         QName type;
-        // TODO: quick and dirty hack: the WebSphere SOAP connector doesn't use xsi:nil in all cases; once we have determined the logic (and have enough test cases), this needs to be cleaned up
-        if (value != null || (valueHandler instanceof ObjectHandler && ((ObjectHandler)valueHandler).getType().isArray())) {
+        // TODO: quick and dirty hack: the WebSphere SOAP connector doesn't use xsi:nil in all
+        // cases; once we have determined the logic (and have enough test cases), this needs to be
+        // cleaned up
+        if (value != null
+                || (valueHandler instanceof ObjectHandler
+                        && ((ObjectHandler) valueHandler).getType().isArray())) {
             type = valueHandler.setValue(element, value, context);
         } else {
             element.addAttribute("nil", "true", xsiNS);

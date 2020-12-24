@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -44,51 +44,67 @@ import com.github.veithen.visualwas.connector.transport.Endpoint;
 import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 import com.github.veithen.visualwas.connector.transport.TransportFactory;
 
-public class DummyTransport implements Handler<SOAPEnvelope,SOAPResponse>, TransportFactory {
+public class DummyTransport implements Handler<SOAPEnvelope, SOAPResponse>, TransportFactory {
     public static final Endpoint ENDPOINT = new Endpoint("localhost", 8888, false);
-    
-    private static OMMetaFactory domMetaFactory = OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
-    
+
+    private static OMMetaFactory domMetaFactory =
+            OMAbstractFactory.getMetaFactory(OMAbstractFactory.FEATURE_DOM);
+
     private final RequestMatcher requestMatcher;
-    
+
     public DummyTransport(RequestMatcher requestMatcher) {
         this.requestMatcher = requestMatcher;
     }
 
     public Connector createConnector(Feature... features) {
-        return ConnectorFactory.getInstance().createConnector(DummyTransport.ENDPOINT, ConnectorConfiguration.custom().addFeatures(features).setTransportFactory(this).build(), null);
+        return ConnectorFactory.getInstance()
+                .createConnector(
+                        DummyTransport.ENDPOINT,
+                        ConnectorConfiguration.custom()
+                                .addFeatures(features)
+                                .setTransportFactory(this)
+                                .build(),
+                        null);
     }
-    
+
     public void addExchange(URL request, URL response) throws IOException {
         SOAPMessage requestMessage;
         InputStream in = request.openStream();
         try {
-            requestMessage = OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null).getSOAPMessage();
+            requestMessage =
+                    OMXMLBuilderFactory.createSOAPModelBuilder(domMetaFactory, in, null)
+                            .getSOAPMessage();
             requestMessage.build();
         } finally {
             in.close();
         }
-        requestMatcher.add(new Exchange((Document)requestMessage, new CannedResponse(response)));
+        requestMatcher.add(new Exchange((Document) requestMessage, new CannedResponse(response)));
     }
-    
+
     public void addExchange(Class<?> relativeTo, String baseName) throws IOException {
-        addExchange(relativeTo.getResource(baseName + "-request.xml"), relativeTo.getResource(baseName + "-response.xml"));
+        addExchange(
+                relativeTo.getResource(baseName + "-request.xml"),
+                relativeTo.getResource(baseName + "-response.xml"));
     }
-    
+
     public void addExchanges(Class<?> relativeTo, String... baseNames) throws IOException {
         for (String baseName : baseNames) {
             addExchange(relativeTo, baseName);
         }
     }
-    
+
     @Override
-    public Handler<SOAPEnvelope,SOAPResponse> createHandler(Endpoint endpoint, TransportConfiguration config) {
+    public Handler<SOAPEnvelope, SOAPResponse> createHandler(
+            Endpoint endpoint, TransportConfiguration config) {
         return this;
     }
 
     @Override
     public CompletableFuture<SOAPResponse> invoke(InvocationContext context, SOAPEnvelope request) {
-        SOAPMessage clonedRequest = OMXMLBuilderFactory.createStAXSOAPModelBuilder(domMetaFactory, request.getXMLStreamReader()).getSOAPMessage();
-        return requestMatcher.match((Document)clonedRequest).produce(context.getExecutor());
+        SOAPMessage clonedRequest =
+                OMXMLBuilderFactory.createStAXSOAPModelBuilder(
+                                domMetaFactory, request.getXMLStreamReader())
+                        .getSOAPMessage();
+        return requestMatcher.match((Document) clonedRequest).produce(context.getExecutor());
     }
 }

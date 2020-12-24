@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -35,7 +35,8 @@ import org.openide.util.NbPreferences;
 
 public class WebSphereOptionsPanelController extends OptionsPanelController {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final Preferences prefs = NbPreferences.forModule(WebSphereOptionsPanelController.class);
+    private final Preferences prefs =
+            NbPreferences.forModule(WebSphereOptionsPanelController.class);
     private WebSphereOptionsPanel panel;
     private JComponent component;
     private boolean changed;
@@ -56,7 +57,7 @@ public class WebSphereOptionsPanelController extends OptionsPanelController {
         }
         return panel;
     }
-    
+
     @Override
     public JComponent getComponent(Lookup lookup) {
         if (component == null) {
@@ -85,7 +86,7 @@ public class WebSphereOptionsPanelController extends OptionsPanelController {
         WebSphereOptionsPanel panel = getPanel();
         panel.setWASHome(prefs.get(Constants.PROP_KEY_WAS_HOME, null));
     }
-    
+
     @Override
     public void applyChanges() {
         WebSphereOptionsPanel panel = getPanel();
@@ -98,8 +99,7 @@ public class WebSphereOptionsPanelController extends OptionsPanelController {
     }
 
     @Override
-    public void cancel() {
-    }
+    public void cancel() {}
 
     void changed() {
         if (!changed) {

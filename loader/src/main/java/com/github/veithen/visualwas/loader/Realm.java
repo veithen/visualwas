@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -43,24 +43,26 @@ import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.BundleException;
 import org.xml.sax.SAXException;
 
-/**
- * Manages a set of OSGi bundles from which classes can be loaded.
- */
+/** Manages a set of OSGi bundles from which classes can be loaded. */
 // TODO: merge this into WebSphereRuntimeClassLoader and clean up
 final class Realm {
-    private final Map<String,List<Bundle>> packageMap = new HashMap<>();
-    private final Map<String,Bundle> classMap = new HashMap<>();
+    private final Map<String, List<Bundle>> packageMap = new HashMap<>();
+    private final Map<String, Bundle> classMap = new HashMap<>();
     private final ClassLoader parentClassLoader;
     private final URL[] bootstrapURLs;
     private WeakReference<BootstrapClassLoader> bootstrapClassLoader;
-    
+
     Realm(File wasHome, ClassLoader parentClassLoader) throws IOException {
         this.parentClassLoader = parentClassLoader;
-        bootstrapURLs = new URL[] {
-                new File(wasHome, "java/jre/lib/ibmcfw.jar").toURI().toURL(),
-                new File(wasHome, "lib/bootstrap.jar").toURI().toURL() };
+        bootstrapURLs =
+                new URL[] {
+                    new File(wasHome, "java/jre/lib/ibmcfw.jar").toURI().toURL(),
+                    new File(wasHome, "lib/bootstrap.jar").toURI().toURL()
+                };
         File pluginDir = new File(wasHome, "plugins");
-        File[] jars = pluginDir.listFiles(pathname -> pathname.isFile() && pathname.getName().endsWith(".jar"));
+        File[] jars =
+                pluginDir.listFiles(
+                        pathname -> pathname.isFile() && pathname.getName().endsWith(".jar"));
         if (jars == null) {
             throw new FileNotFoundException(pluginDir + " doesn't exist or is not readable");
         }
@@ -81,16 +83,20 @@ final class Realm {
                 Bundle bundle = null;
                 PluginXmlHandler handler = new PluginXmlHandler();
                 ZipEntry entry;
-                while ((bundle == null || !pluginXmlProcessed) && (entry = zin.getNextEntry()) != null) {
+                while ((bundle == null || !pluginXmlProcessed)
+                        && (entry = zin.getNextEntry()) != null) {
                     String name = entry.getName();
                     if (bundle == null && name.equals("META-INF/MANIFEST.MF")) {
                         bundle = new Bundle(this, jar.toURI().toURL());
                         Manifest manifest = new Manifest(zin);
-                        String exportPackageAttr = manifest.getMainAttributes().getValue("Export-Package");
+                        String exportPackageAttr =
+                                manifest.getMainAttributes().getValue("Export-Package");
                         if (exportPackageAttr != null) {
                             ManifestElement[] exportPackageElements;
                             try {
-                                exportPackageElements = ManifestElement.parseHeader("Export-Package", exportPackageAttr);
+                                exportPackageElements =
+                                        ManifestElement.parseHeader(
+                                                "Export-Package", exportPackageAttr);
                             } catch (BundleException ex) {
                                 throw new IOException("Invalid bundle manifest", ex);
                             }
@@ -129,7 +135,8 @@ final class Realm {
         // Classes in the plugins may depend on bootstrap.jar (mainly for logging). Therefore we
         // need to set up a class loader with this library and use it as the parent class loader for
         // the realm. Note that the way this is set up implies that the classes in
-        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader, except for classes in
+        // bootstrap.jar are not visible through the WebSphereRuntimeClassLoader, except for classes
+        // in
         // packages exported by some bundle.
         BootstrapClassLoader cl = bootstrapClassLoader == null ? null : bootstrapClassLoader.get();
         if (cl == null) {
@@ -138,19 +145,16 @@ final class Realm {
         }
         return cl;
     }
-    
+
     /**
      * Load a class from this realm. This method does not delegate to the parent class loader; if
-     * the class is not exported by any of the bundles in this realm, a
-     * {@link ClassNotFoundException} will be thrown.
-     * 
-     * @param name
-     *            the class name
-     * @param resolve
-     *            indicates if the class should be resolved
+     * the class is not exported by any of the bundles in this realm, a {@link
+     * ClassNotFoundException} will be thrown.
+     *
+     * @param name the class name
+     * @param resolve indicates if the class should be resolved
      * @return the class object; never <code>null</code>
-     * @throws ClassNotFoundException
-     *             if the class could not be found
+     * @throws ClassNotFoundException if the class could not be found
      */
     Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Bundle bundle0 = classMap.get(name);

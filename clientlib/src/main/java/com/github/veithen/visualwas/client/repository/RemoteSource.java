@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -48,25 +48,35 @@ public class RemoteSource extends RepositorySource {
     private FileTransferOptions fileTransferOptions;
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        InvocationContext context = ((MappedObjectInputStream)stream).getInvocationContext();
+        InvocationContext context = ((MappedObjectInputStream) stream).getInvocationContext();
         transportConfiguration = context.getAttribute(TransportConfiguration.class);
         credentials = context.getAttribute(Credentials.class);
         portMapper = context.getAttribute(PortMapper.class);
         GetField fields = stream.readFields();
-        fileTransferConfig = (FileTransferConfig)fields.get("ftConfig", null);
-        fileTransferOptions = (FileTransferOptions)fields.get("options", null);
+        fileTransferConfig = (FileTransferConfig) fields.get("ftConfig", null);
+        fileTransferOptions = (FileTransferOptions) fields.get("options", null);
     }
-    
+
     @Override
     public InputStream getInputStream() throws IOException {
-        InetSocketAddress address = new InetSocketAddress(fileTransferConfig.getHost(), fileTransferConfig.getPort());
+        InetSocketAddress address =
+                new InetSocketAddress(fileTransferConfig.getHost(), fileTransferConfig.getPort());
         if (portMapper != null) {
             address = portMapper.map(address);
         }
         boolean securityEnabled = fileTransferConfig.isSecurityEnabled();
-        HttpURLConnection conn = transportConfiguration.createURLConnection(new URL(securityEnabled ? "https" : "http",
-                address.getHostString(), address.getPort(),
-                "/FileTransfer/transfer/" + URLEncoder.encode(getSrcPath(), "UTF-8") + "?compress=" + fileTransferOptions.isCompress() + "&deleteOnCompletion=" + fileTransferOptions.isDeleteOnCompletion()));
+        HttpURLConnection conn =
+                transportConfiguration.createURLConnection(
+                        new URL(
+                                securityEnabled ? "https" : "http",
+                                address.getHostString(),
+                                address.getPort(),
+                                "/FileTransfer/transfer/"
+                                        + URLEncoder.encode(getSrcPath(), "UTF-8")
+                                        + "?compress="
+                                        + fileTransferOptions.isCompress()
+                                        + "&deleteOnCompletion="
+                                        + fileTransferOptions.isDeleteOnCompletion()));
         if (securityEnabled && credentials != null) {
             credentials.configure(conn);
         }

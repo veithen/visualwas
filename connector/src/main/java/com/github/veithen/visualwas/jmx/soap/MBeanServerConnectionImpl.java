@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -51,45 +51,66 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     private final AdminService adminService;
     private final NotificationDispatcher notificationDispatcher;
     private final ExceptionTransformer exceptionTransformer;
-    
-    MBeanServerConnectionImpl(AdminService adminService, NotificationDispatcher notificationDispatcher, ExceptionTransformer exceptionTransformer) {
+
+    MBeanServerConnectionImpl(
+            AdminService adminService,
+            NotificationDispatcher notificationDispatcher,
+            ExceptionTransformer exceptionTransformer) {
         this.adminService = adminService;
         this.notificationDispatcher = notificationDispatcher;
         this.exceptionTransformer = exceptionTransformer;
     }
-    
+
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, IOException {
+    public ObjectInstance createMBean(String className, ObjectName name)
+            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
+                    MBeanException, NotCompliantMBeanException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException, IOException {
+    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName)
+            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
+                    MBeanException, NotCompliantMBeanException, InstanceNotFoundException,
+                    IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, Object[] params, String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, IOException {
+    public ObjectInstance createMBean(
+            String className, ObjectName name, Object[] params, String[] signature)
+            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
+                    MBeanException, NotCompliantMBeanException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params, String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException, IOException {
+    public ObjectInstance createMBean(
+            String className,
+            ObjectName name,
+            ObjectName loaderName,
+            Object[] params,
+            String[] signature)
+            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
+                    MBeanException, NotCompliantMBeanException, InstanceNotFoundException,
+                    IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void unregisterMBean(ObjectName name) throws InstanceNotFoundException, MBeanRegistrationException, IOException {
+    public void unregisterMBean(ObjectName name)
+            throws InstanceNotFoundException, MBeanRegistrationException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ObjectInstance getObjectInstance(ObjectName name) throws InstanceNotFoundException, IOException {
+    public ObjectInstance getObjectInstance(ObjectName name)
+            throws InstanceNotFoundException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -115,7 +136,9 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     }
 
     @Override
-    public Object getAttribute(ObjectName name, String attribute) throws MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, IOException {
+    public Object getAttribute(ObjectName name, String attribute)
+            throws MBeanException, AttributeNotFoundException, InstanceNotFoundException,
+                    ReflectionException, IOException {
         try {
             return adminService.getAttribute(name, attribute);
         } catch (ClassNotFoundException ex) {
@@ -124,7 +147,8 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     }
 
     @Override
-    public AttributeList getAttributes(ObjectName name, String[] attributes) throws InstanceNotFoundException, ReflectionException, IOException {
+    public AttributeList getAttributes(ObjectName name, String[] attributes)
+            throws InstanceNotFoundException, ReflectionException, IOException {
         try {
             return adminService.getAttributes(name, attributes);
         } catch (ClassNotFoundException ex) {
@@ -133,17 +157,22 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     }
 
     @Override
-    public void setAttribute(ObjectName name, Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException, IOException {
+    public void setAttribute(ObjectName name, Attribute attribute)
+            throws InstanceNotFoundException, AttributeNotFoundException,
+                    InvalidAttributeValueException, MBeanException, ReflectionException,
+                    IOException {
         adminService.setAttribute(name, attribute);
     }
 
     @Override
-    public AttributeList setAttributes(ObjectName name, AttributeList attributes) throws InstanceNotFoundException, ReflectionException, IOException {
+    public AttributeList setAttributes(ObjectName name, AttributeList attributes)
+            throws InstanceNotFoundException, ReflectionException, IOException {
         return adminService.setAttributes(name, attributes);
     }
 
     @Override
-    public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature) throws InstanceNotFoundException, MBeanException, ReflectionException, IOException {
+    public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature)
+            throws InstanceNotFoundException, MBeanException, ReflectionException, IOException {
         try {
             return adminService.invoke(name, operationName, params, signature);
         } catch (ClassNotFoundException ex) {
@@ -163,7 +192,12 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     }
 
     @Override
-    public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, IOException {
+    public void addNotificationListener(
+            ObjectName name,
+            NotificationListener listener,
+            NotificationFilter filter,
+            Object handback)
+            throws InstanceNotFoundException, IOException {
         if (isRegistered(name)) {
             notificationDispatcher.addNotificationListener(name, listener, filter, handback);
         } else {
@@ -172,41 +206,55 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     }
 
     @Override
-    public void addNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, IOException {
+    public void addNotificationListener(
+            ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, ObjectName listener) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+    public void removeNotificationListener(ObjectName name, ObjectName listener)
+            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+    public void removeNotificationListener(
+            ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, NotificationListener listener) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+    public void removeNotificationListener(ObjectName name, NotificationListener listener)
+            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
+    public void removeNotificationListener(
+            ObjectName name,
+            NotificationListener listener,
+            NotificationFilter filter,
+            Object handback)
+            throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         notificationDispatcher.removeNotificationListener(name, listener, filter, handback);
     }
 
     @Override
-    public MBeanInfo getMBeanInfo(ObjectName name) throws InstanceNotFoundException, IntrospectionException, ReflectionException, IOException {
+    public MBeanInfo getMBeanInfo(ObjectName name)
+            throws InstanceNotFoundException, IntrospectionException, ReflectionException,
+                    IOException {
         return adminService.getMBeanInfo(name);
     }
 
     @Override
-    public boolean isInstanceOf(ObjectName name, String className) throws InstanceNotFoundException, IOException {
+    public boolean isInstanceOf(ObjectName name, String className)
+            throws InstanceNotFoundException, IOException {
         return adminService.isInstanceOf(name, className);
     }
 

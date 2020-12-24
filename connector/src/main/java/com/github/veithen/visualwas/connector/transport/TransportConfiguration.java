@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -35,17 +35,16 @@ import javax.net.ssl.TrustManager;
 import com.github.veithen.visualwas.x509.PromiscuousTrustManager;
 
 public final class TransportConfiguration {
-    public final static class Builder {
+    public static final class Builder {
         private Proxy proxy;
         private int connectTimeout;
         private TrustManager trustManager;
-        
+
         /**
          * Set the proxy.
-         * 
-         * @param proxy
-         *            the proxy, or <code>null</code> to use the default proxy settings; use
-         *            {@link Proxy#NO_PROXY} to force a direct connection
+         *
+         * @param proxy the proxy, or <code>null</code> to use the default proxy settings; use
+         *     {@link Proxy#NO_PROXY} to force a direct connection
          * @return this builder
          */
         public Builder setProxy(Proxy proxy) {
@@ -55,53 +54,51 @@ public final class TransportConfiguration {
 
         /**
          * Set the connect timeout.
-         * 
-         * @param connectTimeout
-         *            the connect timeout in milliseconds
+         *
+         * @param connectTimeout the connect timeout in milliseconds
          * @return this builder
          */
         public Builder setConnectTimeout(int connectTimeout) {
             this.connectTimeout = connectTimeout;
             return this;
         }
-        
+
         /**
          * Set the trust manager.
-         * 
-         * @param trustManager
-         *            the trust manager to use, or <code>null</code> to use the default trust
-         *            manager; only used when connecting to an HTTPS endpoint
+         *
+         * @param trustManager the trust manager to use, or <code>null</code> to use the default
+         *     trust manager; only used when connecting to an HTTPS endpoint
          * @return this builder
          */
         public Builder setTrustManager(TrustManager trustManager) {
             this.trustManager = trustManager;
             return this;
         }
-        
+
         /**
          * Disable certificate validation. This method configures a special trust manager that
          * accepts any certificate. This turns off the validation of the trust chain as well as host
          * name validation.
-         * <p>
-         * <b>Note:</b> This method should only be used for testing purposes!
-         * 
+         *
+         * <p><b>Note:</b> This method should only be used for testing purposes!
+         *
          * @return this builder
          */
         public Builder disableCertificateValidation() {
             return setTrustManager(PromiscuousTrustManager.INSTANCE);
         }
-        
+
         public TransportConfiguration build() {
             return new TransportConfiguration(proxy, connectTimeout, trustManager);
         }
     }
-    
+
     public static final TransportConfiguration DEFAULT = new TransportConfiguration(null, 0, null);
-    
+
     private final Proxy proxy;
     private final int connectTimeout;
     private final TrustManager trustManager;
-    
+
     TransportConfiguration(Proxy proxy, int connectTimeout, TrustManager trustManager) {
         this.proxy = proxy;
         this.connectTimeout = connectTimeout;
@@ -111,7 +108,7 @@ public final class TransportConfiguration {
     public static Builder custom() {
         return new Builder();
     }
-    
+
     public Proxy getProxy() {
         return proxy;
     }
@@ -123,15 +120,17 @@ public final class TransportConfiguration {
     public TrustManager getTrustManager() {
         return trustManager;
     }
-    
+
     public HttpURLConnection createURLConnection(URL url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection)(proxy == null ? url.openConnection() : url.openConnection(proxy));
+        HttpURLConnection conn =
+                (HttpURLConnection)
+                        (proxy == null ? url.openConnection() : url.openConnection(proxy));
         conn.setConnectTimeout(connectTimeout);
         if (trustManager != null && conn instanceof HttpsURLConnection) {
             try {
                 SSLContext sslContext = SSLContext.getInstance("SSL");
-                sslContext.init(null, new TrustManager[] { trustManager }, new SecureRandom());
-                ((HttpsURLConnection)conn).setSSLSocketFactory(sslContext.getSocketFactory());
+                sslContext.init(null, new TrustManager[] {trustManager}, new SecureRandom());
+                ((HttpsURLConnection) conn).setSSLSocketFactory(sslContext.getSocketFactory());
             } catch (GeneralSecurityException ex) {
                 throw new IOException("Failed to initialize SSL context", ex);
             }

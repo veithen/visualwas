@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -35,11 +35,11 @@ public class WSDLResources {
     class WSDLLocatorImpl implements WSDLLocator {
         private final String name;
         private String latestImport;
-        
+
         WSDLLocatorImpl(String name) {
             this.name = name;
         }
-        
+
         private InputSource getInputSource(String name) {
             byte[] content = resources.get(name);
             if (content == null) {
@@ -47,7 +47,7 @@ public class WSDLResources {
             }
             return new InputSource(new ByteArrayInputStream(content));
         }
-        
+
         public InputSource getBaseInputSource() {
             return getInputSource(name);
         }
@@ -58,7 +58,11 @@ public class WSDLResources {
 
         public InputSource getImportInputSource(String parentLocation, String importLocation) {
             try {
-                latestImport = new URI("module", null, "/" + parentLocation, null).resolve(importLocation).getPath().substring(1);
+                latestImport =
+                        new URI("module", null, "/" + parentLocation, null)
+                                .resolve(importLocation)
+                                .getPath()
+                                .substring(1);
             } catch (URISyntaxException ex) {
                 throw new RuntimeException(ex);
             }
@@ -68,17 +72,16 @@ public class WSDLResources {
         public String getLatestImportURI() {
             return latestImport;
         }
-        
-        public void close() {
-        }
+
+        public void close() {}
     }
-    
-    final Map<String,byte[]> resources = new HashMap<>();
-    
+
+    final Map<String, byte[]> resources = new HashMap<>();
+
     public void add(String name, byte[] content) {
         resources.put(name, content);
     }
-    
+
     public WSDLLocator getWsdl(String name) {
         return new WSDLLocatorImpl(name);
     }

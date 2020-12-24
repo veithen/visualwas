@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -43,7 +43,7 @@ public class InvalidCredentialsITCase extends WebSphereITCase {
 
     @Override
     protected Feature[] getFeatures() {
-        return new Feature[] { ClassMappingFeature.INSTANCE };
+        return new Feature[] {ClassMappingFeature.INSTANCE};
     }
 
     @Test
@@ -54,10 +54,11 @@ public class InvalidCredentialsITCase extends WebSphereITCase {
             fail("Expected exception");
         } catch (JMRuntimeException ex) {
             // WebSphere 9.0.5.x produces a proper exception.
-            assertThat(ex.getMessage()).isIn(Arrays.asList(
-                    "Unable to authenticate incoming request",
-                    "Unable to authenticate user of the incoming SOAP request"
-            ));
+            assertThat(ex.getMessage())
+                    .isIn(
+                            Arrays.asList(
+                                    "Unable to authenticate incoming request",
+                                    "Unable to authenticate user of the incoming SOAP request"));
         } catch (ConnectorException ex) {
             // 8.5.5.x and 9.0.0.x trigger a SOAPException.
             assertThat(ex.getCause()).isInstanceOf(SOAPException.class);

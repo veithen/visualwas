@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -31,14 +31,14 @@ import com.github.veithen.visualwas.connector.feature.AdapterFactory;
 import com.github.veithen.visualwas.framework.Adaptable;
 
 final class AdaptableDelegate implements Adaptable {
-    private final Map<Class<?>,AdapterHolder<?>> adapters = new HashMap<>();
+    private final Map<Class<?>, AdapterHolder<?>> adapters = new HashMap<>();
     private AdminService adminService;
     private ExecutorService executor;
 
     <T> void registerAdapter(Class<T> iface, AdapterFactory<T> adapterFactory) {
         adapters.put(iface, new AdapterHolder<>(adapterFactory));
     }
-    
+
     void setAdminService(AdminService adminService) {
         if (this.adminService != null) {
             throw new IllegalStateException();
@@ -61,7 +61,7 @@ final class AdaptableDelegate implements Adaptable {
         adapters.values().forEach(AdapterHolder::closing);
         executor.shutdown();
     }
-    
+
     @Override
     public <T> T getAdapter(Class<T> clazz) {
         AdapterHolder<?> holder = adapters.get(clazz);

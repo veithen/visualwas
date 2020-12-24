@@ -6,15 +6,15 @@
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
@@ -29,16 +29,23 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAPBody;
 
 final class OperationHandler {
-    private static final QName XSI_NIL = new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
-    
+    private static final QName XSI_NIL =
+            new QName("http://www.w3.org/2001/XMLSchema-instance", "nil", "xsi");
+
     private final String operationName;
     private final String requestElementName;
     private final String responseElementName;
     private final ParamHandler[] paramHandlers;
     private final TypeHandler returnValueHandler;
     private final boolean suppressSOAPHeader;
-    
-    public OperationHandler(String operationName, String requestElementName, String responseElementName, ParamHandler[] paramHandlers, TypeHandler returnValueHandler, boolean suppressSOAPHeader) {
+
+    public OperationHandler(
+            String operationName,
+            String requestElementName,
+            String responseElementName,
+            ParamHandler[] paramHandlers,
+            TypeHandler returnValueHandler,
+            boolean suppressSOAPHeader) {
         this.operationName = operationName;
         this.requestElementName = requestElementName;
         this.responseElementName = responseElementName;
@@ -55,17 +62,20 @@ final class OperationHandler {
         OMFactory factory = body.getOMFactory();
         OMNamespace ns = factory.createOMNamespace("urn:AdminService", "ns");
         OMElement element = factory.createOMElement(requestElementName, ns, body);
-        element.addAttribute("encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/", body.getNamespace());
+        element.addAttribute(
+                "encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/", body.getNamespace());
         int paramCount = paramHandlers.length;
         if (paramCount > 0) {
-            OMNamespace xsiNS = element.declareNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-            for (int i=0; i<paramCount; i++) {
+            OMNamespace xsiNS =
+                    element.declareNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
+            for (int i = 0; i < paramCount; i++) {
                 paramHandlers[i].createOMElement(element, xsiNS, args[i], context);
             }
         }
     }
-    
-    public Object processResponse(OMElement response, InvocationContextImpl context) throws ClassNotFoundException, OperationHandlerException {
+
+    public Object processResponse(OMElement response, InvocationContextImpl context)
+            throws ClassNotFoundException, OperationHandlerException {
         // TODO: check element names
         // TODO: check xsi:type???
         if (returnValueHandler == null) {
@@ -79,7 +89,8 @@ final class OperationHandler {
                 try {
                     return returnValueHandler.extractValue(returnElement, context);
                 } catch (TypeHandlerException ex) {
-                    throw new OperationHandlerException("Failed to extract return value for operation " + operationName, ex);
+                    throw new OperationHandlerException(
+                            "Failed to extract return value for operation " + operationName, ex);
                 }
             }
         }
