@@ -41,12 +41,12 @@
     </scm>
 
     <properties>
-        <javaVersion>1.6</javaVersion>
+        <javaVersion>1.8</javaVersion>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.eclipse.osgi</groupId>
+            <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
         </dependency>
     </dependencies>
