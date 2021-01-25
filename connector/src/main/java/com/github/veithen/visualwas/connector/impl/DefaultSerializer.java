@@ -39,6 +39,7 @@ final class DefaultSerializer implements Serializer {
         return localClass.getName();
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Override
     public Object readObject(InputStream in, InvocationContext context)
             throws IOException, ClassNotFoundException {

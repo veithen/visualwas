@@ -40,6 +40,7 @@ final class SerializerImpl implements Serializer {
         return classMapper.toRemoteClass(localClass.getName());
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Override
     public Object readObject(InputStream in, InvocationContext context)
             throws IOException, ClassNotFoundException {

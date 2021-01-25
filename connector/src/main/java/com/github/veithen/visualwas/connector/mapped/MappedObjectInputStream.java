@@ -54,6 +54,7 @@ public final class MappedObjectInputStream extends ObjectInputStream {
         return Class.forName(desc.getName(), false, context.getClassLoader());
     }
 
+    @SuppressWarnings("BanSerializableRead")
     @Override
     protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
         nextIsClassName = true;
