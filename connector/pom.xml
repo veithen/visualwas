@@ -56,7 +56,7 @@
             <groupId>jakarta.activation</groupId>
             <artifactId>jakarta.activation-api</artifactId>
         </dependency>
-        <dependency><!-- Note: we use 1.15 because it's the version shipped with the Eclipse platform -->
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.15</version>
