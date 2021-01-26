@@ -5,5 +5,5 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency-name: "jakarta.activation:jakarta.activation-api"
+      - dependency-name: "com.sun.activation:jakarta.activation"
         versions: ">= 1.2.2"
