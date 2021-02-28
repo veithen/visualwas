@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.mxbeans;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.beans.Introspector;
@@ -156,7 +156,7 @@ public class VisualVMITCase {
                     }
                 }
                 assertThat(unsupportedFeatures)
-                        .containsExactlyElementsIn(expectedUnsupportedFeatures);
+                        .containsExactlyInAnyOrder(expectedUnsupportedFeatures);
 
                 MonitoredData data = jvm.getMonitoredData();
                 assertThat(data.getLoadedClasses()).isGreaterThan(5000L);

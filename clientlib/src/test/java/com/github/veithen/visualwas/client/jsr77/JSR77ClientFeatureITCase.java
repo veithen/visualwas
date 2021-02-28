@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.client.jsr77;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanException;

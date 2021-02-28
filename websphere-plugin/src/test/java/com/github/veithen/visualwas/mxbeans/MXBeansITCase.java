@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.mxbeans;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -117,7 +117,7 @@ public class MXBeansITCase {
                                     "access.properties");
                     accessProperties.load(in);
                     in.close();
-                    assertThat(accessProperties.keySet()).containsAtLeastElementsIn(keys);
+                    assertThat(accessProperties.keySet()).containsAll(keys);
                 });
     }
 

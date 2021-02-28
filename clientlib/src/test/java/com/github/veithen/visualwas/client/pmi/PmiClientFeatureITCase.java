@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

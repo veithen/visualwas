@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.loader;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -35,6 +35,6 @@ public class PluginXmlHandlerTest {
         factory.setNamespaceAware(true);
         factory.newSAXParser()
                 .parse(PluginXmlHandlerTest.class.getResource("plugin.xml").toString(), handler);
-        assertThat(handler.getSerializables()).containsExactly("class1", "class2").inOrder();
+        assertThat(handler.getSerializables()).containsExactly("class1", "class2");
     }
 }
