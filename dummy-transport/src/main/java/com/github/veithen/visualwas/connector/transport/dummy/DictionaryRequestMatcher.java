@@ -44,8 +44,11 @@ public final class DictionaryRequestMatcher extends RequestMatcher {
     @Override
     Response match(Document request) {
         for (Exchange exchange : exchanges) {
-            if (exchange.diff(request).similar()) {
+            try {
+                exchange.assertRequestEquals(request);
                 return exchange.getResponse();
+            } catch (AssertionError ex) {
+                // Continue.
             }
         }
         if (defaultResponse == null) {

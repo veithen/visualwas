@@ -21,13 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.transport.dummy;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceConstants;
-import org.custommonkey.xmlunit.DifferenceListener;
-import org.custommonkey.xmlunit.XMLUnit;
+import static org.xmlunit.assertj3.XmlAssert.assertThat;
+
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 final class Exchange {
     private final Document request;
@@ -38,32 +34,11 @@ final class Exchange {
         this.response = response;
     }
 
-    Diff diff(Document test) {
-        boolean ignoreWhitespace = XMLUnit.getIgnoreWhitespace();
-        boolean ignoreAttributeOrder = XMLUnit.getIgnoreAttributeOrder();
-        try {
-            XMLUnit.setIgnoreWhitespace(true);
-            XMLUnit.setIgnoreAttributeOrder(true);
-            Diff diff = XMLUnit.compareXML(request, test);
-            diff.overrideDifferenceListener(
-                    new DifferenceListener() {
-                        @Override
-                        public int differenceFound(Difference difference) {
-                            if (difference.getId() == DifferenceConstants.NAMESPACE_PREFIX_ID) {
-                                return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
-                            } else {
-                                return RETURN_ACCEPT_DIFFERENCE;
-                            }
-                        }
-
-                        @Override
-                        public void skippedComparison(Node control, Node test) {}
-                    });
-            return diff;
-        } finally {
-            XMLUnit.setIgnoreWhitespace(ignoreWhitespace);
-            XMLUnit.setIgnoreAttributeOrder(ignoreAttributeOrder);
-        }
+    void assertRequestEquals(Document test) {
+        assertThat(request.getDocumentElement())
+                .and(test.getDocumentElement())
+                .ignoreWhitespace()
+                .areSimilar();
     }
 
     Response getResponse() {

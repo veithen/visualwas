@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 
 /**
@@ -46,7 +45,7 @@ public final class SequencedRequestMatcher extends RequestMatcher {
             throw new IllegalStateException();
         }
         Exchange exchange = sequence.removeFirst();
-        XMLAssert.assertXMLEqual(exchange.diff(request), true);
+        exchange.assertRequestEquals(request);
         return exchange.getResponse();
     }
 }
