@@ -21,8 +21,8 @@
  */
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.client.pmi.PmiClientFeature;
 import com.github.veithen.visualwas.connector.Attributes;
@@ -37,7 +37,7 @@ import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 public class PmiITCase {
     protected Connector connector;
 
-    @Before
+    @BeforeEach
     public void initConnector() throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
         Attributes attributes =

@@ -21,10 +21,12 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.CompletableFuture;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.AdminService;
 import com.github.veithen.visualwas.connector.Connector;
@@ -42,8 +44,8 @@ public class ContextPopulatingInterceptorTest {
      *
      * @throws Exception
      */
-    @Test(expected = ConnectorException.class)
-    public void testException() throws Exception {
+    @Test
+    public void testException() {
         ConnectorConfiguration config =
                 ConnectorConfiguration.custom()
                         .addFeatures(
@@ -70,6 +72,6 @@ public class ContextPopulatingInterceptorTest {
         Connector connector =
                 ConnectorFactory.getInstance()
                         .createConnector(new Endpoint("localhost", 8880, false), config, null);
-        connector.getServerMBean();
+        assertThrows(ConnectorException.class, connector::getServerMBean);
     }
 }

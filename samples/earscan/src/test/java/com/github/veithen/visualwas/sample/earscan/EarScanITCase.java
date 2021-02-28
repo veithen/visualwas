@@ -23,7 +23,7 @@ package com.github.veithen.visualwas.sample.earscan;
 
 import java.net.InetSocketAddress;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.client.repository.PortMapper;
 import com.github.veithen.visualwas.connector.Attributes;

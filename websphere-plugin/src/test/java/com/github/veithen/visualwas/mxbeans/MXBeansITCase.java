@@ -22,6 +22,7 @@
 package com.github.veithen.visualwas.mxbeans;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -44,7 +45,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.x509.PromiscuousTrustManager;
@@ -136,9 +137,16 @@ public class MXBeansITCase {
                 });
     }
 
-    @Test(expected = SecurityException.class)
-    public void testAccessDenied() throws Exception {
-        run("monitor", ManagementFactory.MEMORY_MXBEAN_NAME, MemoryMXBean.class, MemoryMXBean::gc);
+    @Test
+    public void testAccessDenied() {
+        assertThrows(
+                SecurityException.class,
+                () ->
+                        run(
+                                "monitor",
+                                ManagementFactory.MEMORY_MXBEAN_NAME,
+                                MemoryMXBean.class,
+                                MemoryMXBean::gc));
     }
 
     @Test

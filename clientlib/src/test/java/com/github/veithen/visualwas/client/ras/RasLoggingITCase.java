@@ -31,7 +31,7 @@ import javax.management.Notification;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.client.WebSphereITCase;
 import com.github.veithen.visualwas.connector.feature.Feature;

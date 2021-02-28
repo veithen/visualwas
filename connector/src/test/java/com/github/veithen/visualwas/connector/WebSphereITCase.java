@@ -21,7 +21,7 @@
  */
 package com.github.veithen.visualwas.connector;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
 import com.github.veithen.visualwas.connector.factory.ConnectorFactory;
@@ -34,7 +34,7 @@ import com.github.veithen.visualwas.connector.transport.TransportConfiguration;
 public abstract class WebSphereITCase {
     protected Connector connector;
 
-    @Before
+    @BeforeEach
     public void initConnector() throws Exception {
         ConnectorConfiguration.Builder configBuilder = ConnectorConfiguration.custom();
         Attributes attributes =

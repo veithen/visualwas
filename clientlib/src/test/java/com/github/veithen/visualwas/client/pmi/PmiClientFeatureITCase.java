@@ -22,9 +22,8 @@
 package com.github.veithen.visualwas.client.pmi;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.client.WebSphereITCase;
 import com.github.veithen.visualwas.connector.feature.Feature;
@@ -45,7 +44,7 @@ public class PmiClientFeatureITCase extends WebSphereITCase {
                                     new StatDescriptor(PmiModules.THREAD_POOL, "Default")
                                 },
                                 false);
-        assertEquals(1, statsArray.length);
+        assertThat(statsArray).hasSize(1);
         assertThat(statsArray[0].toString())
                 .matches(
                         "\\s*Stats name=Default, type=threadPoolModule\\s*\\{\\s*\n"

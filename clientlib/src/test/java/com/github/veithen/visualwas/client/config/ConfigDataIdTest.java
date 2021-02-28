@@ -21,31 +21,30 @@
  */
 package com.github.veithen.visualwas.client.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigDataIdTest {
     @Test
     public void testToString() {
-        assertEquals(
-                "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1|server.xml#ThreadPool_1183121908657",
-                new ConfigDataId(
-                                "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1",
-                                "server.xml#ThreadPool_1183121908657")
-                        .toString());
+        assertThat(
+                        new ConfigDataId(
+                                        "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1",
+                                        "server.xml#ThreadPool_1183121908657")
+                                .toString())
+                .isEqualTo(
+                        "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1|server.xml#ThreadPool_1183121908657");
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(
-                -1121788133,
-                new ConfigDataId(
-                                "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1",
-                                "server.xml#ThreadPool_1183121908657")
-                        .hashCode());
+        assertThat(
+                        new ConfigDataId(
+                                        "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1",
+                                        "server.xml#ThreadPool_1183121908657")
+                                .hashCode())
+                .isEqualTo(-1121788133);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ConfigDataIdTest {
                 new ConfigDataId(
                         "cells/phobosNode03Cell/nodes/phobosNode03/servers/server1",
                         "server.xml#someOtherId");
-        assertTrue(id1.equals(id2));
-        assertFalse(id1.equals(id3));
+        assertThat(id1.equals(id2)).isTrue();
+        assertThat(id1.equals(id3)).isFalse();
     }
 }

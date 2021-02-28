@@ -21,13 +21,13 @@
  */
 package com.github.veithen.visualwas.connector.proxy;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.SocketException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
@@ -57,11 +57,7 @@ public class ProxyConfiguratorTest {
         transport.addExchange(ProxyConfiguratorTest.class, "queryNames-ApplicationManager");
         Connector connector = transport.createConnector(ApplicationManagerFeature.INSTANCE);
         ApplicationManager appman = connector.getAdapter(ApplicationManager.class);
-        try {
-            appman.stopApplication("test");
-            fail("Expected IOException");
-        } catch (IOException ex) {
-            assertSame(exception, ex);
-        }
+        IOException ex = assertThrows(IOException.class, () -> appman.stopApplication("test"));
+        assertThat(ex).isSameAs(exception);
     }
 }

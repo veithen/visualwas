@@ -21,9 +21,9 @@
  */
 package com.github.veithen.visualwas.connector.mapped;
 
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
@@ -36,8 +36,8 @@ public class IsAliveSupportTest {
         transport.addExchanges(IsAliveSupportTest.class, "isAlive");
         Connector connector = transport.createConnector(ClassMappingFeature.INSTANCE);
         IsAliveSupport ias = connector.getAdapter(IsAliveSupport.class);
-        assertNotNull(ias);
+        assertThat(ias).isNotNull();
         Session session = ias.isAlive();
-        assertNotNull(session);
+        assertThat(session).isNotNull();
     }
 }

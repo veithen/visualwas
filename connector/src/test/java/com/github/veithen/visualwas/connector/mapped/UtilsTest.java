@@ -21,18 +21,17 @@
  */
 package com.github.veithen.visualwas.connector.mapped;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ObjectStreamClass;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UtilsTest {
     @Test
     public void testComputeArraySUID() {
         Class<?> clazz = String[][].class;
-        assertEquals(
-                ObjectStreamClass.lookup(clazz).getSerialVersionUID(),
-                Utils.computeArraySUID(clazz.getName()));
+        assertThat(Utils.computeArraySUID(clazz.getName()))
+                .isEqualTo(ObjectStreamClass.lookup(clazz).getSerialVersionUID());
     }
 }

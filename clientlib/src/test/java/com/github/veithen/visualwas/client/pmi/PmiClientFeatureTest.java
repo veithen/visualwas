@@ -21,13 +21,11 @@
  */
 package com.github.veithen.visualwas.client.pmi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
@@ -37,7 +35,7 @@ public class PmiClientFeatureTest {
     private Connector connector;
     private Perf perf;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
         transport.addExchanges(
@@ -61,18 +59,18 @@ public class PmiClientFeatureTest {
                             new StatDescriptor(PmiModules.THREAD_POOL, "WebContainer")
                         },
                         false);
-        assertEquals(1, statsArray.length);
+        assertThat(statsArray).hasSize(1);
         Stats stats = statsArray[0];
-        assertEquals(PmiModules.THREAD_POOL, stats.getStatsType());
-        assertEquals("WebContainer", stats.getName());
+        assertThat(stats.getStatsType()).isEqualTo(PmiModules.THREAD_POOL);
+        assertThat(stats.getName()).isEqualTo("WebContainer");
 
         Statistic stat = stats.getStatistic(1);
-        assertTrue(stat instanceof CountStatistic);
-        assertEquals(6, ((CountStatistic) stat).getCount());
+        assertThat(stat).isInstanceOf(CountStatistic.class);
+        assertThat(((CountStatistic) stat).getCount()).isEqualTo(6);
 
         stat = stats.getStatistic(4);
-        assertTrue(stat instanceof BoundedRangeStatistic);
-        assertEquals(5, ((BoundedRangeStatistic) stat).getCurrent());
+        assertThat(stat).isInstanceOf(BoundedRangeStatistic.class);
+        assertThat(((BoundedRangeStatistic) stat).getCurrent()).isEqualTo(5);
     }
 
     @Test
@@ -86,22 +84,22 @@ public class PmiClientFeatureTest {
                                     PmiModules.WEB_APP_SERVLETS)
                         },
                         true);
-        assertEquals(1, statsArray.length);
+        assertThat(statsArray).hasSize(1);
         Stats stats = statsArray[0];
-        assertEquals("com.ibm.ws.wswebcontainer.stats.servletStats", stats.getStatsType());
-        assertEquals(PmiModules.WEB_APP_SERVLETS, stats.getName());
+        assertThat(stats.getStatsType()).isEqualTo("com.ibm.ws.wswebcontainer.stats.servletStats");
+        assertThat(stats.getName()).isEqualTo(PmiModules.WEB_APP_SERVLETS);
         Stats actionStats = stats.getSubStats("action");
-        assertNotNull(actionStats);
+        assertThat(actionStats).isNotNull();
         Statistic stat = actionStats.getStatistic(13);
-        assertTrue(stat instanceof TimeStatistic);
+        assertThat(stat).isInstanceOf(TimeStatistic.class);
         TimeStatistic timeStat = (TimeStatistic) stat;
-        assertEquals(1392644768352L, timeStat.getStartTime());
-        assertEquals(1392644905141L, timeStat.getLastSampleTime());
-        assertEquals(58, timeStat.getCount());
-        assertEquals(8412, timeStat.getTotal());
-        assertEquals(1, timeStat.getMin());
-        assertEquals(1607, timeStat.getMax());
-        assertEquals(4176605.0, timeStat.getSumOfSquares(), 0.01d);
+        assertThat(timeStat.getStartTime()).isEqualTo(1392644768352L);
+        assertThat(timeStat.getLastSampleTime()).isEqualTo(1392644905141L);
+        assertThat(timeStat.getCount()).isEqualTo(58);
+        assertThat(timeStat.getTotal()).isEqualTo(8412);
+        assertThat(timeStat.getMin()).isEqualTo(1);
+        assertThat(timeStat.getMax()).isEqualTo(1607);
+        assertThat(timeStat.getSumOfSquares()).isEqualTo(4176605.0, offset(0.01d));
     }
 
     @Test
@@ -114,8 +112,8 @@ public class PmiClientFeatureTest {
                 break;
             }
         }
-        assertNotNull(threadPoolConfig);
-        assertEquals(4, threadPoolConfig.getDataId("PoolSize"));
+        assertThat(threadPoolConfig).isNotNull();
+        assertThat(threadPoolConfig.getDataId("PoolSize")).isEqualTo(4);
         // TODO: validate return value
     }
 
@@ -124,10 +122,10 @@ public class PmiClientFeatureTest {
         StatLevelSpec[] levels =
                 perf.getInstrumentationLevel(
                         new StatDescriptor(PmiModules.THREAD_POOL, "WebContainer"), false);
-        assertEquals(1, levels.length);
+        assertThat(levels).hasSize(1);
         StatLevelSpec level = levels[0];
-        assertTrue(level.isEnabled(1));
-        assertFalse(level.isEnabled(10));
+        assertThat(level.isEnabled(1)).isTrue();
+        assertThat(level.isEnabled(10)).isFalse();
     }
 
     @Test

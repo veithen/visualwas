@@ -22,7 +22,7 @@
 package com.github.veithen.visualwas.mxbeans;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -105,15 +105,13 @@ public class VisualVMITCase {
         TrustStore trustStore = TrustStore.getInstance();
         Map<String, Object> env = EnvUtil.createEnvironment(true);
         env.put(JMXConnector.CREDENTIALS, new String[] {role, password});
-        try {
-            JMXConnectorFactory.connect(url, env);
-            fail("Expected exception");
-        } catch (SSLHandshakeException ex) {
-            Throwable cause = ex.getCause();
-            assertThat(cause).isInstanceOf(NotTrustedException.class);
-            X509Certificate[] chain = ((NotTrustedException) ex.getCause()).getChain();
-            trustStore.addCertificate(chain[chain.length - 1]);
-        }
+        SSLHandshakeException ex =
+                assertThrows(
+                        SSLHandshakeException.class, () -> JMXConnectorFactory.connect(url, env));
+        Throwable cause = ex.getCause();
+        assertThat(cause).isInstanceOf(NotTrustedException.class);
+        X509Certificate[] chain = ((NotTrustedException) ex.getCause()).getChain();
+        trustStore.addCertificate(chain[chain.length - 1]);
 
         try {
             Application app =

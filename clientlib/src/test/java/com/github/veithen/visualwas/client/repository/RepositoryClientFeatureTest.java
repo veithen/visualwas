@@ -21,10 +21,10 @@
  */
 package com.github.veithen.visualwas.client.repository;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.transport.dummy.DictionaryRequestMatcher;
@@ -34,7 +34,7 @@ public class RepositoryClientFeatureTest {
     private Connector connector;
     private ConfigRepository repo;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         DummyTransport transport = new DummyTransport(new DictionaryRequestMatcher());
         transport.addExchanges(
@@ -48,6 +48,6 @@ public class RepositoryClientFeatureTest {
 
     @Test
     public void testGetRepositoryEpoch() throws Exception {
-        assertEquals(1392623312356L, repo.getRepositoryEpoch().getVersionId());
+        assertThat(repo.getRepositoryEpoch().getVersionId()).isEqualTo(1392623312356L);
     }
 }

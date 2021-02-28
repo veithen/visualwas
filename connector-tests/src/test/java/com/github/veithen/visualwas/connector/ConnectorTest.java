@@ -21,10 +21,7 @@
  */
 package com.github.veithen.visualwas.connector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Iterator;
 
@@ -34,7 +31,7 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.modelmbean.RequiredModelMBean;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
 import com.github.veithen.visualwas.connector.transport.dummy.SequencedRequestMatcher;
@@ -45,7 +42,7 @@ public class ConnectorTest {
         DummyTransport transport = new DummyTransport(new SequencedRequestMatcher());
         transport.addExchange(ConnectorTest.class, "getMBeanCount");
         Connector connector = transport.createConnector();
-        assertEquals(Integer.valueOf(146), connector.getMBeanCount());
+        assertThat(connector.getMBeanCount()).isEqualTo(146);
     }
 
     @Test
@@ -55,11 +52,11 @@ public class ConnectorTest {
         Connector connector = transport.createConnector();
         Iterator<ObjectName> names =
                 connector.queryNames(new ObjectName("WebSphere:type=Server,*"), null).iterator();
-        assertTrue(names.hasNext());
+        assertThat(names.hasNext()).isTrue();
         ObjectName name = names.next();
-        assertEquals("WebSphere", name.getDomain());
-        assertEquals("server1", name.getKeyProperty("name"));
-        assertFalse(names.hasNext());
+        assertThat(name.getDomain()).isEqualTo("WebSphere");
+        assertThat(name.getKeyProperty("name")).isEqualTo("server1");
+        assertThat(names.hasNext()).isFalse();
     }
 
     @Test
@@ -69,13 +66,13 @@ public class ConnectorTest {
         Connector connector = transport.createConnector();
         Iterator<ObjectInstance> mbeans =
                 connector.queryMBeans(new ObjectName("WebSphere:type=Server,*"), null).iterator();
-        assertTrue(mbeans.hasNext());
+        assertThat(mbeans.hasNext()).isTrue();
         ObjectInstance mbean = mbeans.next();
-        assertEquals(RequiredModelMBean.class.getName(), mbean.getClassName());
+        assertThat(mbean.getClassName()).isEqualTo(RequiredModelMBean.class.getName());
         ObjectName name = mbean.getObjectName();
-        assertEquals("WebSphere", name.getDomain());
-        assertEquals("server1", name.getKeyProperty("name"));
-        assertFalse(mbeans.hasNext());
+        assertThat(name.getDomain()).isEqualTo("WebSphere");
+        assertThat(name.getKeyProperty("name")).isEqualTo("server1");
+        assertThat(mbeans.hasNext()).isFalse();
     }
 
     @Test
@@ -89,6 +86,6 @@ public class ConnectorTest {
         attributes.add(new Attribute("threadMonitorInterval", Integer.valueOf(180)));
         attributes.add(new Attribute("threadMonitorThreshold", Integer.valueOf(600)));
         AttributeList ret = connector.setAttributes(server, attributes);
-        assertNotNull(ret);
+        assertThat(ret).isNotNull();
     }
 }

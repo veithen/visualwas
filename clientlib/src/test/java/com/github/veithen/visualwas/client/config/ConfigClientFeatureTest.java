@@ -21,13 +21,13 @@
  */
 package com.github.veithen.visualwas.client.config;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.ObjectName;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.mapped.Session;
@@ -37,8 +37,8 @@ import com.github.veithen.visualwas.connector.transport.dummy.DummyTransport;
 public class ConfigClientFeatureTest {
     private static void assertAttribute(AttributeList attrs, int index, String name, Object value) {
         Attribute attr = attrs.asList().get(index);
-        assertEquals(name, attr.getName());
-        assertEquals(value, attr.getValue());
+        assertThat(attr.getName()).isEqualTo(name);
+        assertThat(attr.getValue()).isEqualTo(value);
     }
 
     @Test
@@ -59,13 +59,12 @@ public class ConfigClientFeatureTest {
                 config.resolve(
                                 session,
                                 "Server=server1:ThreadPoolManager=:ThreadPool=WebContainer")[0];
-        assertEquals(
-                Integer.valueOf(60000),
-                config.getAttribute(session, threadPool, "inactivityTimeout"));
+        assertThat(config.getAttribute(session, threadPool, "inactivityTimeout"))
+                .isEqualTo(Integer.valueOf(60000));
         AttributeList attrs =
                 config.getAttributes(
                         session, threadPool, new String[] {"minimumSize", "maximumSize"}, false);
-        assertEquals(5, attrs.size());
+        assertThat(attrs).hasSize(5);
         assertAttribute(attrs, 0, "minimumSize", Integer.valueOf(5));
         assertAttribute(attrs, 1, "maximumSize", Integer.valueOf(10));
         // TODO: use constants here

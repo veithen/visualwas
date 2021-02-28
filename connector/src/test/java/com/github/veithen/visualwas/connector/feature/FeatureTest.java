@@ -21,12 +21,11 @@
  */
 package com.github.veithen.visualwas.connector.feature;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.Connector;
 import com.github.veithen.visualwas.connector.factory.ConnectorConfiguration;
@@ -79,7 +78,7 @@ public class FeatureTest {
                         .createConnector(new Endpoint("localhost", 8880, false), config, null);
         DummyAdminServiceExtension extension =
                 connector.getAdapter(DummyAdminServiceExtension.class);
-        assertNotNull(extension);
-        assertEquals("test", extension.echo("test"));
+        assertThat(extension).isNotNull();
+        assertThat(extension.echo("test")).isEqualTo("test");
     }
 }

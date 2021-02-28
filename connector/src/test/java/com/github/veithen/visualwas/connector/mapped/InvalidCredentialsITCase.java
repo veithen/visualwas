@@ -22,14 +22,14 @@
 package com.github.veithen.visualwas.connector.mapped;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 
 import javax.management.JMRuntimeException;
 import javax.management.ObjectName;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.veithen.visualwas.connector.ConnectorException;
 import com.github.veithen.visualwas.connector.WebSphereITCase;
