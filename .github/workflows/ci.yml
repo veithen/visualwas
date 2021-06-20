@@ -62,7 +62,8 @@ jobs:
         server-username: OSSRH_USERNAME
         server-password: OSSRH_PASSWORD
     - name: Deploy
-      run: mvn -B -e -Prelease -Dgpg.skip=true -DskipTests=true deploy
+      # Can't activate the release profile here because github-release-plugin can't be easily skipped
+      run: mvn -B -e -DskipTests=true deploy
       env:
         OSSRH_USERNAME: veithen
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
