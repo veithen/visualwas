@@ -70,8 +70,7 @@ final class DefaultTransport implements Handler<SOAPEnvelope, SOAPResponse> {
                         OutputStream out = conn.getOutputStream();
                         OMOutputFormat format = new OMOutputFormat();
                         format.setCharSetEncoding("UTF-8");
-                        // TODO: this should actually throw IOException
-                        request.serialize(out);
+                        request.serialize(out, false);
                         out.close();
                         int responseCode = conn.getResponseCode();
                         if (log.isDebugEnabled()) {
