@@ -39,6 +39,7 @@ public class JSR77ClientFeatureITCase extends WebSphereITCase {
     }
 
     @Test
+    @SuppressWarnings("ReturnValueIgnored")
     public void testGetStatsAttributeFromAllMBeans() throws Exception {
         int count = 0;
         for (ObjectName mbean : connector.queryNames(new ObjectName("WebSphere:*"), null)) {
@@ -48,6 +49,7 @@ public class JSR77ClientFeatureITCase extends WebSphereITCase {
                         Object stats = connector.getAttribute(mbean, "stats");
                         if (stats != null) {
                             assertThat(stats).isInstanceOf(Class.forName(attrInfo.getType()));
+                            // Check that toString doesn't trigger any exceptions.
                             stats.toString();
                             count++;
                         }
