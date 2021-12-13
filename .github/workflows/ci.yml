@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ 8, 11, 17 ]
+        java: [ 11, 17 ]
         websphere: [ "8.5.5.17", "9.0.5.5" ]
     name: "Java ${{ matrix.java }} - WebSphere ${{ matrix.websphere }}"
     runs-on: ubuntu-18.04
@@ -57,7 +57,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v1
       with:
-        java-version: 8
+        java-version: 11
         server-id: ossrh
         server-username: OSSRH_USERNAME
         server-password: OSSRH_PASSWORD
