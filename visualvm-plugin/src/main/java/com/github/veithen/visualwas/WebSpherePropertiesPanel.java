@@ -153,7 +153,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                         public void actionPerformed(ActionEvent e) {
                             update();
                             resetConnectionTestResults();
-                        };
+                        }
                     });
             add(
                     securityCheckbox,
@@ -239,7 +239,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                     new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             update();
-                        };
+                        }
                     });
             add(
                     saveCheckbox,
