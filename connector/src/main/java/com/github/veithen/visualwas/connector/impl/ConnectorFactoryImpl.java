@@ -46,6 +46,7 @@ public final class ConnectorFactoryImpl extends ConnectorFactory {
     private static final Interface<AdminService> ADMIN_SERVICE_INTERFACE =
             InterfaceFactory.createInterface(AdminService.class);
 
+    @Override
     public Connector createConnector(
             Endpoint endpoint, final ConnectorConfiguration config, Attributes attributes) {
         List<Feature> features = new ArrayList<>(config.getFeatures());

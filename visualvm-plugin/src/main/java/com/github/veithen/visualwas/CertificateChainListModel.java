@@ -33,10 +33,12 @@ final class CertificateChainListModel extends AbstractListModel<X509Certificate>
         this.chain = chain;
     }
 
+    @Override
     public int getSize() {
         return chain.length;
     }
 
+    @Override
     public X509Certificate getElementAt(int index) {
         return chain[chain.length - index - 1];
     }

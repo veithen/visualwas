@@ -106,6 +106,7 @@ public class SOAPJMXConnector implements JMXConnector {
         connect(null);
     }
 
+    @Override
     public void connect(Map<String, ?> env) throws IOException {
         if (env == null) {
             internalConnect(this.env);

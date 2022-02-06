@@ -186,6 +186,7 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, CloseL
         }
     }
 
+    @Override
     public synchronized void closing() {
         registrations.clear();
         try {

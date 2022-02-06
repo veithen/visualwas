@@ -30,6 +30,7 @@ public class InputStreamSource implements Source {
         this.inputStream = inputStream;
     }
 
+    @Override
     public InputStream getInputStream() {
         return inputStream;
     }

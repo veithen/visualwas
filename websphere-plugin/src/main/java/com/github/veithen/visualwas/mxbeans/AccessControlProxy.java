@@ -77,16 +77,19 @@ public class AccessControlProxy implements DynamicMBean {
         checkAttributeAccess(attribute, attributeNameToSetterNameMap);
     }
 
+    @Override
     public MBeanInfo getMBeanInfo() {
         return target.getMBeanInfo();
     }
 
+    @Override
     public Object getAttribute(String attribute)
             throws AttributeNotFoundException, MBeanException, ReflectionException {
         checkAttributeReadAccess(attribute);
         return target.getAttribute(attribute);
     }
 
+    @Override
     public AttributeList getAttributes(String[] attributes) {
         for (String attribute : attributes) {
             checkAttributeReadAccess(attribute);
@@ -94,6 +97,7 @@ public class AccessControlProxy implements DynamicMBean {
         return target.getAttributes(attributes);
     }
 
+    @Override
     public void setAttribute(Attribute attribute)
             throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException,
                     ReflectionException {
@@ -101,6 +105,7 @@ public class AccessControlProxy implements DynamicMBean {
         target.setAttribute(attribute);
     }
 
+    @Override
     public AttributeList setAttributes(AttributeList attributes) {
         for (Object attribute : attributes) {
             checkAttributeWriteAccess(((Attribute) attribute).getName());
@@ -108,6 +113,7 @@ public class AccessControlProxy implements DynamicMBean {
         return target.setAttributes(attributes);
     }
 
+    @Override
     public Object invoke(String actionName, Object[] params, String[] signature)
             throws MBeanException, ReflectionException {
         checkAccess(actionName);

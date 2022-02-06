@@ -40,10 +40,12 @@ public class WebServiceAnnotationVisitor extends AnnotationVisitor {
         this.className = className;
     }
 
+    @Override
     public void visit(String name, Object value) {
         attributes.put(name, value);
     }
 
+    @Override
     public void visitEnd() {
         wsImplementations.add(
                 new WebServiceImplementation(

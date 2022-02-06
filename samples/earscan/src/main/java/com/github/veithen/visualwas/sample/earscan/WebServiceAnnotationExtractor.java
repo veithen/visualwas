@@ -37,6 +37,7 @@ public class WebServiceAnnotationExtractor extends ClassVisitor {
         this.wsImplementations = wsImplementations;
     }
 
+    @Override
     public void visit(
             int version,
             int access,
@@ -48,6 +49,7 @@ public class WebServiceAnnotationExtractor extends ClassVisitor {
         className = name.replace('/', '.');
     }
 
+    @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         return isImplementation && desc.equals("Ljavax/jws/WebService;")
                 ? new WebServiceAnnotationVisitor(wsImplementations, className)

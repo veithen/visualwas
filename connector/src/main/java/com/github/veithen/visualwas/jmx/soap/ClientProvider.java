@@ -29,6 +29,7 @@ import javax.management.remote.JMXConnectorProvider;
 import javax.management.remote.JMXServiceURL;
 
 public class ClientProvider implements JMXConnectorProvider {
+    @Override
     public JMXConnector newJMXConnector(JMXServiceURL serviceURL, Map<String, ?> env)
             throws IOException {
         return new SOAPJMXConnector(serviceURL.getHost(), serviceURL.getPort(), env);

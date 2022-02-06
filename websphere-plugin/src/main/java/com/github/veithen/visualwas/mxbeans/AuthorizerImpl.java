@@ -37,6 +37,7 @@ public class AuthorizerImpl implements Authorizer {
         this.resource = resource;
     }
 
+    @Override
     public boolean checkAccess(String role) {
         synchronized (this) {
             if (adminAuthorizer == null) {

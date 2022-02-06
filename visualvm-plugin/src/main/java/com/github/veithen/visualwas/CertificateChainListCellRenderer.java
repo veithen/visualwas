@@ -41,6 +41,7 @@ final class CertificateChainListCellRenderer extends JLabel
         setOpaque(true);
     }
 
+    @Override
     public Component getListCellRendererComponent(
             JList<? extends X509Certificate> list,
             X509Certificate value,

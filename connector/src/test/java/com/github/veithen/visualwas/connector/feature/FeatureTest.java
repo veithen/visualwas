@@ -52,6 +52,7 @@ public class FeatureTest {
                                         final Operation operation = desc.getOperation("echo");
                                         configurator.addInvocationInterceptor(
                                                 new Interceptor<Invocation, Object>() {
+                                                    @Override
                                                     public CompletableFuture<?> invoke(
                                                             InvocationContext context,
                                                             Invocation invocation,

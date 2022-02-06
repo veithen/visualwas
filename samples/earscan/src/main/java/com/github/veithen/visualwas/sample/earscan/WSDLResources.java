@@ -48,14 +48,17 @@ public class WSDLResources {
             return new InputSource(new ByteArrayInputStream(content));
         }
 
+        @Override
         public InputSource getBaseInputSource() {
             return getInputSource(name);
         }
 
+        @Override
         public String getBaseURI() {
             return name;
         }
 
+        @Override
         public InputSource getImportInputSource(String parentLocation, String importLocation) {
             try {
                 latestImport =
@@ -69,10 +72,12 @@ public class WSDLResources {
             return getInputSource(latestImport);
         }
 
+        @Override
         public String getLatestImportURI() {
             return latestImport;
         }
 
+        @Override
         public void close() {}
     }
 

@@ -150,6 +150,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                     NbBundle.getMessage(WebSpherePropertiesPanel.class, "LBL_Security_enabled"));
             securityCheckbox.addActionListener(
                     new ActionListener() {
+                        @Override
                         public void actionPerformed(ActionEvent e) {
                             update();
                             resetConnectionTestResults();
@@ -237,6 +238,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
                             WebSpherePropertiesPanel.class, "LBL_Save_security_credentials"));
             saveCheckbox.addActionListener(
                     new ActionListener() {
+                        @Override
                         public void actionPerformed(ActionEvent e) {
                             update();
                         }

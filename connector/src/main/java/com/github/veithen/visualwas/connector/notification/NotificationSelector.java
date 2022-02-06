@@ -92,6 +92,7 @@ public final class NotificationSelector implements NotificationFilter {
     // listenerId,
     // equality (as defined by the original class) is equivalent to identity and we don't need to
     // override equals.
+    @Override
     public int hashCode() {
         int result = 17;
         result = 37 * result + listenerId;

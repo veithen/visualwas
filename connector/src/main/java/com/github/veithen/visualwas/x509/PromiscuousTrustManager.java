@@ -34,6 +34,7 @@ public final class PromiscuousTrustManager extends X509ExtendedTrustManager {
 
     private PromiscuousTrustManager() {}
 
+    @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType)
             throws CertificateException {
         throw new UnsupportedOperationException();
@@ -51,6 +52,7 @@ public final class PromiscuousTrustManager extends X509ExtendedTrustManager {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType)
             throws CertificateException {
         // Accept certificate
@@ -68,6 +70,7 @@ public final class PromiscuousTrustManager extends X509ExtendedTrustManager {
         // Accept certificate
     }
 
+    @Override
     public X509Certificate[] getAcceptedIssuers() {
         throw new UnsupportedOperationException();
     }

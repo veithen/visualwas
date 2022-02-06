@@ -64,18 +64,22 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
     /** The list of MBeans registered by {@link #start()}. */
     private final List<ObjectName> registeredMBeans = new ArrayList<ObjectName>();
 
+    @Override
     public String getName() {
         return "PlatformMXBeansRegistrant";
     }
 
+    @Override
     public String getState() {
         return state;
     }
 
+    @Override
     public void initialize(Object config) {
         state = INITIALIZED;
     }
 
+    @Override
     public void start() {
         state = STARTING;
         SecurityService securityService =
@@ -207,6 +211,7 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
         }
     }
 
+    @Override
     public void stop() {
         state = STOPPING;
         for (ObjectName name : registeredMBeans) {
@@ -222,6 +227,7 @@ public final class PlatformMXBeansRegistrant implements WsComponent {
         state = STOPPED;
     }
 
+    @Override
     public void destroy() {
         state = DESTROYED;
     }
