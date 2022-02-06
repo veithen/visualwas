@@ -53,6 +53,7 @@ public class WsLevel extends Level {
     }
 
     // Actually never used; just make the compiler happy
+    @SuppressWarnings("UnusedMethod")
     private WsLevel(String name, int value, String resourceBundleName) {
         super(name, value, resourceBundleName);
     }

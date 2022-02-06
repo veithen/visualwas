@@ -31,6 +31,7 @@ public final class SubscriptionHandle implements Serializable {
     private final long id;
 
     // SubscriptionHandle instances are only created by deserialization; hide the constructor
+    @SuppressWarnings("UnusedMethod")
     private SubscriptionHandle(long id) {
         this.id = id;
     }
