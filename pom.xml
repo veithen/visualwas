@@ -70,7 +70,7 @@
         <javaVersion>1.8</javaVersion>
         <github.repository>visualwas</github.repository>
         <project.build.outputTimestamp>2022-01-23T12:22:00Z</project.build.outputTimestamp>
-        <axiom.version>1.3.0</axiom.version>
+        <axiom.version>1.4.0</axiom.version>
     </properties>
 
     <dependencyManagement>
