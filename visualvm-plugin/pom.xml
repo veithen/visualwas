@@ -142,7 +142,7 @@
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>4.7</version>
+                <version>4.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <codeNameBase>${project.groupId}</codeNameBase>
