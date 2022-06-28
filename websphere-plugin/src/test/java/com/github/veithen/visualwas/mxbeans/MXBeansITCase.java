@@ -50,6 +50,7 @@ import org.junit.jupiter.api.Test;
 import com.github.veithen.visualwas.jmx.soap.SOAPJMXConnector;
 import com.github.veithen.visualwas.x509.PromiscuousTrustManager;
 
+@SuppressWarnings("BanJNDI")
 public class MXBeansITCase {
     private interface Action<T> {
         void run(T object) throws Exception;

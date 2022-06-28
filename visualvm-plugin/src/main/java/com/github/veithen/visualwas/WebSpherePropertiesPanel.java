@@ -379,6 +379,7 @@ public class WebSpherePropertiesPanel extends PropertiesPanel {
         saveCheckbox.setEnabled(securityEnabled);
     }
 
+    @SuppressWarnings("BanJNDI")
     private void testConnection() {
         testConnectionButton.setEnabled(false);
         testConnectionResult.setIcon(connectingIcon);

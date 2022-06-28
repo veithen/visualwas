@@ -60,6 +60,7 @@ import com.github.veithen.visualwas.env.EnvUtil;
 import com.github.veithen.visualwas.trust.NotTrustedException;
 import com.github.veithen.visualwas.trust.TrustStore;
 
+@SuppressWarnings("BanJNDI")
 public class VisualVMITCase {
     @TempDir static File netbeansUserDir;
 
