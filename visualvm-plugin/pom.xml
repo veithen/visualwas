@@ -103,22 +103,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>connector</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency><!-- Transitive runtime dependencies are not included in the NBM by default -->
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -129,10 +117,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>clientlib</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.veithen.ulog</groupId>
-            <artifactId>ulog</artifactId>
         </dependency>
     </dependencies>
 
