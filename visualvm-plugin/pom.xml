@@ -45,59 +45,59 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.application</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.api</groupId>
+            <artifactId>org-graalvm-visualvm-application</artifactId>
+            <version>${visualvm.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.core</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.api</groupId>
+            <artifactId>org-graalvm-visualvm-core</artifactId>
+            <version>${visualvm.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.host</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.api</groupId>
+            <artifactId>org-graalvm-visualvm-host</artifactId>
+            <version>${visualvm.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.jmx</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.api</groupId>
+            <artifactId>org-graalvm-visualvm-jmx</artifactId>
+            <version>${visualvm.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.tools</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.api</groupId>
+            <artifactId>org-graalvm-visualvm-tools</artifactId>
+            <version>${visualvm.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.netbeans.modules.options.api</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-options-api</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.awt</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.modules</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.util</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.util.lookup</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.util.ui</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

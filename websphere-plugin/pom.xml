@@ -78,21 +78,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.dialogs</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>${netbeans.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.openide.windows</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-windows</artifactId>
+            <version>${netbeans.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.thirdparty</groupId>
-            <artifactId>org.graalvm.visualvm.jvm</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.graalvm.visualvm.modules</groupId>
+            <artifactId>org-graalvm-visualvm-jvm</artifactId>
+            <version>${visualvm.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
