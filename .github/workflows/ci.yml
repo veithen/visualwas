@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ 11, 17, 18 ]
+        java: [ 11, 17, 19 ]
         websphere: [ "8.5.5.22", "9.0.5.12" ]
     name: "Java ${{ matrix.java }} - WebSphere ${{ matrix.websphere }}"
     runs-on: ubuntu-18.04
