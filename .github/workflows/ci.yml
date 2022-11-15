@@ -16,7 +16,7 @@ jobs:
         java: [ 11, 17, 19 ]
         websphere: [ "8.5.5.22", "9.0.5.12" ]
     name: "Java ${{ matrix.java }} - WebSphere ${{ matrix.websphere }}"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -42,7 +42,7 @@ jobs:
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: Deploy
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     needs: build
     steps:
     - name: Checkout
