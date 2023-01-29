@@ -7,3 +7,7 @@ updates:
     ignore:
       - dependency-name: "com.sun.activation:jakarta.activation"
         versions: ">= 1.2.2"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
