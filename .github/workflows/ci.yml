@@ -21,7 +21,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Maven Repository
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: maven-java-${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
@@ -48,7 +48,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Maven Repository
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: maven-deploy-${{ hashFiles('**/pom.xml') }}
