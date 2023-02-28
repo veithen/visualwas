@@ -12,6 +12,7 @@ env:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         java: [ 11, 17, 19 ]
         websphere: [ "8.5.5.22", "9.0.5.12" ]
