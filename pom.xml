@@ -70,7 +70,7 @@
         <github.repository>visualwas</github.repository>
         <project.build.outputTimestamp>2022-01-23T12:22:00Z</project.build.outputTimestamp>
         <axiom.version>1.4.0</axiom.version>
-        <slf4j.version>2.0.7</slf4j.version>
+        <slf4j.version>2.0.9</slf4j.version>
         <visualvm.version>2.1.6</visualvm.version>
         <netbeans.version>RELEASE170</netbeans.version>
     </properties>
