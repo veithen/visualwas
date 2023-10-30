@@ -80,7 +80,9 @@ public interface AdminService {
     CompletableFuture<Boolean> isRegisteredAsync(ObjectName objectName);
 
     MBeanInfo getMBeanInfo(@Param(name = "objectname") ObjectName objectName)
-            throws InstanceNotFoundException, IntrospectionException, ReflectionException,
+            throws InstanceNotFoundException,
+                    IntrospectionException,
+                    ReflectionException,
                     IOException;
 
     CompletableFuture<MBeanInfo> getMBeanInfoAsync(ObjectName objectName);
@@ -116,7 +118,10 @@ public interface AdminService {
             @Param(name = "operationname") String operationName,
             @Param(name = "params") Object[] params,
             @Param(name = "signature") String[] signature)
-            throws InstanceNotFoundException, MBeanException, ReflectionException, IOException,
+            throws InstanceNotFoundException,
+                    MBeanException,
+                    ReflectionException,
+                    IOException,
                     ClassNotFoundException;
 
     CompletableFuture<Object> invokeAsync(
@@ -143,8 +148,12 @@ public interface AdminService {
     Object getAttribute(
             @Param(name = "objectname") ObjectName objectName,
             @Param(name = "attribute") String attribute)
-            throws MBeanException, AttributeNotFoundException, InstanceNotFoundException,
-                    ReflectionException, IOException, ClassNotFoundException;
+            throws MBeanException,
+                    AttributeNotFoundException,
+                    InstanceNotFoundException,
+                    ReflectionException,
+                    IOException,
+                    ClassNotFoundException;
 
     CompletableFuture<Object> getAttributeAsync(ObjectName objectName, String attribute);
 
@@ -166,7 +175,9 @@ public interface AdminService {
     AttributeList getAttributes(
             @Param(name = "objectname") ObjectName objectName,
             @Param(name = "attribute") String[] attributes)
-            throws InstanceNotFoundException, ReflectionException, IOException,
+            throws InstanceNotFoundException,
+                    ReflectionException,
+                    IOException,
                     ClassNotFoundException;
 
     CompletableFuture<AttributeList> getAttributesAsync(ObjectName objectName, String[] attributes);
@@ -174,8 +185,11 @@ public interface AdminService {
     void setAttribute(
             @Param(name = "objectname") ObjectName objectName,
             @Param(name = "attribute") Attribute attribute)
-            throws InstanceNotFoundException, AttributeNotFoundException,
-                    InvalidAttributeValueException, MBeanException, ReflectionException,
+            throws InstanceNotFoundException,
+                    AttributeNotFoundException,
+                    InvalidAttributeValueException,
+                    MBeanException,
+                    ReflectionException,
                     IOException;
 
     CompletableFuture<Void> setAttributeAsync(ObjectName objectName, Attribute attribute);

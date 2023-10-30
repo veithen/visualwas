@@ -63,16 +63,24 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public ObjectInstance createMBean(String className, ObjectName name)
-            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
-                    MBeanException, NotCompliantMBeanException, IOException {
+            throws ReflectionException,
+                    InstanceAlreadyExistsException,
+                    MBeanRegistrationException,
+                    MBeanException,
+                    NotCompliantMBeanException,
+                    IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
     public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName)
-            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
-                    MBeanException, NotCompliantMBeanException, InstanceNotFoundException,
+            throws ReflectionException,
+                    InstanceAlreadyExistsException,
+                    MBeanRegistrationException,
+                    MBeanException,
+                    NotCompliantMBeanException,
+                    InstanceNotFoundException,
                     IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
@@ -81,8 +89,12 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
     @Override
     public ObjectInstance createMBean(
             String className, ObjectName name, Object[] params, String[] signature)
-            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
-                    MBeanException, NotCompliantMBeanException, IOException {
+            throws ReflectionException,
+                    InstanceAlreadyExistsException,
+                    MBeanRegistrationException,
+                    MBeanException,
+                    NotCompliantMBeanException,
+                    IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
@@ -94,8 +106,12 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
             ObjectName loaderName,
             Object[] params,
             String[] signature)
-            throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException,
-                    MBeanException, NotCompliantMBeanException, InstanceNotFoundException,
+            throws ReflectionException,
+                    InstanceAlreadyExistsException,
+                    MBeanRegistrationException,
+                    MBeanException,
+                    NotCompliantMBeanException,
+                    InstanceNotFoundException,
                     IOException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
@@ -137,8 +153,11 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public Object getAttribute(ObjectName name, String attribute)
-            throws MBeanException, AttributeNotFoundException, InstanceNotFoundException,
-                    ReflectionException, IOException {
+            throws MBeanException,
+                    AttributeNotFoundException,
+                    InstanceNotFoundException,
+                    ReflectionException,
+                    IOException {
         try {
             return adminService.getAttribute(name, attribute);
         } catch (ClassNotFoundException ex) {
@@ -158,8 +177,11 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public void setAttribute(ObjectName name, Attribute attribute)
-            throws InstanceNotFoundException, AttributeNotFoundException,
-                    InvalidAttributeValueException, MBeanException, ReflectionException,
+            throws InstanceNotFoundException,
+                    AttributeNotFoundException,
+                    InvalidAttributeValueException,
+                    MBeanException,
+                    ReflectionException,
                     IOException {
         adminService.setAttribute(name, attribute);
     }
@@ -247,7 +269,9 @@ final class MBeanServerConnectionImpl implements WebSphereMBeanServerConnection 
 
     @Override
     public MBeanInfo getMBeanInfo(ObjectName name)
-            throws InstanceNotFoundException, IntrospectionException, ReflectionException,
+            throws InstanceNotFoundException,
+                    IntrospectionException,
+                    ReflectionException,
                     IOException {
         return adminService.getMBeanInfo(name);
     }

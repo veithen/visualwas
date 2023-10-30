@@ -116,7 +116,9 @@ final class ConnectorImpl implements Connector {
 
     @Override
     public MBeanInfo getMBeanInfo(ObjectName objectName)
-            throws InstanceNotFoundException, IntrospectionException, ReflectionException,
+            throws InstanceNotFoundException,
+                    IntrospectionException,
+                    ReflectionException,
                     IOException {
         return adminService.getMBeanInfo(objectName);
     }
@@ -140,7 +142,10 @@ final class ConnectorImpl implements Connector {
     @Override
     public Object invoke(
             ObjectName objectName, String operationName, Object[] params, String[] signature)
-            throws InstanceNotFoundException, MBeanException, ReflectionException, IOException,
+            throws InstanceNotFoundException,
+                    MBeanException,
+                    ReflectionException,
+                    IOException,
                     ClassNotFoundException {
         return adminService.invoke(objectName, operationName, params, signature);
     }
@@ -153,8 +158,12 @@ final class ConnectorImpl implements Connector {
 
     @Override
     public Object getAttribute(ObjectName objectName, String attribute)
-            throws MBeanException, AttributeNotFoundException, InstanceNotFoundException,
-                    ReflectionException, IOException, ClassNotFoundException {
+            throws MBeanException,
+                    AttributeNotFoundException,
+                    InstanceNotFoundException,
+                    ReflectionException,
+                    IOException,
+                    ClassNotFoundException {
         return adminService.getAttribute(objectName, attribute);
     }
 
@@ -165,7 +174,9 @@ final class ConnectorImpl implements Connector {
 
     @Override
     public AttributeList getAttributes(ObjectName objectName, String[] attributes)
-            throws InstanceNotFoundException, ReflectionException, IOException,
+            throws InstanceNotFoundException,
+                    ReflectionException,
+                    IOException,
                     ClassNotFoundException {
         return adminService.getAttributes(objectName, attributes);
     }
@@ -178,8 +189,11 @@ final class ConnectorImpl implements Connector {
 
     @Override
     public void setAttribute(ObjectName objectName, Attribute attribute)
-            throws InstanceNotFoundException, AttributeNotFoundException,
-                    InvalidAttributeValueException, MBeanException, ReflectionException,
+            throws InstanceNotFoundException,
+                    AttributeNotFoundException,
+                    InvalidAttributeValueException,
+                    MBeanException,
+                    ReflectionException,
                     IOException {
         adminService.setAttribute(objectName, attribute);
     }

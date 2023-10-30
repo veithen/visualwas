@@ -99,7 +99,9 @@ public class AccessControlProxy implements DynamicMBean {
 
     @Override
     public void setAttribute(Attribute attribute)
-            throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException,
+            throws AttributeNotFoundException,
+                    InvalidAttributeValueException,
+                    MBeanException,
                     ReflectionException {
         checkAttributeWriteAccess(attribute.getName());
         target.setAttribute(attribute);
