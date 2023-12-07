@@ -72,7 +72,7 @@
         <axiom.version>1.4.0</axiom.version>
         <slf4j.version>2.0.9</slf4j.version>
         <visualvm.version>2.1.7</visualvm.version>
-        <netbeans.version>RELEASE170</netbeans.version>
+        <netbeans.version>RELEASE200</netbeans.version>
     </properties>
 
     <dependencyManagement>
