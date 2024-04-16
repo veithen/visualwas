@@ -38,6 +38,12 @@ jobs:
       env:
         WEBSPHERE_VERSION: ${{ matrix.websphere }}
       run: mvn -B -e -Prelease -Dgpg.skip=true verify
+    - name: Upload Coverage Report
+      uses: codecov/codecov-action@v4
+      with:
+        fail_ci_if_error: true
+        files: ./target/coverage.json
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Remove Snapshots
       run: find ~/.m2/repository -name '*-SNAPSHOT' -a -type d -print0 | xargs -0 rm -rf
   deploy:
