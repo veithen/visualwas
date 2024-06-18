@@ -74,7 +74,7 @@ jobs:
       # Can't activate the release profile here because github-release-plugin can't be easily skipped
       run: mvn -B -e -DskipTests=true deploy
       env:
-        OSSRH_USERNAME: veithen
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
     - name: Remove Snapshots
       run: find ~/.m2/repository -name '*-SNAPSHOT' -a -type d -print0 | xargs -0 rm -rf
