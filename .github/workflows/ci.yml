@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 17, 19 ]
+        java: [ 17, 19 ]
         websphere: [ "8.5.5.22", "9.0.5.12" ]
     name: "Java ${{ matrix.java }} - WebSphere ${{ matrix.websphere }}"
     runs-on: ubuntu-22.04
@@ -66,7 +66,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: 11
+        java-version: 17
         server-id: ossrh
         server-username: OSSRH_USERNAME
         server-password: OSSRH_PASSWORD
