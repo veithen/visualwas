@@ -66,13 +66,13 @@
     </scm>
 
     <properties>
-        <javaVersion>1.8</javaVersion>
+        <javaVersion>11</javaVersion>
         <github.repository>visualwas</github.repository>
         <project.build.outputTimestamp>2022-01-23T12:22:00Z</project.build.outputTimestamp>
         <axiom.version>1.4.0</axiom.version>
         <slf4j.version>2.0.16</slf4j.version>
         <visualvm.version>2.1.9</visualvm.version>
-        <netbeans.version>RELEASE220</netbeans.version>
+        <netbeans.version>RELEASE230</netbeans.version>
     </properties>
 
     <dependencyManagement>
