@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 17, 19 ]
+        java: [ 17, 21, 23 ]
         websphere: [ "8.5.5.22", "9.0.5.12" ]
     name: "Java ${{ matrix.java }} - WebSphere ${{ matrix.websphere }}"
     runs-on: ubuntu-22.04
