@@ -130,6 +130,8 @@
                         <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         <Eclipse-AutoStart>true</Eclipse-AutoStart>
                         <Export-Package>!*</Export-Package>
+                        <!-- Don't import java.* packages because that doesn't work with WebSphere. -->
+                        <Import-Package>!java.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
