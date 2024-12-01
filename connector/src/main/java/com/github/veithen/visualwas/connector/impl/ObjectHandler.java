@@ -21,10 +21,10 @@
  */
 package com.github.veithen.visualwas.connector.impl;
 
-import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.blob.Blob;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.util.stax.XMLStreamReaderUtils;
 
@@ -50,7 +50,7 @@ public final class ObjectHandler implements TypeHandler {
     @Override
     public QName setValue(OMElement element, Object value, InvocationContextImpl context) {
         element.addChild(
-                element.getOMFactory().createOMText(new ObjectDataHandler(value, context), false));
+                element.getOMFactory().createOMText(new ObjectBlob(value, context), false));
         return new QName("urn:AdminService", context.getSerializer().getRemoteClassName(type));
     }
 
@@ -61,8 +61,8 @@ public final class ObjectHandler implements TypeHandler {
         XMLStreamReader reader = element.getXMLStreamReader(false);
         try {
             reader.next();
-            DataHandler dh = XMLStreamReaderUtils.getDataHandlerFromElement(reader);
-            return context.getSerializer().readObject(dh.getInputStream(), context);
+            Blob blob = XMLStreamReaderUtils.getBlobFromElement(reader);
+            return context.getSerializer().readObject(blob.getInputStream(), context);
         } catch (ClassNotFoundException ex) {
             // Propagate the exception
             throw ex;
