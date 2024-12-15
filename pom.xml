@@ -205,7 +205,6 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
                     <projectName>VisualWAS</projectName>
-                    <licenseName>gpl_v3</licenseName>
                     <excludes>
                         <exclude>**/*-request.xml</exclude>
                         <exclude>**/*-response.xml</exclude>
