@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>52</version>
+        <version>53-SNAPSHOT</version>
     </parent>
 
     <groupId>com.github.veithen.visualwas</groupId>
