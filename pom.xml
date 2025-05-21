@@ -73,7 +73,7 @@
         <project.build.outputTimestamp>2022-01-23T12:22:00Z</project.build.outputTimestamp>
         <axiom.version>2.0.0</axiom.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <visualvm.version>2.1.10</visualvm.version>
+        <visualvm.version>2.2</visualvm.version>
         <netbeans.version>RELEASE250</netbeans.version>
     </properties>
 
