@@ -67,7 +67,7 @@
     </scm>
 
     <properties>
-        <javaVersion>11</javaVersion>
+        <javaVersion>17</javaVersion>
         <github.repository>visualwas</github.repository>
         <license.licenseName>gpl_v3</license.licenseName>
         <project.build.outputTimestamp>2022-01-23T12:22:00Z</project.build.outputTimestamp>
