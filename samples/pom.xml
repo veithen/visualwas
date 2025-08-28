@@ -45,4 +45,8 @@
         <developerConnection>scm:git:https://github.com/veithen/visualwas.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
+    <properties>
+        <skipDeploy>true</skipDeploy>
+    </properties>
 </project>

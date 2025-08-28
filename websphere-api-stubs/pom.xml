@@ -32,6 +32,7 @@
 
     <artifactId>websphere-api-stubs</artifactId>
 
+    <name>WebSphere API Stubs</name>
     <url>https://github.com/veithen/visualwas</url>
 
     <scm>

@@ -32,6 +32,7 @@
 
     <artifactId>dummy-transport</artifactId>
 
+    <name>Dummy transport</name>
     <url>https://github.com/veithen/visualwas</url>
 
     <scm>
