@@ -74,7 +74,7 @@
         <axiom.version>2.0.0</axiom.version>
         <slf4j.version>2.0.17</slf4j.version>
         <visualvm.version>2.2</visualvm.version>
-        <netbeans.version>RELEASE270</netbeans.version>
+        <netbeans.version>RELEASE280</netbeans.version>
     </properties>
 
     <dependencyManagement>
