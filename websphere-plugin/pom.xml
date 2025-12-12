@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.sonatype.goodies</groupId>
             <artifactId>goodies-prefs</artifactId>
-            <version>2.3.11</version>
+            <version>3.0.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
