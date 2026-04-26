@@ -37,7 +37,7 @@ jobs:
     - name: Build
       env:
         WEBSPHERE_VERSION: ${{ matrix.websphere }}
-      run: mvn -B -e -Prelease -Dgpg.skip=true verify
+      run: ./mvnw -B -e -Prelease -Dgpg.skip=true verify
     - name: Upload Coverage Report
       uses: codecov/codecov-action@v6
       with:
@@ -72,7 +72,7 @@ jobs:
         server-password: OSSRH_PASSWORD
     - name: Deploy
       # Can't activate the release profile here because github-release-plugin can't be easily skipped
-      run: mvn -B -e -Dmaven.test.skip=true deploy
+      run: ./mvnw -B -e -Dmaven.test.skip=true deploy
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
