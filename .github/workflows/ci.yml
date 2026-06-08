@@ -39,7 +39,7 @@ jobs:
         WEBSPHERE_VERSION: ${{ matrix.websphere }}
       run: ./mvnw -B -e -Prelease -Dgpg.skip=true verify
     - name: Upload Coverage Report
-      uses: codecov/codecov-action@v6
+      uses: codecov/codecov-action@v7
       with:
         fail_ci_if_error: true
         files: ./target/coverage.json
