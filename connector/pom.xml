@@ -69,6 +69,33 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.obqo.decycle</groupId>
+                <artifactId>decycle-maven-plugin</artifactId>
+                <configuration>
+                    <ignoring>
+                        <!-- TODO: The Operation and Param annotations are themselves annotated with
+                             a reference to AdminServiceAnnotationProcessor, which creates a package
+                             cycle between connector and connector.impl. This wasn't detected by the
+                             phos enforcer-maven-plugin (used by earlier versions of the parent POM)
+                             because it doesn't analyze annotations. We should look into fixing the
+                             cycle instead of ignoring it. -->
+                        <ignore>
+                            <from>com.github.veithen.visualwas.connector.Operation</from>
+                            <to>com.github.veithen.visualwas.connector.impl.AdminServiceAnnotationProcessor</to>
+                        </ignore>
+                        <ignore>
+                            <from>com.github.veithen.visualwas.connector.Param</from>
+                            <to>com.github.veithen.visualwas.connector.impl.AdminServiceAnnotationProcessor</to>
+                        </ignore>
+                    </ignoring>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>docker</id>
