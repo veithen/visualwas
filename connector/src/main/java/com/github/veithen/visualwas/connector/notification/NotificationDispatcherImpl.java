@@ -145,16 +145,15 @@ final class NotificationDispatcherImpl implements NotificationDispatcher, CloseL
                 Notification[] notifications = service.pullNotifications(subscriptionHandle, 20);
                 synchronized (this) {
                     for (NotificationListenerRegistration registration : registrations) {
-                        executor.execute(
-                                () -> {
-                                    for (Notification notification : notifications) {
-                                        if (registration
-                                                .getSelector()
-                                                .isNotificationEnabled(notification)) {
-                                            registration.handleNotification(notification);
-                                        }
-                                    }
-                                });
+                        executor.execute(() -> {
+                            for (Notification notification : notifications) {
+                                if (registration
+                                        .getSelector()
+                                        .isNotificationEnabled(notification)) {
+                                    registration.handleNotification(notification);
+                                }
+                            }
+                        });
                     }
                 }
                 if (notifications.length > 0) {

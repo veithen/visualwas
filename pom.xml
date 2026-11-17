@@ -26,7 +26,7 @@
     <parent>
         <groupId>com.github.veithen</groupId>
         <artifactId>parent</artifactId>
-        <version>57</version>
+        <version>58</version>
     </parent>
 
     <groupId>com.github.veithen.visualwas</groupId>
@@ -84,7 +84,8 @@
                 <artifactId>axiom-api</artifactId>
                 <version>${axiom.version}</version>
                 <exclusions>
-                    <exclusion><!-- We don't use XPath -->
+                    <exclusion>
+                        <!-- We don't use XPath -->
                         <groupId>jaxen</groupId>
                         <artifactId>jaxen</artifactId>
                     </exclusion>
@@ -100,7 +101,8 @@
                 <artifactId>axiom-impl</artifactId>
                 <version>${axiom.version}</version>
                 <exclusions>
-                    <exclusion><!-- We use the StAX implementation from the JRE -->
+                    <exclusion>
+                        <!-- We use the StAX implementation from the JRE -->
                         <groupId>org.codehaus.woodstox</groupId>
                         <artifactId>woodstox-core-asl</artifactId>
                     </exclusion>

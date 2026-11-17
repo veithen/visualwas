@@ -41,18 +41,17 @@ final class ConfigsLoaderInterceptor extends ContextPopulatingInterceptor<Config
                 .locateMBean(adminService)
                 .thenCompose(
                         perfMBean -> adminService.invokeAsync(perfMBean, "getConfigs", null, null))
-                .exceptionally(
-                        t -> {
-                            if (t instanceof CompletionException) {
-                                t = t.getCause();
-                            }
-                            if (t instanceof InstanceNotFoundException) {
-                                // This means that PMI is disabled.
-                                return new PmiModuleConfig[0];
-                            } else {
-                                throw new CompletionException(t);
-                            }
-                        })
+                .exceptionally(t -> {
+                    if (t instanceof CompletionException) {
+                        t = t.getCause();
+                    }
+                    if (t instanceof InstanceNotFoundException) {
+                        // This means that PMI is disabled.
+                        return new PmiModuleConfig[0];
+                    } else {
+                        throw new CompletionException(t);
+                    }
+                })
                 .thenApply(input -> new Configs((PmiModuleConfig[]) input));
     }
 }

@@ -40,23 +40,22 @@ public class SingletonMBeanLocator extends AbstractObjectNamePatternMBeanLocator
     protected CompletableFuture<ObjectName> producePattern(AdminService adminService) {
         return adminService
                 .getServerMBeanAsync()
-                .thenApply(
-                        serverMBean -> {
-                            try {
-                                return new ObjectName(
-                                        serverMBean.getDomain()
-                                                + ":type="
-                                                + type
-                                                + ",cell="
-                                                + serverMBean.getKeyProperty("cell")
-                                                + ",node="
-                                                + serverMBean.getKeyProperty("node")
-                                                + ",process="
-                                                + serverMBean.getKeyProperty("process")
-                                                + ",*");
-                            } catch (MalformedObjectNameException ex) {
-                                throw new CompletionException(ex);
-                            }
-                        });
+                .thenApply(serverMBean -> {
+                    try {
+                        return new ObjectName(
+                                serverMBean.getDomain()
+                                        + ":type="
+                                        + type
+                                        + ",cell="
+                                        + serverMBean.getKeyProperty("cell")
+                                        + ",node="
+                                        + serverMBean.getKeyProperty("node")
+                                        + ",process="
+                                        + serverMBean.getKeyProperty("process")
+                                        + ",*");
+                    } catch (MalformedObjectNameException ex) {
+                        throw new CompletionException(ex);
+                    }
+                });
     }
 }

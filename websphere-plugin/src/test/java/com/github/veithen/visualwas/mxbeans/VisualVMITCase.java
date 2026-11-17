@@ -128,7 +128,7 @@ public class VisualVMITCase {
                 Object lock = new Object();
                 app.addPropertyChangeListener(
                         Stateful.PROPERTY_STATE,
-                        (evt) -> {
+                        evt -> {
                             synchronized (lock) {
                                 lock.notifyAll();
                             }

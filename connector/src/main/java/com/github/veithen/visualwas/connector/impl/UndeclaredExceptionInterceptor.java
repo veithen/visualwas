@@ -47,25 +47,24 @@ final class UndeclaredExceptionInterceptor implements Interceptor<Invocation, Ob
             Handler<Invocation, Object> nextHandler) {
         return nextHandler
                 .invoke(context, invocation)
-                .exceptionally(
-                        t -> {
-                            if (t instanceof CompletionException) {
-                                t = t.getCause();
+                .exceptionally(t -> {
+                    if (t instanceof CompletionException) {
+                        t = t.getCause();
+                    }
+                    if (!(t instanceof RuntimeException || t instanceof Error)) {
+                        boolean isDeclared = false;
+                        for (Class<?> exceptionType :
+                                invocation.getOperation().getExceptionTypes()) {
+                            if (exceptionType.isInstance(t)) {
+                                isDeclared = true;
+                                break;
                             }
-                            if (!(t instanceof RuntimeException || t instanceof Error)) {
-                                boolean isDeclared = false;
-                                for (Class<?> exceptionType :
-                                        invocation.getOperation().getExceptionTypes()) {
-                                    if (exceptionType.isInstance(t)) {
-                                        isDeclared = true;
-                                        break;
-                                    }
-                                }
-                                if (!isDeclared) {
-                                    t = new ConnectorException("Received unexpected exception", t);
-                                }
-                            }
-                            throw new CompletionException(t);
-                        });
+                        }
+                        if (!isDeclared) {
+                            t = new ConnectorException("Received unexpected exception", t);
+                        }
+                    }
+                    throw new CompletionException(t);
+                });
     }
 }
