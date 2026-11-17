@@ -104,7 +104,8 @@
             <artifactId>connector</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency><!-- Transitive runtime dependencies are not included in the NBM by default -->
+        <dependency>
+            <!-- Transitive runtime dependencies are not included in the NBM by default -->
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
         </dependency>

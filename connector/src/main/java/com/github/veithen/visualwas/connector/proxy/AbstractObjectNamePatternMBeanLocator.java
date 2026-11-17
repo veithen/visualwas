@@ -35,23 +35,22 @@ public abstract class AbstractObjectNamePatternMBeanLocator implements MBeanLoca
             AdminService adminService, ObjectName pattern) {
         return adminService
                 .queryNamesAsync(pattern, null)
-                .thenApply(
-                        names -> {
-                            Iterator<ObjectName> it = names.iterator();
-                            if (it.hasNext()) {
-                                ObjectName mbean = it.next();
-                                if (it.hasNext()) {
-                                    throw new CompletionException(
-                                            new InstanceNotFoundException(
-                                                    "Found multiple MBeans matching " + pattern));
-                                } else {
-                                    return mbean;
-                                }
-                            } else {
-                                throw new CompletionException(
-                                        new InstanceNotFoundException(pattern + " not found"));
-                            }
-                        });
+                .thenApply(names -> {
+                    Iterator<ObjectName> it = names.iterator();
+                    if (it.hasNext()) {
+                        ObjectName mbean = it.next();
+                        if (it.hasNext()) {
+                            throw new CompletionException(
+                                    new InstanceNotFoundException(
+                                            "Found multiple MBeans matching " + pattern));
+                        } else {
+                            return mbean;
+                        }
+                    } else {
+                        throw new CompletionException(
+                                new InstanceNotFoundException(pattern + " not found"));
+                    }
+                });
     }
 
     @Override

@@ -83,31 +83,29 @@ final class MBeanProxyInvocationHandler implements InvocationTarget {
                 // There is no thenCompose that handles exception. Instead, produce a
                 // CompletableFuture
                 // with handle and then use thenCompose with the identity function.
-                .handle(
-                        (result, t) -> {
-                            if (t == null) {
-                                return CompletableFuture.completedFuture(result);
+                .handle((result, t) -> {
+                    if (t == null) {
+                        return CompletableFuture.completedFuture(result);
+                    }
+                    if (t instanceof CompletionException) {
+                        t = t.getCause();
+                    }
+                    if (!isRetry && t instanceof InstanceNotFoundException) {
+                        synchronized (MBeanProxyInvocationHandler.this) {
+                            if (MBeanProxyInvocationHandler.this.mbeanFuture == mbeanFuture) {
+                                MBeanProxyInvocationHandler.this.mbeanFuture = null;
                             }
-                            if (t instanceof CompletionException) {
-                                t = t.getCause();
-                            }
-                            if (!isRetry && t instanceof InstanceNotFoundException) {
-                                synchronized (MBeanProxyInvocationHandler.this) {
-                                    if (MBeanProxyInvocationHandler.this.mbeanFuture
-                                            == mbeanFuture) {
-                                        MBeanProxyInvocationHandler.this.mbeanFuture = null;
-                                    }
-                                }
-                                return doInvoke(operationName, params, signature, true);
-                            } else {
-                                if (t instanceof MBeanException) {
-                                    // MBeanException is a wrapper around exceptions thrown by
-                                    // MBeans. Unwrap the exception.
-                                    t = t.getCause();
-                                }
-                                throw new CompletionException(t);
-                            }
-                        })
+                        }
+                        return doInvoke(operationName, params, signature, true);
+                    } else {
+                        if (t instanceof MBeanException) {
+                            // MBeanException is a wrapper around exceptions thrown by
+                            // MBeans. Unwrap the exception.
+                            t = t.getCause();
+                        }
+                        throw new CompletionException(t);
+                    }
+                })
                 .thenCompose(Function.identity());
     }
 }

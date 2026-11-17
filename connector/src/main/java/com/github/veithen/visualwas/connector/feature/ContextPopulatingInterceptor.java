@@ -50,50 +50,45 @@ public abstract class ContextPopulatingInterceptor<T> implements Interceptor<Inv
                 this.future =
                         future =
                                 produceValue(context.getAdminService(nextHandler))
-                                        .exceptionally(
-                                                t -> {
-                                                    if (t instanceof CompletionException) {
-                                                        t = t.getCause();
-                                                    }
-                                                    // If it's an IOException, assume it's a low
-                                                    // level problem independent of the
-                                                    // operation being invoked and simply propagate
-                                                    // the exception. Otherwise it's likely
-                                                    // a problem specific to the operation invoked
-                                                    // to produce the value. In that case
-                                                    // wrap the exception. This also prevents
-                                                    // UndeclaredThrowableExceptions from being
-                                                    // thrown at the caller of the proxy.
-                                                    if (!(t instanceof IOException)) {
-                                                        t =
-                                                                new ConnectorException(
-                                                                        String.format(
-                                                                                "Failed to populate context attribute with type %s",
-                                                                                type.getName()),
-                                                                        t);
-                                                    }
-                                                    throw new CompletionException(t);
-                                                });
-                future.whenComplete(
-                        (result, t) -> {
-                            if (t != null) {
-                                // Remove the future so that subsequent invocations will retry
-                                synchronized (ContextPopulatingInterceptor.this) {
-                                    ContextPopulatingInterceptor.this.future = null;
-                                }
-                            }
-                        });
+                                        .exceptionally(t -> {
+                                            if (t instanceof CompletionException) {
+                                                t = t.getCause();
+                                            }
+                                            // If it's an IOException, assume it's a low
+                                            // level problem independent of the
+                                            // operation being invoked and simply propagate
+                                            // the exception. Otherwise it's likely
+                                            // a problem specific to the operation invoked
+                                            // to produce the value. In that case
+                                            // wrap the exception. This also prevents
+                                            // UndeclaredThrowableExceptions from being
+                                            // thrown at the caller of the proxy.
+                                            if (!(t instanceof IOException)) {
+                                                t =
+                                                        new ConnectorException(
+                                                                String.format(
+                                                                        "Failed to populate context attribute with type %s",
+                                                                        type.getName()),
+                                                                t);
+                                            }
+                                            throw new CompletionException(t);
+                                        });
+                future.whenComplete((result, t) -> {
+                    if (t != null) {
+                        // Remove the future so that subsequent invocations will retry
+                        synchronized (ContextPopulatingInterceptor.this) {
+                            ContextPopulatingInterceptor.this.future = null;
+                        }
+                    }
+                });
             }
         }
-        return future.thenCompose(
-                value -> {
-                    return nextHandler.invoke(
-                            context.withAttributes(
-                                    Attributes.builder(context.getAttributes())
-                                            .set(type, value)
-                                            .build()),
-                            request);
-                });
+        return future.thenCompose(value -> {
+            return nextHandler.invoke(
+                    context.withAttributes(
+                            Attributes.builder(context.getAttributes()).set(type, value).build()),
+                    request);
+        });
     }
 
     protected abstract CompletableFuture<T> produceValue(AdminService adminService);
